@@ -1,0 +1,54 @@
+[
+  {
+    "id": "proj-001",
+    "title": "Residential Roof Replacement",
+    "category": "residential",
+    "location": "NE Calgary",
+    "description": "Complete asphalt shingle replacement on a two-storey home. Class 4 impact-resistant IKO shingles installed.",
+    "materials": ["IKO Dynasty", "Ice & Water Shield", "Synthetic Underlayment"],
+    "completedDate": "2026-01-15",
+    "images": [],
+    "beforeImage": "",
+    "afterImage": "",
+    "featured": true
+  },
+  {
+    "id": "proj-002",
+    "title": "Siding Installation",
+    "category": "siding",
+    "location": "NW Calgary",
+    "description": "Full vinyl siding replacement with Kaycan product.",
+    "materials": ["Kaycan Vinyl Siding"],
+    "completedDate": "2026-02-10",
+    "images": [],
+    "beforeImage": "",
+    "afterImage": "",
+    "featured": true
+  },
+  {
+    "id": "proj-003",
+    "title": "Commercial Flat Roof",
+    "category": "commercial",
+    "location": "SE Calgary",
+    "description": "Torch-on membrane installation for commercial property.",
+    "materials": ["Modified Bitumen", "Torch-On Membrane"],
+    "completedDate": "2026-01-28",
+    "images": [],
+    "beforeImage": "",
+    "afterImage": "",
+    "featured": true
+  },
+  {
+    "id": "proj-004",
+    "title": "Emergency Roof Repair",
+    "category": "repair",
+    "location": "SW Calgary",
+    "description": "Emergency leak repair after hail damage.",
+    "materials": ["BP Shingles", "Flashing"],
+    "completedDate": "2026-03-05",
+    "images": [],
+    "beforeImage": "",
+    "afterImage": "",
+    "featured": true
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "rev-001",
+    "name": "A. Chen",
+    "rating": 5,
+    "text": "Excellent work from start to finish. The crew was professional, clean, and finished ahead of schedule. Highly recommend.",
+    "date": "2026-02-15",
+    "source": "Google",
+    "featured": true
+  },
+  {
+    "id": "rev-002",
+    "name": "M. Patel",
+    "rating": 5,
+    "text": "Got quotes from 3 companies. City Roofing was not the cheapest but gave us the most confidence. Zero issues after the job.",
+    "date": "2026-01-28",
+    "source": "Google",
+    "featured": true
+  },
+  {
+    "id": "rev-003",
+    "name": "S. Thompson",
+    "rating": 5,
+    "text": "They handled our insurance claim from the hailstorm perfectly. Roof looks great.",
+    "date": "2026-01-10",
+    "source": "Google",
+    "featured": true
+  },
+  {
+    "id": "rev-004",
+    "name": "L. Wang",
+    "rating": 5,
+    "text": "Replaced our 20-year-old roof in one day. Amazing.",
+    "date": "2025-12-20",
+    "source": "Google",
+    "featured": true
+  },
+  {
+    "id": "rev-005",
+    "name": "D. Morrison",
+    "rating": 5,
+    "text": "Very professional, great communication throughout.",
+    "date": "2025-11-30",
+    "source": "Google",
+    "featured": true
+  }
+]
