@@ -1,13 +1,15 @@
 import type { Metadata } from 'next';
 import ServiceHero from '@/components/shared/ServiceHero';
-import QuickAnswerBox from '@/components/shared/QuickAnswerBox';
 import FAQSection, { FAQItem } from '@/components/shared/FAQSection';
 import ServiceCTA from '@/components/shared/ServiceCTA';
+import Accordion, { AccordionItem } from '@/components/shared/Accordion';
+import KeyPoints, { KeyPoint } from '@/components/shared/KeyPoints';
+import reviewsData from '@/data/reviews.json';
 
 export const metadata: Metadata = {
   title: 'Roof Replacement Calgary | City Roofing & Exteriors',
   description:
-    'Expert roof replacement in Calgary. Asphalt shingles, flat roof, metal roofing. 15+ years, 4.8\u2605 Google rating, SECOR certified. Free estimate: 403-608-9933.',
+    'Expert roof replacement in Calgary. Asphalt shingles, flat roof, metal roofing. 15+ years, 4.8★ Google rating, SECOR certified. Free estimate: 403-608-9933.',
 };
 
 const serviceSchema = {
@@ -16,8 +18,7 @@ const serviceSchema = {
   name: 'Roof Replacement Calgary',
   provider: { '@type': 'LocalBusiness', name: 'City Roofing & Exteriors' },
   areaServed: 'Calgary, Alberta',
-  description:
-    'Complete residential and commercial roof replacement in Calgary. Asphalt shingles, flat roof, metal roofing.',
+  description: 'Complete residential and commercial roof replacement in Calgary. Asphalt shingles, flat roof, metal roofing.',
 };
 
 const howToSchema = {
@@ -29,8 +30,7 @@ const howToSchema = {
     { '@type': 'HowToStep', name: 'Written Estimate', text: 'You receive a detailed written estimate with material options and pricing.' },
     { '@type': 'HowToStep', name: 'Material Selection', text: 'Choose your preferred shingle style, colour, and manufacturer.' },
     { '@type': 'HowToStep', name: 'Installation Day', text: 'Our SECOR-certified crew completes the replacement, typically in one day.' },
-    { '@type': 'HowToStep', name: 'Cleanup & Inspection', text: 'Full site cleanup and final quality inspection before we leave.' },
-    { '@type': 'HowToStep', name: 'Final Walkthrough & Warranty', text: 'We walk through the finished roof with you and provide all warranty documentation.' },
+    { '@type': 'HowToStep', name: 'Final Walkthrough', text: 'We walk through the finished roof with you and provide all warranty documentation.' },
   ],
 };
 
@@ -69,14 +69,70 @@ const faqItems: FAQItem[] = [
   },
 ];
 
-const steps = [
-  { num: 1, title: 'Free Inspection', desc: 'We conduct a thorough on-site roof inspection at no cost and no obligation.' },
-  { num: 2, title: 'Written Estimate', desc: 'A detailed written estimate with material options, pricing, and timeline.' },
-  { num: 3, title: 'Material Selection', desc: 'Choose your preferred shingle style, colour, and manufacturer from our catalogue.' },
-  { num: 4, title: 'Installation Day', desc: 'Our SECOR-certified crew arrives on schedule and completes the job — typically in one day.' },
-  { num: 5, title: 'Cleanup & Inspection', desc: 'Full magnetic nail sweep, debris removal, and quality inspection before we leave.' },
-  { num: 6, title: 'Final Walkthrough & Warranty', desc: 'We walk through the finished roof with you and hand over all warranty documentation.' },
+const keyPoints: KeyPoint[] = [
+  {
+    iconId: 'shield',
+    title: 'Transparent Pricing',
+    text: 'Written quote before we start. No surprises, no hidden fees. What we quote is what you pay.',
+  },
+  {
+    iconId: 'team',
+    title: 'In-House Crew Only',
+    text: 'Every roofer on your job is our full-time employee. We never subcontract — same team, start to finish.',
+  },
+  {
+    iconId: 'star',
+    title: '15 Years, 3,000+ Projects',
+    text: "Calgary's most experienced local roofer. 158 Google reviews averaging 4.8 stars speaks for itself.",
+  },
 ];
+
+const accordionItems: AccordionItem[] = [
+  {
+    title: 'Asphalt Shingles',
+    bullets: [
+      'Architectural (laminate) and 3-tab shingles from IKO, BP/BMCA, GAF, Owens Corning, CertainTeed, Malarkey',
+      'Class 4 impact-resistant options — reduce insurance premiums by 15–30%',
+      '30–50 year manufacturer warranties on premium products',
+      'Widest range of colours and profiles to match any home style',
+    ],
+  },
+  {
+    title: 'Flat Roof Systems',
+    bullets: [
+      'Torch-on modified bitumen — the most common flat roof system in Calgary',
+      'EPDM rubber membrane — excellent flexibility through freeze-thaw cycles',
+      'All installations include proper drainage slope and edge termination',
+      'Available for residential garages, additions, and commercial flat roofs',
+    ],
+  },
+  {
+    title: 'Metal Roofing',
+    bullets: [
+      'Standing seam and metal shingle systems — last 40–70 years',
+      'Exceptional performance against hail, heavy snow, and chinook winds',
+      'Available in dozens of profiles and colours',
+    ],
+  },
+  {
+    title: 'Class 4 Impact-Resistant Shingles',
+    bullets: [
+      'Highest hail-resistance rating — UL 2218 Class 4 certified',
+      'Calgary averages 15–20 significant hail events per year',
+      'Many Alberta insurers offer 15–30% premium discounts for Class 4',
+    ],
+  },
+];
+
+const steps = [
+  { num: 1, title: 'Free Inspection', desc: 'On-site assessment at no cost or obligation.' },
+  { num: 2, title: 'Written Estimate', desc: 'Detailed quote with material options and pricing.' },
+  { num: 3, title: 'Material Selection', desc: 'Choose shingle style, colour, and manufacturer.' },
+  { num: 4, title: 'Installation Day', desc: 'SECOR-certified crew, typically completed in one day.' },
+  { num: 5, title: 'Final Walkthrough', desc: 'Quality inspection and full warranty documentation.' },
+];
+
+const twoReviews = reviewsData.slice(0, 2);
 
 export default function RoofReplacementPage() {
   return (
@@ -84,153 +140,109 @@ export default function RoofReplacementPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }} />
 
+      {/* Section 1 — Hero */}
       <ServiceHero
         title="Roof Replacement in Calgary"
-        subtitle="Complete residential and commercial reroofing — asphalt shingles, flat roofs, and metal roofing systems."
+        subtitle="Complete re-roofing with premium materials — honest pricing, in-house crew."
         breadcrumb="Services / Roof Replacement"
         breadcrumbPath="/services/roof-replacement"
       />
 
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '72px 24px' }}>
-
-        {/* Quick Answer */}
-        <QuickAnswerBox>
-          City Roofing &amp; Exteriors provides complete roof replacement in Calgary, Alberta. With 15+ years of local
-          experience and 158 Google reviews averaging 4.8 out of 5 stars, we replace asphalt shingle roofs, flat roofs,
-          and metal roofs for residential and commercial properties across all Calgary quadrants. SECOR certified, WCB
-          Alberta registered, BBB Accredited. Call 403-608-9933 for a free on-site estimate.
-        </QuickAnswerBox>
-
-        {/* Materials section */}
-        <section style={{ marginBottom: '72px' }}>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(26px, 3.5vw, 38px)', color: 'var(--color-text-primary)', marginBottom: '36px' }}>
-            Roofing Materials We Install
-          </h2>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            {[
-              {
-                title: 'Asphalt Shingles',
-                body: `Asphalt shingles are the most popular roofing material in Calgary — and for good reason. They balance cost, durability, and aesthetics for Alberta's climate. City Roofing installs 3-tab, architectural (laminate), and premium designer shingles from IKO, BP/BMCA, Malarkey, GAF, Owens Corning, and CertainTeed. For Calgary homeowners, we strongly recommend Class 4 impact-resistant shingles rated for hail resistance. Calgary averages 15–20 significant hail events per year, and impact-resistant shingles can reduce your home insurance premiums by 15–30% depending on your provider. Standard architectural shingles carry 30–50 year manufacturer warranties. We'll walk you through every option at your free inspection.`,
-              },
-              {
-                title: 'Flat Roof Systems',
-                body: `Flat and low-slope roofs require specialized materials and installation techniques. City Roofing installs torch-on modified bitumen — the most common flat roof system in Calgary — as well as EPDM rubber membrane for residential garages, additions, and commercial buildings. Torch-on systems are durable, proven in Alberta winters, and relatively cost-effective. EPDM offers excellent flexibility through freeze-thaw cycles. All flat roof installations include proper drainage slope and edge termination to prevent standing water and ice dam formation.`,
-              },
-              {
-                title: 'Metal Roofing',
-                body: `Metal roofing is the highest-performing option for Calgary homes — lasting 40–70 years with minimal maintenance. Standing seam and metal shingle systems from reputable manufacturers hold up exceptionally well against hail, heavy snow loads, and chinook wind cycles. Metal roofing is now available in dozens of profiles and colours that complement any architectural style. The upfront cost is higher, but the lifecycle cost often beats asphalt by a significant margin. We provide detailed comparison quotes so you can make an informed decision.`,
-              },
-              {
-                title: 'Rubber Roofing',
-                body: `EPDM rubber membrane is an excellent choice for flat and low-slope applications including residential garages, home additions, and low-pitch commercial roofs. It handles Calgary's freeze-thaw cycles exceptionally well, remains flexible in cold temperatures, and is easy to patch if punctured. City Roofing installs fully adhered EPDM systems with manufacturer-backed warranties.`,
-              },
-            ].map((mat) => (
-              <div key={mat.title} style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '32px' }}>
-                <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '22px', color: 'var(--color-text-primary)', marginBottom: '12px' }}>
-                  {mat.title}
-                </h3>
-                <p style={{ color: 'var(--color-text-muted)', fontSize: '16px', lineHeight: 1.8 }}>{mat.body}</p>
-              </div>
-            ))}
+      {/* Section 2 — Quick Answer */}
+      <section style={{ backgroundColor: 'var(--color-cream)', padding: '64px 24px' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <div style={{ borderLeft: '4px solid var(--color-primary)', padding: '32px', backgroundColor: '#FFFFFF' }}>
+            <p style={{ fontSize: '11px', letterSpacing: '2px', color: 'var(--color-primary)', fontFamily: 'var(--font-display)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '12px' }}>
+              Quick Answer
+            </p>
+            <p style={{ color: 'var(--color-text-dark)', fontSize: '16px', lineHeight: 1.7 }}>
+              City Roofing &amp; Exteriors provides complete roof replacement in Calgary, Alberta. With 15+ years of
+              local experience and 158 Google reviews averaging 4.8 stars, we replace asphalt shingle roofs, flat roofs,
+              and metal roofs for residential and commercial properties. SECOR certified, WCB Alberta registered.
+              Call 403-608-9933 for a free on-site estimate.
+            </p>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Process section */}
-        <section style={{ marginBottom: '72px' }}>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(26px, 3.5vw, 38px)', color: 'var(--color-text-primary)', marginBottom: '36px' }}>
+      {/* Section 3 — Key Points */}
+      <KeyPoints points={keyPoints} />
+
+      {/* Section 4 — Accordion */}
+      <Accordion items={accordionItems} heading="Materials & Options" />
+
+      {/* Section 5 — Process Steps */}
+      <section style={{ backgroundColor: 'var(--color-cream-dark)', padding: '80px 24px', overflow: 'hidden' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(24px, 3vw, 36px)', color: 'var(--color-text-dark)', marginBottom: '56px', textAlign: 'center' }}>
             Our Roof Replacement Process
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+          <div className="process-steps-row" style={{ display: 'flex', justifyContent: 'space-between', position: 'relative', gap: '16px' }}>
+            <div className="process-line-h" />
             {steps.map((step) => (
-              <div
-                key={step.num}
-                style={{
-                  backgroundColor: 'var(--color-surface)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '6px',
-                  padding: '28px',
-                }}
-              >
-                <div
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',
-                    backgroundColor: 'var(--color-primary)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontFamily: 'var(--font-display)',
-                    fontWeight: 800,
-                    fontSize: '16px',
-                    color: '#fff',
-                    marginBottom: '16px',
-                    flexShrink: 0,
-                  }}
-                >
+              <div key={step.num} className="process-step" style={{ flex: 1, textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                <div style={{ width: '52px', height: '52px', backgroundColor: 'var(--color-primary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '18px', color: '#fff' }}>
                   {step.num}
                 </div>
-                <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '18px', color: 'var(--color-text-primary)', marginBottom: '8px' }}>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '15px', color: 'var(--color-text-dark)', marginBottom: '8px' }}>
                   {step.title}
                 </h3>
-                <p style={{ color: 'var(--color-text-muted)', fontSize: '14px', lineHeight: 1.7 }}>{step.desc}</p>
+                <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '13px', lineHeight: 1.6 }}>{step.desc}</p>
               </div>
             ))}
           </div>
-        </section>
+        </div>
+        <style>{`
+          .process-line-h {
+            position: absolute;
+            top: 26px;
+            left: calc(10% + 26px);
+            right: calc(10% + 26px);
+            height: 2px;
+            background: repeating-linear-gradient(90deg, var(--color-primary) 0, var(--color-primary) 8px, transparent 8px, transparent 18px);
+            z-index: 0;
+          }
+          @media (max-width: 768px) {
+            .process-steps-row { flex-direction: column !important; align-items: center; gap: 32px !important; }
+            .process-line-h { display: none; }
+            .process-step { width: 100%; max-width: 280px; }
+          }
+        `}</style>
+      </section>
 
-        {/* Areas served */}
-        <section style={{ marginBottom: '72px', backgroundColor: 'var(--color-surface)', borderRadius: '6px', padding: '36px 40px', border: '1px solid var(--color-border)' }}>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '26px', color: 'var(--color-text-primary)', marginBottom: '16px' }}>
-            Areas We Serve
+      {/* Section 6 — Reviews */}
+      <section style={{ backgroundColor: '#FFFFFF', padding: '80px 24px' }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(22px, 3vw, 32px)', color: 'var(--color-text-dark)', marginBottom: '40px', textAlign: 'center' }}>
+            What Calgary Homeowners Say
           </h2>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '16px', lineHeight: 1.8 }}>
-            City Roofing &amp; Exteriors provides roof replacement services across all Calgary quadrants —
-            NE Calgary, NW Calgary, SE Calgary, and SW Calgary — as well as surrounding communities including
-            Airdrie, Cochrane, Chestermere, and Okotoks. If you're unsure whether we service your area,
-            call us at 403-608-9933.
-          </p>
-        </section>
-
-        {/* Recent projects */}
-        <section style={{ marginBottom: '72px' }}>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(26px, 3.5vw, 38px)', color: 'var(--color-text-primary)', marginBottom: '28px' }}>
-            Recent Roof Replacement Projects
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-            {[
-              { label: 'Before & After', area: 'NE Calgary — Asphalt Shingles' },
-              { label: 'Before & After', area: 'NW Calgary — Metal Roofing' },
-              { label: 'Before & After', area: 'SE Calgary — Flat Roof EPDM' },
-            ].map((proj, i) => (
-              <div
-                key={i}
-                style={{
-                  backgroundColor: '#1E1E1E',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '6px',
-                  aspectRatio: '4/3',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                }}
-              >
-                {/* TODO: Replace with real project photos */}
-                <p style={{ color: '#2A2A2A', fontFamily: 'var(--font-display)', fontSize: '12px', letterSpacing: '2px' }}>
-                  Project Photo — {proj.label}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+            {twoReviews.map((review) => (
+              <div key={review.id} style={{ border: '1px solid var(--color-border-light)', borderRadius: '6px', padding: '28px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+                <div style={{ display: 'flex', gap: '3px', marginBottom: '16px' }}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <svg key={i} width="16" height="16" viewBox="0 0 24 24" fill={i < review.rating ? '#F5A623' : '#E5E0D8'}>
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                  ))}
+                </div>
+                <p style={{ color: 'var(--color-text-dark)', fontSize: '15px', lineHeight: 1.6, marginBottom: '16px' }}>
+                  &ldquo;{review.text}&rdquo;
                 </p>
-                <p style={{ color: '#2A2A2A', fontSize: '12px' }}>{proj.area}</p>
+                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '14px', color: 'var(--color-text-dark)' }}>
+                  {review.name}
+                </div>
               </div>
             ))}
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
 
-      <FAQSection items={faqItems} title="Roof Replacement FAQ" />
+      {/* Section 7 — CTA */}
       <ServiceCTA headline="Ready for a New Roof?" subtext="Free inspection. Honest estimate. No pressure." />
+
+      {/* FAQ */}
+      <FAQSection items={faqItems} title="Roof Replacement FAQ" />
     </div>
   );
 }

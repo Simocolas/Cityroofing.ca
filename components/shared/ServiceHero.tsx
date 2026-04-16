@@ -64,7 +64,7 @@ export default function ServiceHero({ title, subtitle, breadcrumb, breadcrumbPat
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 50%, #0F0F0F 100%)',
+            background: 'linear-gradient(135deg, var(--color-base) 0%, var(--color-surface) 50%, var(--color-base) 100%)',
             opacity: 0.8,
           }}
         />

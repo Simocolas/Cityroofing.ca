@@ -152,6 +152,12 @@ export default async function NewsPostPage({ params }: PageProps) {
         </div>
       </header>
 
+      {/* Red divider */}
+      <div style={{ height: '3px', backgroundColor: 'var(--color-primary)', width: '100%' }} />
+
+      {/* Cream zone — everything below header */}
+      <div style={{ backgroundColor: 'var(--color-cream)' }}>
+
       {/* Featured image */}
       {frontmatter.featuredImage && (
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 24px' }}>
@@ -183,10 +189,10 @@ export default async function NewsPostPage({ params }: PageProps) {
           <p
             style={{
               marginTop: '40px',
-              color: 'var(--color-text-muted)',
+              color: 'var(--color-text-dark-muted)',
               fontSize: '13px',
               fontStyle: 'italic',
-              borderLeft: '3px solid var(--color-border)',
+              borderLeft: '3px solid var(--color-border-light)',
               paddingLeft: '16px',
             }}
           >
@@ -196,13 +202,13 @@ export default async function NewsPostPage({ params }: PageProps) {
 
         {/* FAQ Section */}
         {frontmatter.faqItems?.length > 0 && (
-          <section style={{ marginTop: '64px', borderTop: '1px solid var(--color-border)', paddingTop: '48px' }}>
+          <section style={{ marginTop: '64px', borderTop: '1px solid var(--color-border-light)', paddingTop: '48px' }}>
             <h2
               style={{
                 fontFamily: 'var(--font-display)',
                 fontWeight: 800,
                 fontSize: 'clamp(24px, 3vw, 36px)',
-                color: 'var(--color-text-primary)',
+                color: 'var(--color-text-dark)',
                 marginBottom: '32px',
               }}
             >
@@ -213,8 +219,8 @@ export default async function NewsPostPage({ params }: PageProps) {
                 <div
                   key={i}
                   style={{
-                    backgroundColor: 'var(--color-surface)',
-                    border: '1px solid var(--color-border)',
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid var(--color-border-light)',
                     borderRadius: '6px',
                     padding: '24px',
                   }}
@@ -224,13 +230,13 @@ export default async function NewsPostPage({ params }: PageProps) {
                       fontFamily: 'var(--font-display)',
                       fontWeight: 700,
                       fontSize: '17px',
-                      color: 'var(--color-text-primary)',
+                      color: 'var(--color-text-dark)',
                       marginBottom: '12px',
                     }}
                   >
                     {item.q}
                   </h3>
-                  <p style={{ color: 'var(--color-text-muted)', fontSize: '15px', lineHeight: 1.7 }}>
+                  <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '15px', lineHeight: 1.7 }}>
                     {item.a}
                   </p>
                 </div>
@@ -304,13 +310,13 @@ export default async function NewsPostPage({ params }: PageProps) {
 
         {/* Related posts */}
         {related.length > 0 && (
-          <section style={{ marginTop: '64px', borderTop: '1px solid var(--color-border)', paddingTop: '48px' }}>
+          <section style={{ marginTop: '64px', borderTop: '1px solid var(--color-border-light)', paddingTop: '48px' }}>
             <h2
               style={{
                 fontFamily: 'var(--font-display)',
                 fontWeight: 800,
                 fontSize: '24px',
-                color: 'var(--color-text-primary)',
+                color: 'var(--color-text-dark)',
                 marginBottom: '28px',
               }}
             >
@@ -333,8 +339,8 @@ export default async function NewsPostPage({ params }: PageProps) {
                   >
                     <div
                       style={{
-                        backgroundColor: 'var(--color-surface)',
-                        border: '1px solid var(--color-border)',
+                        backgroundColor: '#FFFFFF',
+                        border: '1px solid var(--color-border-light)',
                         borderRadius: '6px',
                         padding: '20px',
                         transition: 'border-color 150ms ease-out',
@@ -362,7 +368,7 @@ export default async function NewsPostPage({ params }: PageProps) {
                           fontFamily: 'var(--font-display)',
                           fontWeight: 700,
                           fontSize: '14px',
-                          color: 'var(--color-text-primary)',
+                          color: 'var(--color-text-dark)',
                           lineHeight: 1.4,
                         }}
                       >
@@ -381,7 +387,7 @@ export default async function NewsPostPage({ params }: PageProps) {
           <Link
             href="/news"
             style={{
-              color: 'var(--color-text-muted)',
+              color: 'var(--color-text-dark-muted)',
               textDecoration: 'none',
               fontSize: '14px',
               fontFamily: 'var(--font-display)',
@@ -392,12 +398,14 @@ export default async function NewsPostPage({ params }: PageProps) {
         </div>
       </div>
 
+      </div>{/* end cream zone */}
+
       <style>{`
         .prose-dark h2 {
           font-family: var(--font-display);
           font-weight: 800;
           font-size: clamp(22px, 3vw, 30px);
-          color: var(--color-text-primary);
+          color: var(--color-text-dark);
           margin-top: 48px;
           margin-bottom: 16px;
           line-height: 1.3;
@@ -406,18 +414,18 @@ export default async function NewsPostPage({ params }: PageProps) {
           font-family: var(--font-display);
           font-weight: 700;
           font-size: 20px;
-          color: var(--color-text-primary);
+          color: var(--color-text-dark);
           margin-top: 32px;
           margin-bottom: 12px;
         }
         .prose-dark p {
-          color: var(--color-text-muted);
+          color: var(--color-text-dark-muted);
           font-size: 16px;
           line-height: 1.8;
           margin-bottom: 20px;
         }
         .prose-dark ul, .prose-dark ol {
-          color: var(--color-text-muted);
+          color: var(--color-text-dark-muted);
           font-size: 16px;
           line-height: 1.8;
           margin-bottom: 20px;
@@ -429,7 +437,7 @@ export default async function NewsPostPage({ params }: PageProps) {
           text-decoration: underline;
         }
         .prose-dark strong {
-          color: var(--color-text-primary);
+          color: var(--color-text-dark);
           font-weight: 700;
         }
       `}</style>
@@ -447,8 +455,8 @@ function ShareBar({ title }: { title: string }) {
         alignItems: 'center',
         gap: '12px',
         padding: '16px 0',
-        borderTop: '1px solid var(--color-border)',
-        borderBottom: '1px solid var(--color-border)',
+        borderTop: '1px solid var(--color-border-light)',
+        borderBottom: '1px solid var(--color-border-light)',
       }}
     >
       <span
@@ -456,7 +464,7 @@ function ShareBar({ title }: { title: string }) {
           fontFamily: 'var(--font-display)',
           fontWeight: 700,
           fontSize: '13px',
-          color: 'var(--color-text-muted)',
+          color: 'var(--color-text-dark-muted)',
           letterSpacing: '0.5px',
         }}
       >
@@ -478,8 +486,8 @@ function CopyLinkButton({ title: _title }: { title: string }) {
       style={{
         padding: '6px 16px',
         borderRadius: '4px',
-        border: '1px solid var(--color-border)',
-        color: 'var(--color-text-muted)',
+        border: '1px solid var(--color-border-light)',
+        color: 'var(--color-text-dark-muted)',
         fontFamily: 'var(--font-display)',
         fontWeight: 600,
         fontSize: '12px',

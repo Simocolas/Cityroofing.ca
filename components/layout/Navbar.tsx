@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -15,6 +16,8 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -77,26 +80,34 @@ export default function Navbar() {
             }}
             className="desktop-nav"
           >
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  style={{
-                    color: 'var(--color-text-primary)',
-                    textDecoration: 'none',
-                    fontFamily: 'var(--font-display)',
-                    fontWeight: 700,
-                    fontSize: '18px',
-                    letterSpacing: '0.3px',
-                    transition: 'color 150ms ease-out',
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-accent)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-text-primary)')}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              const isHovered = hoveredItem === link.href;
+              const showBorder = hoveredItem !== null ? isHovered : isActive;
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="nav-link"
+                    onMouseEnter={() => setHoveredItem(link.href)}
+                    onMouseLeave={() => setHoveredItem(null)}
+                    style={{
+                      borderColor: showBorder
+                        ? isHovered ? 'rgba(179,32,32,0.6)' : 'rgba(179,32,32,0.4)'
+                        : 'transparent',
+                      backgroundImage: isHovered
+                        ? 'linear-gradient(105deg, transparent 40%, rgba(179,32,32,0.15) 50%, transparent 60%)'
+                        : 'none',
+                      backgroundColor: !isHovered && showBorder ? 'rgba(179,32,32,0.08)' : 'transparent',
+                      backgroundSize: '200% 100%',
+                      animation: isHovered ? 'shimmer 600ms ease-out forwards' : 'none',
+                    }}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
 
           {/* Right: phone + CTA */}
@@ -104,11 +115,11 @@ export default function Navbar() {
             <a
               href="tel:403-608-9933"
               style={{
-                color: 'var(--color-accent)',
+                color: '#F9F7F2',
                 textDecoration: 'none',
                 fontFamily: 'var(--font-display)',
-                fontWeight: 700,
-                fontSize: '15px',
+                fontWeight: 800,
+                fontSize: '17px',
                 letterSpacing: '0.5px',
                 transition: 'opacity 150ms ease-out',
               }}
@@ -154,9 +165,9 @@ export default function Navbar() {
               gap: '5px',
             }}
           >
-            <span style={{ display: 'block', width: '24px', height: '2px', backgroundColor: 'var(--color-text-primary)', transition: 'transform 300ms ease-out, opacity 300ms ease-out', transform: menuOpen ? 'translateY(7px) rotate(45deg)' : 'none' }} />
-            <span style={{ display: 'block', width: '24px', height: '2px', backgroundColor: 'var(--color-text-primary)', transition: 'opacity 300ms ease-out', opacity: menuOpen ? 0 : 1 }} />
-            <span style={{ display: 'block', width: '24px', height: '2px', backgroundColor: 'var(--color-text-primary)', transition: 'transform 300ms ease-out, opacity 300ms ease-out', transform: menuOpen ? 'translateY(-7px) rotate(-45deg)' : 'none' }} />
+            <span style={{ display: 'block', width: '24px', height: '2px', backgroundColor: '#F9F7F2', transition: 'transform 300ms ease-out, opacity 300ms ease-out', transform: menuOpen ? 'translateY(7px) rotate(45deg)' : 'none' }} />
+            <span style={{ display: 'block', width: '24px', height: '2px', backgroundColor: '#F9F7F2', transition: 'opacity 300ms ease-out', opacity: menuOpen ? 0 : 1 }} />
+            <span style={{ display: 'block', width: '24px', height: '2px', backgroundColor: '#F9F7F2', transition: 'transform 300ms ease-out, opacity 300ms ease-out', transform: menuOpen ? 'translateY(-7px) rotate(-45deg)' : 'none' }} />
           </button>
         </nav>
       </header>
@@ -167,7 +178,7 @@ export default function Navbar() {
           position: 'fixed',
           inset: 0,
           zIndex: 99,
-          backgroundColor: '#0F0F0F',
+          backgroundColor: 'var(--color-base)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -184,7 +195,7 @@ export default function Navbar() {
             href={link.href}
             onClick={() => setMenuOpen(false)}
             style={{
-              color: 'var(--color-text-primary)',
+              color: '#F9F7F2',
               textDecoration: 'none',
               fontFamily: 'var(--font-display)',
               fontWeight: 800,
@@ -193,7 +204,7 @@ export default function Navbar() {
               transition: 'color 150ms ease-out',
             }}
             onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-accent)')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-text-primary)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = '#F9F7F2')}
           >
             {link.label}
           </Link>
@@ -211,6 +222,26 @@ export default function Navbar() {
       </div>
 
       <style>{`
+        @keyframes shimmer {
+          from { background-position: 200% center; }
+          to   { background-position: -200% center; }
+        }
+        .nav-link {
+          color: #F9F7F2;
+          text-decoration: none;
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: 18px;
+          letter-spacing: 0.3px;
+          border: 1px solid transparent;
+          border-radius: 6px;
+          padding: 6px 14px;
+          background-color: transparent;
+          background-image: none;
+          background-size: 200% 100%;
+          transition: border-color 200ms ease-out;
+          display: inline-block;
+        }
         @media (max-width: 768px) {
           .desktop-nav { display: none !important; }
           .hamburger { display: flex !important; }

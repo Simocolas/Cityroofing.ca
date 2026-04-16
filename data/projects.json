@@ -9,7 +9,8 @@
     "completedDate": "2026-01-15",
     "images": [],
     "beforeImage": "",
-    "afterImage": "",
+    "afterImage": "/images/projects/residential.webp",
+    "image": "/images/projects/residential.webp",
     "featured": true
   },
   {
@@ -22,7 +23,8 @@
     "completedDate": "2026-02-10",
     "images": [],
     "beforeImage": "",
-    "afterImage": "",
+    "afterImage": "/images/projects/siding.jpg",
+    "image": "/images/projects/siding.jpg",
     "featured": true
   },
   {
@@ -35,7 +37,8 @@
     "completedDate": "2026-01-28",
     "images": [],
     "beforeImage": "",
-    "afterImage": "",
+    "afterImage": "/images/projects/Commercial.jpeg",
+    "image": "/images/projects/Commercial.jpeg",
     "featured": true
   },
   {
@@ -48,7 +51,8 @@
     "completedDate": "2026-03-05",
     "images": [],
     "beforeImage": "",
-    "afterImage": "",
+    "afterImage": "/images/projects/Repair.jpeg",
+    "image": "/images/projects/Repair.jpeg",
     "featured": true
   }
 ]

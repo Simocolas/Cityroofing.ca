@@ -2,40 +2,39 @@
 
 interface Brand {
   name: string;
-  url: string;
+  file?: string; // undefined = text fallback (BP/BMCA)
 }
 
 const row1: Brand[] = [
-  { name: 'IKO',           url: 'https://www.iko.com/glob/wp-content/themes/iko/images/logo.svg' },
-  { name: 'BP/BMCA',       url: 'https://www.bpcan.com/sites/default/files/bp-logo.png' },
-  { name: 'GAF',           url: 'https://www.gaf.com/resources/images/gaf-logo.svg' },
-  { name: 'Owens Corning', url: 'https://www.owenscorning.com/assets/images/logos/oc-logo.svg' },
-  { name: 'CertainTeed',   url: 'https://www.certainteed.com/assets/images/ct-logo.png' },
-  { name: 'Malarkey',      url: 'https://malarkeyroofing.com/wp-content/uploads/malarkey-logo.svg' },
+  { name: 'IKO',           file: 'IKO_North_America_id-Gcp3zAE_0.png' },
+  { name: 'BP/BMCA' },
+  { name: 'GAF',           file: 'GAF_idwV3yC-uN_0.png' },
+  { name: 'Owens Corning', file: 'Owens_Corning_idYxCkwbXS_0.png' },
+  { name: 'CertainTeed',   file: 'CertainTeed_idQRzni0ix_1.png' },
+  { name: 'Malarkey',      file: 'Malarkey_Roofing_Products_id17PI6HKC_0.png' },
   // Duplicate for seamless scroll
-  { name: 'IKO',           url: 'https://www.iko.com/glob/wp-content/themes/iko/images/logo.svg' },
-  { name: 'BP/BMCA',       url: 'https://www.bpcan.com/sites/default/files/bp-logo.png' },
-  { name: 'GAF',           url: 'https://www.gaf.com/resources/images/gaf-logo.svg' },
-  { name: 'Owens Corning', url: 'https://www.owenscorning.com/assets/images/logos/oc-logo.svg' },
-  { name: 'CertainTeed',   url: 'https://www.certainteed.com/assets/images/ct-logo.png' },
-  { name: 'Malarkey',      url: 'https://malarkeyroofing.com/wp-content/uploads/malarkey-logo.svg' },
+  { name: 'IKO',           file: 'IKO_North_America_id-Gcp3zAE_0.png' },
+  { name: 'BP/BMCA' },
+  { name: 'GAF',           file: 'GAF_idwV3yC-uN_0.png' },
+  { name: 'Owens Corning', file: 'Owens_Corning_idYxCkwbXS_0.png' },
+  { name: 'CertainTeed',   file: 'CertainTeed_idQRzni0ix_1.png' },
+  { name: 'Malarkey',      file: 'Malarkey_Roofing_Products_id17PI6HKC_0.png' },
 ];
 
 const row2: Brand[] = [
-  { name: 'Kaycan',                  url: 'https://www.kaycan.com/wp-content/uploads/kaycan-logo.png' },
-  { name: 'Royal Building Products', url: 'https://www.royalbuildingproducts.com/images/royal-logo.png' },
-  { name: 'Gentek',                  url: 'https://www.gentekcorp.com/wp-content/uploads/gentek-logo.png' },
-  { name: 'Ply Gem',                 url: 'https://www.plygem.com/wp-content/themes/plygem/images/logo.svg' },
-  { name: 'MITTEN',                  url: 'https://www.mittensiding.com/wp-content/uploads/mitten-logo.png' },
+  { name: 'Kaycan',                  file: 'Kaycan_id3_8YvC6L_1.png' },
+  { name: 'Royal Building Products', file: 'Westlake_Royal_Building_Products_idZ2GoSO-E_0.jpeg' },
+  { name: 'Gentek',                  file: 'Gentek_Building_Products_idzufTCWwO_0.jpeg' },
+  { name: 'Ply Gem',                 file: 'Ply_Gem_idymUAG1SF_2.jpeg' },
+  { name: 'MITTEN',                  file: 'Mitten_Badge.png' },
   // Duplicate for seamless scroll
-  { name: 'Kaycan',                  url: 'https://www.kaycan.com/wp-content/uploads/kaycan-logo.png' },
-  { name: 'Royal Building Products', url: 'https://www.royalbuildingproducts.com/images/royal-logo.png' },
-  { name: 'Gentek',                  url: 'https://www.gentekcorp.com/wp-content/uploads/gentek-logo.png' },
-  { name: 'Ply Gem',                 url: 'https://www.plygem.com/wp-content/themes/plygem/images/logo.svg' },
-  { name: 'MITTEN',                  url: 'https://www.mittensiding.com/wp-content/uploads/mitten-logo.png' },
+  { name: 'Kaycan',                  file: 'Kaycan_id3_8YvC6L_1.png' },
+  { name: 'Royal Building Products', file: 'Westlake_Royal_Building_Products_idZ2GoSO-E_0.jpeg' },
+  { name: 'Gentek',                  file: 'Gentek_Building_Products_idzufTCWwO_0.jpeg' },
+  { name: 'Ply Gem',                 file: 'Ply_Gem_idymUAG1SF_2.jpeg' },
+  { name: 'MITTEN',                  file: 'Mitten_Badge.png' },
 ];
 
-const certs = ['SECOR CERTIFIED', 'WCB ALBERTA', 'BBB ACCREDITED'];
 
 function BrandLogo({ brand }: { brand: Brand }) {
   return (
@@ -49,42 +48,43 @@ function BrandLogo({ brand }: { brand: Brand }) {
       }}
       className="brand-logo-item"
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={brand.url}
-        alt={brand.name}
-        style={{
-          height: '40px',
-          width: 'auto',
-          objectFit: 'contain',
-          filter: 'grayscale(100%) brightness(150%)',
-          transition: 'filter 400ms ease-out',
-          display: 'block',
-        }}
-        onMouseEnter={(e) => { (e.currentTarget as HTMLImageElement).style.filter = 'grayscale(0%) brightness(100%)'; }}
-        onMouseLeave={(e) => { (e.currentTarget as HTMLImageElement).style.filter = 'grayscale(100%) brightness(150%)'; }}
-        onError={(e) => {
-          const img = e.currentTarget as HTMLImageElement;
-          img.style.display = 'none';
-          const fallback = img.nextSibling as HTMLElement | null;
-          if (fallback) fallback.style.display = 'block';
-        }}
-      />
-      {/* Fallback text — hidden unless image fails */}
-      <span
-        style={{
-          display: 'none',
-          fontFamily: 'var(--font-display)',
-          fontWeight: 700,
-          fontSize: '16px',
-          letterSpacing: '1px',
-          color: 'var(--color-text-muted)',
-          opacity: 0.5,
-          whiteSpace: 'nowrap',
-        }}
-      >
-        {brand.name}
-      </span>
+      {brand.file ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={`/images/Partners/logo/${brand.file}`}
+          alt={brand.name}
+          style={{
+            height: '40px',
+            width: 'auto',
+            objectFit: 'contain',
+            filter: 'grayscale(100%)',
+            opacity: 0.6,
+            transition: 'all 300ms ease',
+          }}
+          onMouseEnter={(e) => {
+            (e.target as HTMLImageElement).style.filter = 'grayscale(0%)';
+            (e.target as HTMLImageElement).style.opacity = '1';
+          }}
+          onMouseLeave={(e) => {
+            (e.target as HTMLImageElement).style.filter = 'grayscale(100%)';
+            (e.target as HTMLImageElement).style.opacity = '0.6';
+          }}
+        />
+      ) : (
+        <span
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontWeight: 700,
+            fontSize: '16px',
+            letterSpacing: '1px',
+            color: 'var(--color-text-dark-muted)',
+            opacity: 0.5,
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {brand.name}
+        </span>
+      )}
     </div>
   );
 }
@@ -111,14 +111,14 @@ function ScrollRow({ items, duration, reverse }: { items: Brand[]; duration: num
 
 export default function LogoScroller() {
   return (
-    <section style={{ backgroundColor: 'var(--color-base)', padding: '80px 0', overflow: 'hidden' }}>
+    <section style={{ backgroundColor: 'var(--color-cream-dark)', padding: '80px 0', overflow: 'hidden' }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px', marginBottom: '48px', textAlign: 'center' }}>
         <h2
           style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 800,
             fontSize: 'clamp(24px, 3vw, 36px)',
-            color: 'var(--color-text-primary)',
+            color: 'var(--color-text-dark)',
           }}
         >
           Trusted Materials &amp; Partners
@@ -131,31 +131,24 @@ export default function LogoScroller() {
       </div>
 
       {/* Certification badges */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '16px',
-          flexWrap: 'wrap',
-          padding: '0 24px',
-        }}
-      >
-        {certs.map((cert) => (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '80px', flexWrap: 'wrap', padding: '24px 0', marginTop: '40px' }}>
+        {[
+          { src: '/images/Partners/3/SeCOR-transparent.png', alt: 'SECOR Certified', size: 120 },
+          { src: '/images/Partners/3/WCB-transparent.png',   alt: 'WCB Alberta',     size: 120 },
+          { src: '/images/Partners/3/BBB-transparent.png',   alt: 'BBB Accredited',  size: 160 },
+        ].map((badge) => (
           <div
-            key={cert}
-            style={{
-              border: '1px solid var(--color-border)',
-              borderRadius: '999px',
-              padding: '10px 24px',
-              fontFamily: 'var(--font-display)',
-              fontWeight: 700,
-              fontSize: '12px',
-              letterSpacing: '2px',
-              color: 'var(--color-text-muted)',
-              textTransform: 'uppercase',
-            }}
+            key={badge.alt}
+            style={{ width: `${badge.size}px`, height: `${badge.size}px`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
           >
-            {cert}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={badge.src}
+              alt={badge.alt}
+              style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', objectFit: 'contain', filter: 'grayscale(100%)', opacity: 0.7, transition: 'all 300ms ease' }}
+              onMouseEnter={(e) => { e.currentTarget.style.filter = 'grayscale(0%)'; e.currentTarget.style.opacity = '1'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.filter = 'grayscale(100%)'; e.currentTarget.style.opacity = '0.7'; }}
+            />
           </div>
         ))}
       </div>
@@ -178,9 +171,6 @@ export default function LogoScroller() {
         .logo-row-wrapper:hover .logo-scroll,
         .logo-row-wrapper:hover .logo-scroll-reverse {
           animation-play-state: paused;
-        }
-        .brand-logo-item img:hover {
-          filter: grayscale(0%) brightness(100%);
         }
       `}</style>
     </section>

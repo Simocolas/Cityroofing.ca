@@ -63,11 +63,11 @@ export default function Footer() {
         {/* Col 1: Logo + tagline + socials */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <Image
-            src="/images/logo.png"
+            src="/images/logo-transparent.png"
             alt="City Roofing & Exteriors"
-            width={150}
-            height={44}
-            style={{ filter: 'brightness(0) invert(1)', objectFit: 'contain', objectPosition: 'left' }}
+            width={120}
+            height={80}
+            style={{ objectFit: 'contain', objectPosition: 'left', width: 'auto', height: '80px' }}
           />
           <p style={{ color: 'var(--color-text-muted)', fontSize: '14px', lineHeight: '1.6', maxWidth: '220px' }}>
             Calgary's trusted roofing contractor since 2009.

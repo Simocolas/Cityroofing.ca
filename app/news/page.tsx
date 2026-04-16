@@ -51,15 +51,20 @@ export default function NewsPage() {
         </p>
       </div>
 
-      {/* Posts grid with filters */}
-      <div
-        style={{
-          maxWidth: '1280px',
-          margin: '0 auto',
-          padding: '64px 24px',
-        }}
-      >
-        <NewsGrid posts={posts} />
+      {/* Red divider */}
+      <div style={{ height: '4px', backgroundColor: 'var(--color-primary)', width: '100%' }} />
+
+      {/* Posts grid — cream zone */}
+      <div style={{ backgroundColor: 'var(--color-cream)' }}>
+        <div
+          style={{
+            maxWidth: '1280px',
+            margin: '0 auto',
+            padding: '64px 24px',
+          }}
+        >
+          <NewsGrid posts={posts} />
+        </div>
       </div>
     </div>
   );

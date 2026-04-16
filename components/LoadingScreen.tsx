@@ -142,7 +142,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
   const glowVariants = {
     idle:  { filter: 'drop-shadow(0 0 0px rgba(139,26,26,0))' },
-    pulse: { filter: ['drop-shadow(0 0 8px rgba(139,26,26,0.4))', 'drop-shadow(0 0 24px rgba(139,26,26,0.8))', 'drop-shadow(0 0 8px rgba(139,26,26,0.4))'] },
+    pulse: { filter: ['drop-shadow(0 0 6px rgba(139,26,26,0.3))', 'drop-shadow(0 0 18px rgba(139,26,26,0.6))', 'drop-shadow(0 0 6px rgba(139,26,26,0.3))'] },
   };
 
   return (
@@ -160,7 +160,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
         position: 'fixed',
         inset: 0,
         zIndex: 9999,
-        backgroundColor: '#0F0F0F',
+        backgroundColor: '#F9F7F2',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -214,7 +214,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
             }}
           >
             <Image
-              src="/images/logo-transparent.png"
+              src="/images/CityRoofing Black.png"
               alt="City Roofing & Exteriors"
               width={GRID_W}
               height={GRID_H}
@@ -244,7 +244,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
             fontFamily: "'Montserrat', sans-serif",
             fontSize: '11px',
             letterSpacing: '3px',
-            color: 'rgba(255,255,255,0.4)',
+            color: 'rgba(26,26,26,0.4)',
             textTransform: 'uppercase',
           }}
         >
@@ -254,7 +254,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
           style={{
             width: '200px',
             height: '2px',
-            backgroundColor: 'rgba(255,255,255,0.1)',
+            backgroundColor: 'rgba(26,26,26,0.1)',
             borderRadius: '1px',
             overflow: 'hidden',
           }}

@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { PostMeta } from '@/lib/mdx';
 
 const POSTS_PER_PAGE = 9;
@@ -38,6 +37,18 @@ function CategoryBadge({ category }: { category: string }) {
   );
 }
 
+const CATEGORY_IMAGES: Record<string, string> = {
+  tips:     'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=80',
+  calgary:  'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=600&q=80',
+  industry: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80',
+};
+const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80';
+
+function getCardImage(post: PostMeta): string {
+  if (post.frontmatter.featuredImage) return post.frontmatter.featuredImage;
+  return CATEGORY_IMAGES[post.frontmatter.category] ?? FALLBACK_IMAGE;
+}
+
 function NewsCard({ post }: { post: PostMeta }) {
   const excerpt =
     post.frontmatter.excerpt.length > 120
@@ -47,8 +58,8 @@ function NewsCard({ post }: { post: PostMeta }) {
   return (
     <article
       style={{
-        backgroundColor: 'var(--color-surface)',
-        border: '1px solid var(--color-border)',
+        backgroundColor: '#FFFFFF',
+        border: '1px solid var(--color-border-light)',
         borderRadius: '6px',
         overflow: 'hidden',
         display: 'flex',
@@ -57,37 +68,28 @@ function NewsCard({ post }: { post: PostMeta }) {
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)';
-        (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 40px rgba(0,0,0,0.4)';
+        (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)';
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
         (e.currentTarget as HTMLElement).style.boxShadow = 'none';
       }}
     >
-      {/* Featured image or placeholder */}
-      {post.frontmatter.featuredImage ? (
-        <div style={{ position: 'relative', height: '180px', flexShrink: 0 }}>
-          <Image
-            src={post.frontmatter.featuredImage}
-            alt={post.frontmatter.imageAlt ?? post.frontmatter.title}
-            fill
-            style={{ objectFit: 'cover' }}
-          />
-        </div>
-      ) : (
-        <div
-          style={{
-            height: '180px',
-            backgroundColor: '#111',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-          }}
-        >
-          <span style={{ fontSize: '32px', opacity: 0.2 }}>🏠</span>
-        </div>
-      )}
+      {/* Featured image */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={getCardImage(post)}
+        alt={post.frontmatter.imageAlt ?? post.frontmatter.title}
+        onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80'; }}
+        style={{
+          height: '200px',
+          width: '100%',
+          objectFit: 'cover',
+          borderRadius: '8px 8px 0 0',
+          flexShrink: 0,
+          display: 'block',
+        }}
+      />
 
       <div style={{ padding: '20px 24px 28px', display: 'flex', flexDirection: 'column', flex: 1 }}>
         <div style={{ marginBottom: '14px' }}>
@@ -99,7 +101,7 @@ function NewsCard({ post }: { post: PostMeta }) {
             fontFamily: 'var(--font-display)',
             fontWeight: 800,
             fontSize: '18px',
-            color: 'var(--color-text-primary)',
+            color: 'var(--color-text-dark)',
             lineHeight: 1.3,
             marginBottom: '10px',
           }}
@@ -109,7 +111,7 @@ function NewsCard({ post }: { post: PostMeta }) {
 
         <p
           style={{
-            color: 'var(--color-text-muted)',
+            color: 'var(--color-text-dark-muted)',
             fontSize: '14px',
             lineHeight: 1.6,
             marginBottom: '16px',
@@ -124,7 +126,7 @@ function NewsCard({ post }: { post: PostMeta }) {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            borderTop: '1px solid var(--color-border)',
+            borderTop: '1px solid var(--color-border-light)',
             paddingTop: '14px',
           }}
         >
@@ -191,9 +193,9 @@ export default function NewsGrid({ posts }: { posts: PostMeta[] }) {
               style={{
                 padding: '8px 20px',
                 borderRadius: '4px',
-                border: isActive ? '1px solid var(--color-accent)' : '1px solid var(--color-border)',
+                border: isActive ? '1px solid var(--color-accent)' : '1px solid var(--color-border-light)',
                 backgroundColor: isActive ? 'var(--color-accent)' : 'transparent',
-                color: isActive ? '#fff' : 'var(--color-text-muted)',
+                color: isActive ? '#fff' : 'var(--color-text-dark-muted)',
                 fontFamily: 'var(--font-display)',
                 fontWeight: 700,
                 fontSize: '13px',
@@ -239,9 +241,9 @@ export default function NewsGrid({ posts }: { posts: PostMeta[] }) {
                 width: '36px',
                 height: '36px',
                 borderRadius: '4px',
-                border: p === page ? '1px solid var(--color-accent)' : '1px solid var(--color-border)',
+                border: p === page ? '1px solid var(--color-accent)' : '1px solid var(--color-border-light)',
                 backgroundColor: p === page ? 'var(--color-accent)' : 'transparent',
-                color: p === page ? '#fff' : 'var(--color-text-muted)',
+                color: p === page ? '#fff' : 'var(--color-text-dark-muted)',
                 fontFamily: 'var(--font-display)',
                 fontWeight: 700,
                 fontSize: '13px',

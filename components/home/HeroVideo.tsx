@@ -54,7 +54,7 @@ export default function HeroVideo() {
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.80))',
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.70) 100%)',
           zIndex: 5,
         }}
       />
@@ -113,7 +113,7 @@ export default function HeroVideo() {
             fontWeight: 900,
             fontFamily: 'var(--font-display)',
             lineHeight: 1.0,
-            color: '#FFFFFF',
+            color: '#F9F7F2',
             marginBottom: '28px',
             textShadow: '0 2px 20px rgba(0,0,0,0.5)',
           }}
@@ -126,7 +126,7 @@ export default function HeroVideo() {
           variants={itemVariants}
           className="hero-subtitle"
           style={{
-            color: 'rgba(255,255,255,0.85)',
+            color: 'rgba(249,247,242,0.8)',
             fontSize: '20px',
             fontWeight: 400,
             lineHeight: 1.6,
@@ -149,7 +149,7 @@ export default function HeroVideo() {
             href="/contact"
             style={{
               backgroundColor: 'var(--color-primary)',
-              color: '#fff',
+              color: '#F9F7F2',
               padding: '16px 36px',
               borderRadius: '4px',
               textDecoration: 'none',
@@ -168,9 +168,9 @@ export default function HeroVideo() {
           <Link
             href="/projects"
             style={{
-              border: '2px solid #fff',
+              border: '2px solid #F9F7F2',
               backgroundColor: 'transparent',
-              color: '#fff',
+              color: '#F9F7F2',
               padding: '16px 36px',
               borderRadius: '4px',
               textDecoration: 'none',
@@ -182,7 +182,7 @@ export default function HeroVideo() {
               display: 'inline-block',
             }}
             onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#fff'; e.currentTarget.style.color = '#000'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#fff'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#F9F7F2'; }}
           >
             View Our Work
           </Link>

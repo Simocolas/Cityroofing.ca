@@ -63,7 +63,11 @@ export default function ProjectsGrid() {
         </div>
       </div>
 
-      {/* Grid */}
+      {/* Red divider */}
+      <div style={{ height: '4px', backgroundColor: 'var(--color-primary)', width: '100%' }} />
+
+      {/* Grid — cream zone */}
+      <div style={{ backgroundColor: 'var(--color-cream)' }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '48px 24px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
           {filtered.map((project) => {
@@ -74,7 +78,7 @@ export default function ProjectsGrid() {
             return (
               <div
                 key={project.id}
-                style={{ backgroundColor: '#1A1A1A', border: '1px solid var(--color-border)', borderRadius: '6px', aspectRatio: '4/3', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
+                style={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '6px', aspectRatio: '4/3', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
                 className="project-card"
               >
                 {imgSrc ? (
@@ -114,10 +118,11 @@ export default function ProjectsGrid() {
         </div>
 
         {filtered.length === 0 && (
-          <p style={{ color: 'var(--color-text-muted)', textAlign: 'center', fontSize: '16px', padding: '48px 0' }}>
+          <p style={{ color: 'var(--color-text-dark-muted)', textAlign: 'center', fontSize: '16px', padding: '48px 0' }}>
             No projects in this category yet.
           </p>
         )}
+      </div>
       </div>
 
       <FAQSection items={faqItems} title="Projects — FAQ" />

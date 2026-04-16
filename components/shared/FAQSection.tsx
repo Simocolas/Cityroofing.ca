@@ -27,9 +27,9 @@ export default function FAQSection({ items, title = 'Frequently Asked Questions'
     <section
       id={schemaId}
       style={{
-        backgroundColor: 'var(--color-surface)',
+        backgroundColor: 'var(--color-cream-dark)',
         padding: '80px 24px',
-        borderTop: '1px solid var(--color-border)',
+        borderTop: '1px solid var(--color-border-light)',
       }}
     >
       <script
@@ -42,7 +42,7 @@ export default function FAQSection({ items, title = 'Frequently Asked Questions'
             fontFamily: 'var(--font-display)',
             fontWeight: 800,
             fontSize: 'clamp(24px, 3vw, 36px)',
-            color: 'var(--color-text-primary)',
+            color: 'var(--color-text-dark)',
             marginBottom: '40px',
           }}
         >
@@ -53,8 +53,8 @@ export default function FAQSection({ items, title = 'Frequently Asked Questions'
             <div
               key={i}
               style={{
-                backgroundColor: 'var(--color-base)',
-                border: '1px solid var(--color-border)',
+                backgroundColor: '#FFFFFF',
+                border: '1px solid var(--color-border-light)',
                 borderRadius: '6px',
                 padding: '24px 28px',
               }}
@@ -64,13 +64,13 @@ export default function FAQSection({ items, title = 'Frequently Asked Questions'
                   fontFamily: 'var(--font-display)',
                   fontWeight: 700,
                   fontSize: '17px',
-                  color: 'var(--color-text-primary)',
+                  color: 'var(--color-text-dark)',
                   marginBottom: '10px',
                 }}
               >
                 {item.q}
               </h3>
-              <p style={{ color: 'var(--color-text-muted)', fontSize: '15px', lineHeight: 1.7 }}>
+              <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '15px', lineHeight: 1.7 }}>
                 {item.a}
               </p>
             </div>

@@ -132,7 +132,7 @@ function Separator() {
       style={{
         width: '1px',
         height: '60px',
-        backgroundColor: 'rgba(255,255,255,0.15)',
+        backgroundColor: 'var(--color-border-light)',
         flexShrink: 0,
         alignSelf: 'center',
       }}
@@ -163,8 +163,8 @@ export default function TrustBar() {
   return (
     <section
       style={{
-        background: 'linear-gradient(180deg, #1A1A1A 0%, #141414 100%)',
-        borderBottom: '1px solid var(--color-border)',
+        background: 'var(--color-cream-dark)',
+        borderBottom: '1px solid var(--color-border-light)',
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -175,7 +175,7 @@ export default function TrustBar() {
           position: 'absolute',
           inset: 0,
           backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
+            'linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px)',
           backgroundSize: '60px 60px',
           pointerEvents: 'none',
         }}
@@ -205,7 +205,7 @@ export default function TrustBar() {
                     fontFamily: "'Montserrat', sans-serif",
                     fontWeight: 900,
                     fontSize: 'clamp(36px, 4vw, 64px)',
-                    color: '#FFFFFF',
+                    color: 'var(--color-primary)',
                     lineHeight: 1,
                     marginBottom: '10px',
                   }}
@@ -220,7 +220,7 @@ export default function TrustBar() {
                 {/* Label */}
                 <div
                   style={{
-                    color: 'var(--color-text-muted)',
+                    color: 'var(--color-text-dark-muted)',
                     fontSize: '11px',
                     letterSpacing: '2px',
                     textTransform: 'uppercase',
@@ -242,10 +242,10 @@ export default function TrustBar() {
             fontFamily: 'var(--font-display)',
             fontWeight: 700,
             fontSize: '13px',
-            color: 'var(--color-accent)',
+            color: 'var(--color-primary)',
             letterSpacing: '2px',
             textTransform: 'uppercase',
-            textShadow: '0 0 20px rgba(139,26,26,0.6)',
+            textShadow: 'none',
             opacity: animating ? 1 : 0,
             transition: animating ? 'opacity 300ms ease-out 1400ms' : 'none',
           }}

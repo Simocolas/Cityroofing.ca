@@ -1,24 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import LoadingScreen from './LoadingScreen';
 
-// Module-level flag — resets on every full page load (JS bundle reload),
-// but survives client-side navigation (same JS instance).
-let hasLoadedThisSession = false;
-
 export default function LoadingWrapper({ children }: { children: React.ReactNode }) {
-  const [loading, setLoading] = useState(!hasLoadedThisSession);
+  const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const hasSeenLoading = sessionStorage.getItem('city_roofing_loaded');
+
+    if (!hasSeenLoading) {
+      // First visit this session — show animation
+      setLoading(true);
+    }
+
+    setMounted(true);
+  }, []);
 
   const handleComplete = () => {
-    hasLoadedThisSession = true;
+    sessionStorage.setItem('city_roofing_loaded', 'true');
     setLoading(false);
   };
 
+  // Don't render until mounted (avoid hydration mismatch)
+  if (!mounted) return <>{children}</>;
+
   return (
     <>
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {loading && (
           <LoadingScreen
             key="loading-screen"
@@ -29,8 +40,7 @@ export default function LoadingWrapper({ children }: { children: React.ReactNode
       <div
         style={{
           opacity: loading ? 0 : 1,
-          // No transition while loading — prevents ghost flash when screen exits
-          transition: loading ? 'none' : 'opacity 0.4s ease',
+          transition: loading ? 'none' : 'opacity 0.3s ease',
         }}
       >
         {children}

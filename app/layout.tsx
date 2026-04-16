@@ -1,8 +1,23 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { Manrope, Work_Sans } from 'next/font/google';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import LoadingWrapper from '@/components/LoadingWrapper';
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-display',
+  display: 'swap',
+});
+
+const workSans = Work_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-body',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: {
@@ -74,7 +89,7 @@ const localBusinessSchema = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${manrope.variable} ${workSans.variable}`}>
       <head>
         <script
           type="application/ld+json"

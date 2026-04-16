@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { PostMeta } from '@/lib/mdx';
 
 const categoryColors: Record<string, string> = {
-  roofing: '#8B1A1A',
+  roofing: 'var(--color-primary)',
   siding: '#1A4A8B',
   commercial: '#1A6B2A',
   tips: '#6B1A6B',
@@ -32,7 +32,7 @@ export default function BlogCard({ post }: { post: PostMeta }) {
       <div style={{ padding: '24px 24px 0' }}>
         <span
           style={{
-            backgroundColor: categoryColors[post.frontmatter.category] ?? '#8B1A1A',
+            backgroundColor: categoryColors[post.frontmatter.category] ?? 'var(--color-primary)',
             color: '#fff',
             fontSize: '11px',
             fontFamily: 'var(--font-display)',

@@ -2,7 +2,6 @@
 
 import { useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import projectsData from '@/data/projects.json';
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -36,12 +35,12 @@ export default function ProjectsScroll() {
   };
 
   return (
-    <section style={{ backgroundColor: 'var(--color-base)', padding: '96px 0' }}>
+    <section style={{ backgroundColor: 'var(--color-cream-dark)', padding: '96px 0' }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px', marginBottom: '48px' }}>
-        <p style={{ fontSize: '11px', letterSpacing: '3px', color: 'var(--color-accent)', fontFamily: 'var(--font-display)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '16px' }}>
+        <p style={{ fontSize: '11px', letterSpacing: '3px', color: 'var(--color-primary)', fontFamily: 'var(--font-display)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '16px' }}>
           Our Work
         </p>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(32px, 4vw, 48px)', color: 'var(--color-text-primary)' }}>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(32px, 4vw, 48px)', color: 'var(--color-text-dark)' }}>
           Recent Projects
         </h2>
       </div>
@@ -58,19 +57,25 @@ export default function ProjectsScroll() {
           <div
             key={project.id}
             className="project-card"
-            style={{ flexShrink: 0, width: '380px', height: '480px', backgroundColor: '#1E1E1E', border: '1px solid var(--color-border)', borderRadius: '6px', position: 'relative', overflow: 'hidden', transition: 'transform 300ms ease-out' }}
+            style={{
+              flexShrink: 0,
+              width: '380px',
+              height: '480px',
+              backgroundColor: '#1E1E1E',
+              border: '1px solid var(--color-border)',
+              borderRadius: '6px',
+              position: 'relative',
+              overflow: 'hidden',
+              transition: 'transform 300ms ease-out',
+              backgroundImage: (project.image || project.afterImage) ? `url('${project.image || project.afterImage}')` : 'none',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
             onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-4px)')}
             onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
           >
-            {/* Image or placeholder */}
-            {project.afterImage ? (
-              <Image
-                src={project.afterImage.startsWith('/') ? project.afterImage : `/images/projects/${project.afterImage}`}
-                alt={project.title}
-                fill
-                style={{ objectFit: 'cover' }}
-              />
-            ) : (
+            {/* Placeholder if no image */}
+            {!(project.image || project.afterImage) && (
               <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px', padding: '24px' }}>
                 <span style={{ fontSize: '40px', opacity: 0.15 }}>🏠</span>
                 <p style={{ color: '#3A3A3A', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '14px', textAlign: 'center', lineHeight: 1.4 }}>
@@ -101,7 +106,7 @@ export default function ProjectsScroll() {
       </div>
 
       <div style={{ textAlign: 'center', marginTop: '40px' }}>
-        <Link href="/projects" style={{ color: 'var(--color-accent)', textDecoration: 'none', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '15px' }}>
+        <Link href="/projects" style={{ color: 'var(--color-primary)', textDecoration: 'none', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '15px' }}>
           View All Projects →
         </Link>
       </div>

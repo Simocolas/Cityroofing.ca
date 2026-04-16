@@ -91,127 +91,130 @@ export default function AboutPage() {
         breadcrumbPath="/about"
       />
 
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '80px 24px' }}>
+      {/* Cream content zone */}
+      <section style={{ backgroundColor: 'var(--color-cream)' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '80px 24px' }}>
 
-        {/* Company story */}
-        <section style={{ marginBottom: '72px', maxWidth: '800px' }}>
-          <p
-            style={{
-              fontSize: '11px',
-              letterSpacing: '2px',
-              color: 'var(--color-accent)',
-              fontFamily: 'var(--font-display)',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              marginBottom: '16px',
-            }}
-          >
-            Our Story
-          </p>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(28px, 4vw, 42px)', color: 'var(--color-text-primary)', marginBottom: '24px', lineHeight: 1.2 }}>
-            Started in Calgary. Built on Community.
-          </h2>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '17px', lineHeight: 1.85, marginBottom: '20px' }}>
-            City Roofing &amp; Exteriors was founded in 2009 in Calgary — not as a franchise, not as a national
-            chain, but as a local crew doing honest work in their own community. Our first jobs came through
-            referrals from neighbours in NE Calgary. Those referrals turned into repeat clients, who sent their
-            friends, who sent theirs. Fifteen years later, that word-of-mouth foundation still shows up in our
-            158 Google reviews averaging 4.8 stars.
-          </p>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '17px', lineHeight: 1.85, marginBottom: '20px' }}>
-            Today we serve residential and commercial clients across every Calgary quadrant and surrounding
-            communities. Our work ranges from single-shingle repairs to multi-million dollar commercial flat
-            roof installations — but the approach is the same: show up on time, do the work right, and stand
-            behind it.
-          </p>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '17px', lineHeight: 1.85 }}>
-            Every crew member on your job is our own employee — SECOR certified and WCB Alberta covered.
-            We do not subcontract our work.
-          </p>
-        </section>
-
-        {/* Stats row */}
-        <section
-          style={{
-            marginBottom: '72px',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-            gap: '1px',
-            backgroundColor: 'var(--color-border)',
-            border: '1px solid var(--color-border)',
-            borderRadius: '6px',
-            overflow: 'hidden',
-          }}
-        >
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
+          {/* Company story */}
+          <section style={{ marginBottom: '72px', maxWidth: '800px' }}>
+            <p
               style={{
-                backgroundColor: 'var(--color-surface)',
-                padding: '32px 24px',
-                textAlign: 'center',
+                fontSize: '11px',
+                letterSpacing: '2px',
+                color: 'var(--color-primary)',
+                fontFamily: 'var(--font-display)',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                marginBottom: '16px',
               }}
             >
-              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '36px', color: 'var(--color-text-primary)', marginBottom: '6px' }}>
-                {stat.value}
-              </div>
-              <div style={{ color: 'var(--color-text-muted)', fontSize: '13px', letterSpacing: '0.5px' }}>{stat.label}</div>
-            </div>
-          ))}
-        </section>
+              Our Story
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(28px, 4vw, 42px)', color: 'var(--color-text-dark)', marginBottom: '24px', lineHeight: 1.2 }}>
+              Started in Calgary. Built on Community.
+            </h2>
+            <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '17px', lineHeight: 1.85, marginBottom: '20px' }}>
+              City Roofing &amp; Exteriors was founded in 2009 in Calgary — not as a franchise, not as a national
+              chain, but as a local crew doing honest work in their own community. Our first jobs came through
+              referrals from neighbours in NE Calgary. Those referrals turned into repeat clients, who sent their
+              friends, who sent theirs. Fifteen years later, that word-of-mouth foundation still shows up in our
+              158 Google reviews averaging 4.8 stars.
+            </p>
+            <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '17px', lineHeight: 1.85, marginBottom: '20px' }}>
+              Today we serve residential and commercial clients across every Calgary quadrant and surrounding
+              communities. Our work ranges from single-shingle repairs to multi-million dollar commercial flat
+              roof installations — but the approach is the same: show up on time, do the work right, and stand
+              behind it.
+            </p>
+            <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '17px', lineHeight: 1.85 }}>
+              Every crew member on your job is our own employee — SECOR certified and WCB Alberta covered.
+              We do not subcontract our work.
+            </p>
+          </section>
 
-        {/* Core values */}
-        <section style={{ marginBottom: '72px' }}>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(26px, 3.5vw, 38px)', color: 'var(--color-text-primary)', marginBottom: '36px' }}>
-            How We Work
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
-            {values.map((value) => (
+          {/* Stats row */}
+          <section
+            style={{
+              marginBottom: '72px',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+              gap: '1px',
+              backgroundColor: 'var(--color-border-light)',
+              border: '1px solid var(--color-border-light)',
+              borderRadius: '6px',
+              overflow: 'hidden',
+            }}
+          >
+            {stats.map((stat) => (
               <div
-                key={value.title}
+                key={stat.label}
                 style={{
-                  backgroundColor: 'var(--color-surface)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '6px',
-                  padding: '32px',
+                  backgroundColor: '#FFFFFF',
+                  padding: '32px 24px',
+                  textAlign: 'center',
                 }}
               >
-                <div style={{ color: 'var(--color-accent)', marginBottom: '16px' }}>{value.icon}</div>
-                <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '20px', color: 'var(--color-text-primary)', marginBottom: '10px' }}>
-                  {value.title}
-                </h3>
-                <p style={{ color: 'var(--color-text-muted)', fontSize: '15px', lineHeight: 1.7 }}>{value.desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Certifications */}
-        <section style={{ marginBottom: '72px' }}>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(26px, 3.5vw, 38px)', color: 'var(--color-text-primary)', marginBottom: '32px' }}>
-            Certifications &amp; Accreditations
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
-            {certs.map((cert) => (
-              <div
-                key={cert.name}
-                style={{
-                  backgroundColor: cert.pending ? 'transparent' : 'var(--color-surface)',
-                  border: `1px solid ${cert.pending ? '#2A2A2A' : 'var(--color-border)'}`,
-                  borderRadius: '6px',
-                  padding: '28px',
-                  opacity: cert.pending ? 0.5 : 1,
-                }}
-              >
-                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '15px', color: cert.pending ? 'var(--color-text-muted)' : 'var(--color-accent)', marginBottom: '6px' }}>
-                  {cert.name}
+                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '36px', color: 'var(--color-primary)', marginBottom: '6px' }}>
+                  {stat.value}
                 </div>
-                <div style={{ color: 'var(--color-text-muted)', fontSize: '13px' }}>{cert.desc}</div>
+                <div style={{ color: 'var(--color-text-dark-muted)', fontSize: '13px', letterSpacing: '0.5px' }}>{stat.label}</div>
               </div>
             ))}
-          </div>
-        </section>
-      </div>
+          </section>
+
+          {/* Core values */}
+          <section style={{ marginBottom: '72px' }}>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(26px, 3.5vw, 38px)', color: 'var(--color-text-dark)', marginBottom: '36px' }}>
+              How We Work
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
+              {values.map((value) => (
+                <div
+                  key={value.title}
+                  style={{
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid var(--color-border-light)',
+                    borderRadius: '6px',
+                    padding: '32px',
+                  }}
+                >
+                  <div style={{ color: 'var(--color-primary)', marginBottom: '16px' }}>{value.icon}</div>
+                  <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '20px', color: 'var(--color-text-dark)', marginBottom: '10px' }}>
+                    {value.title}
+                  </h3>
+                  <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '15px', lineHeight: 1.7 }}>{value.desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Certifications */}
+          <section style={{ marginBottom: '72px' }}>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(26px, 3.5vw, 38px)', color: 'var(--color-text-dark)', marginBottom: '32px' }}>
+              Certifications &amp; Accreditations
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
+              {certs.map((cert) => (
+                <div
+                  key={cert.name}
+                  style={{
+                    backgroundColor: cert.pending ? 'transparent' : '#FFFFFF',
+                    border: `1px solid var(--color-border-light)`,
+                    borderRadius: '6px',
+                    padding: '28px',
+                    opacity: cert.pending ? 0.5 : 1,
+                  }}
+                >
+                  <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '15px', color: cert.pending ? 'var(--color-text-dark-muted)' : 'var(--color-primary)', marginBottom: '6px' }}>
+                    {cert.name}
+                  </div>
+                  <div style={{ color: 'var(--color-text-dark-muted)', fontSize: '13px' }}>{cert.desc}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      </section>
 
       <FAQSection items={faqItems} title="About City Roofing — FAQ" />
       <ServiceCTA headline="Work With Us" subtext="Free inspection — written estimate — no pressure." />

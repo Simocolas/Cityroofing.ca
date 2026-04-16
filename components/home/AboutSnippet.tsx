@@ -53,7 +53,7 @@ export default function AboutSnippet() {
   }, []);
 
   return (
-    <section style={{ backgroundColor: 'var(--color-surface)', padding: '96px 24px' }}>
+    <section style={{ backgroundColor: 'var(--color-cream)', padding: '96px 24px' }}>
       <div
         ref={ref}
         style={{
@@ -65,24 +65,33 @@ export default function AboutSnippet() {
           alignItems: 'center',
         }}
       >
-        {/* Left: image placeholder */}
+        {/* Left: video */}
         <div
           style={{
             width: '100%',
             aspectRatio: '4/3',
-            backgroundColor: '#2A2A2A',
-            borderRadius: '6px',
+            borderRadius: '8px',
+            overflow: 'hidden',
             opacity: visible ? 1 : 0,
             transform: visible ? 'translateX(0)' : 'translateX(-24px)',
             transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
           }}
         >
-          <p style={{ color: '#3A3A3A', fontFamily: 'var(--font-display)', fontSize: '13px', letterSpacing: '2px' }}>
-            [ Project photo ]
-          </p>
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              borderRadius: '8px',
+            }}
+          >
+            <source src="/videos/about.webm" type="video/webm" />
+            <source src="/videos/about.mp4" type="video/mp4" />
+          </video>
         </div>
 
         {/* Right: text */}
@@ -100,7 +109,7 @@ export default function AboutSnippet() {
             style={{
               fontSize: '11px',
               letterSpacing: '2px',
-              color: 'var(--color-accent)',
+              color: 'var(--color-primary)',
               fontFamily: 'var(--font-display)',
               fontWeight: 700,
               textTransform: 'uppercase',
@@ -114,20 +123,20 @@ export default function AboutSnippet() {
               fontFamily: 'var(--font-display)',
               fontWeight: 800,
               fontSize: 'clamp(28px, 3.5vw, 40px)',
-              color: 'var(--color-text-primary)',
+              color: 'var(--color-text-dark)',
               lineHeight: 1.2,
             }}
           >
             15 Years of Roofs That Outlast Alberta Winters
           </h2>
 
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '16px', lineHeight: 1.7 }}>
+          <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '16px', lineHeight: 1.7 }}>
             City Roofing &amp; Exteriors was built in Calgary, rooted in the community, and trusted
             by homeowners across every quadrant of the city. What started through word of mouth has
             grown into one of Calgary&apos;s most reviewed roofing contractors.
           </p>
 
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '16px', lineHeight: 1.7 }}>
+          <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '16px', lineHeight: 1.7 }}>
             Today we handle everything from residential shingle replacements to multi-million dollar
             commercial projects — all with the same SECOR-certified crew, WCB coverage, and
             BBB-backed accountability.
@@ -139,7 +148,7 @@ export default function AboutSnippet() {
               display: 'flex',
               gap: '32px',
               flexWrap: 'wrap',
-              borderTop: '1px solid var(--color-border)',
+              borderTop: '1px solid var(--color-border-light)',
               paddingTop: '24px',
               marginTop: '4px',
             }}
@@ -155,14 +164,14 @@ export default function AboutSnippet() {
                     fontFamily: 'var(--font-display)',
                     fontWeight: 800,
                     fontSize: '28px',
-                    color: 'var(--color-text-primary)',
+                    color: 'var(--color-primary)',
                     lineHeight: 1,
                     marginBottom: '4px',
                   }}
                 >
                   <CountUp target={stat.value} suffix={stat.suffix} prefix={stat.prefix} />
                 </div>
-                <div style={{ color: 'var(--color-text-muted)', fontSize: '13px' }}>{stat.label}</div>
+                <div style={{ color: 'var(--color-text-dark-muted)', fontSize: '13px' }}>{stat.label}</div>
               </div>
             ))}
           </div>
@@ -170,7 +179,7 @@ export default function AboutSnippet() {
           <Link
             href="/about"
             style={{
-              color: 'var(--color-accent)',
+              color: 'var(--color-primary)',
               textDecoration: 'none',
               fontFamily: 'var(--font-display)',
               fontWeight: 700,

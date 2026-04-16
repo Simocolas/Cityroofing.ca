@@ -1,171 +1,207 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 const services = [
   {
     href: '/services/roof-replacement',
     title: 'Roof Replacement',
-    description: 'Complete re-roofing with premium materials',
-    icon: (
-      <svg width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-        <polyline points="9 22 9 12 15 12 15 22" />
-      </svg>
-    ),
+    description: 'Complete re-roofing with premium materials — residential and commercial across all Calgary quadrants.',
+    image: '/images/4/residential.webp',
+    bgPosition: 'center 40%',
   },
   {
     href: '/services/roof-repair',
     title: 'Roof Repair & Emergency',
-    description: 'Fast response for leaks and storm damage',
-    icon: (
-      <svg width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
-      </svg>
-    ),
+    image: '/images/4/repair.webp',
+    bgPosition: 'center 30%',
   },
   {
     href: '/services/siding',
     title: 'Siding & Exteriors',
-    description: 'Vinyl, Hardie board and metal siding',
-    icon: (
-      <svg width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <rect x="3" y="3" width="18" height="18" rx="2" />
-        <line x1="3" y1="9" x2="21" y2="9" />
-        <line x1="3" y1="15" x2="21" y2="15" />
-        <line x1="9" y1="3" x2="9" y2="9" />
-        <line x1="15" y1="15" x2="15" y2="21" />
-      </svg>
-    ),
+    image: '/images/4/siding.webp',
+    bgPosition: 'center center',
   },
   {
     href: '/services/commercial',
     title: 'Commercial Roofing',
-    description: 'Large-scale projects delivered on time',
-    icon: (
-      <svg width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path d="M3 21h18" />
-        <path d="M5 21V7l7-4 7 4v14" />
-        <path d="M9 21v-4h6v4" />
-        <rect x="10" y="10" width="4" height="4" />
-      </svg>
-    ),
+    image: '/images/4/Commerical.webp',
+    bgPosition: 'center 40%',
   },
 ];
 
-function ServiceCard({ service, delay }: { service: typeof services[0]; delay: number }) {
-  const [visible, setVisible] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+type Service = typeof services[number];
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
-      { threshold: 0.15 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
+const OVERLAY_DEFAULT = 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.0) 100%)';
+const OVERLAY_HOVER   = 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.05) 100%)';
+
+const MotionLink = motion(Link);
+
+function LargeCard({ service }: { service: Service }) {
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <div
-      ref={ref}
+    <MotionLink
+      href={service.href}
+      className="service-card-large"
+      initial={{ opacity: 0, x: -30 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      whileHover={{ scale: 1.02 }}
+      onHoverStart={() => setHovered(true)}
+      onHoverEnd={() => setHovered(false)}
       style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(24px)',
-        transition: `opacity 0.5s ease-out ${delay}ms, transform 0.5s ease-out ${delay}ms`,
+        flex: 1,
+        position: 'relative',
+        cursor: 'pointer',
+        overflow: 'hidden',
+        backgroundImage: `url(${service.image})`,
+        backgroundSize: 'cover',
+        backgroundPosition: service.bgPosition,
+        textDecoration: 'none',
+        display: 'block',
       }}
     >
+      {/* Gradient overlay */}
       <div
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
         style={{
-          backgroundColor: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          borderLeft: hovered ? '3px solid var(--color-primary)' : '3px solid transparent',
-          borderRadius: '6px',
-          padding: '40px 36px',
-          minHeight: '320px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px',
-          transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
-          transition: 'border-left-color 300ms ease-out, transform 300ms ease-out, box-shadow 300ms ease-out',
-          boxShadow: hovered ? '0 12px 40px rgba(0,0,0,0.4)' : 'none',
-          cursor: 'pointer',
+          position: 'absolute',
+          inset: 0,
+          background: hovered ? OVERLAY_HOVER : OVERLAY_DEFAULT,
+          transition: 'background 300ms ease',
+          zIndex: 1,
         }}
-      >
-        <div style={{ color: hovered ? 'var(--color-accent)' : 'var(--color-text-muted)', transition: 'color 300ms ease-out' }}>
-          {service.icon}
-        </div>
-        <h3
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 800,
-            fontSize: '20px',
-            color: 'var(--color-text-primary)',
-          }}
-        >
+      />
+
+      {/* Text */}
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '32px', zIndex: 2 }}>
+        <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '22px', color: '#fff', marginBottom: '10px', lineHeight: 1.2 }}>
           {service.title}
         </h3>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '15px', lineHeight: 1.6, flex: 1 }}>
+        <p style={{ fontSize: '14px', lineHeight: 1.6, color: 'rgba(255,255,255,0.8)', marginBottom: '16px' }}>
           {service.description}
         </p>
-        <Link
-          href={service.href}
-          style={{
-            color: 'var(--color-accent)',
-            textDecoration: 'none',
-            fontFamily: 'var(--font-display)',
-            fontWeight: 700,
-            fontSize: '14px',
-            letterSpacing: '0.5px',
-            transition: 'letter-spacing 150ms ease-out',
-          }}
-        >
+        <span style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '14px', display: 'inline-block', transform: hovered ? 'translateX(4px)' : 'translateX(0)', transition: 'transform 200ms ease' }}>
           Explore →
-        </Link>
+        </span>
       </div>
-    </div>
+    </MotionLink>
+  );
+}
+
+function SmallCard({ service, index }: { service: Service; index: number }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <MotionLink
+      href={service.href}
+      className="service-card-small"
+      initial={{ opacity: 0, x: 30 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6, delay: (index + 1) * 0.1, ease: 'easeOut' }}
+      whileHover={{ scale: 1.02 }}
+      onHoverStart={() => setHovered(true)}
+      onHoverEnd={() => setHovered(false)}
+      style={{
+        flex: 1,
+        position: 'relative',
+        cursor: 'pointer',
+        overflow: 'hidden',
+        backgroundImage: `url(${service.image})`,
+        backgroundSize: 'cover',
+        backgroundPosition: service.bgPosition,
+        textDecoration: 'none',
+        display: 'block',
+      }}
+    >
+      {/* Gradient overlay */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: hovered ? OVERLAY_HOVER : OVERLAY_DEFAULT,
+          transition: 'background 300ms ease',
+          zIndex: 1,
+        }}
+      />
+
+      {/* Text */}
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px 24px', zIndex: 2 }}>
+        <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '18px', color: '#fff', marginBottom: '8px', lineHeight: 1.2 }}>
+          {service.title}
+        </h3>
+        <span style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '14px', display: 'inline-block', transform: hovered ? 'translateX(4px)' : 'translateX(0)', transition: 'transform 200ms ease' }}>
+          Explore →
+        </span>
+      </div>
+    </MotionLink>
   );
 }
 
 export default function ServicesGrid() {
   return (
-    <section style={{ backgroundColor: 'var(--color-base)', padding: '96px 24px' }}>
+    <section style={{ backgroundColor: 'var(--color-cream)', padding: '96px 24px' }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+
+        {/* Section header */}
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-          <p
-            style={{
-              fontSize: '11px',
-              letterSpacing: '3px',
-              color: 'var(--color-accent)',
-              fontFamily: 'var(--font-display)',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              marginBottom: '16px',
-            }}
-          >
+          <p style={{ fontSize: '11px', letterSpacing: '3px', color: 'var(--color-primary)', fontFamily: 'var(--font-display)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '16px' }}>
             What We Do
           </p>
-          <h2
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontWeight: 800,
-              fontSize: 'clamp(32px, 4vw, 48px)',
-              color: 'var(--color-text-primary)',
-            }}
-          >
+          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(32px, 4vw, 48px)', color: 'var(--color-text-dark)' }}>
             Calgary Roofing & Exterior Services
           </h2>
         </div>
-        <div className="services-grid">
-          {services.map((service, i) => (
-            <ServiceCard key={service.href} service={service} delay={i * 80} />
-          ))}
+
+        {/* Card layout */}
+        <div
+          className="services-layout"
+          style={{
+            display: 'flex',
+            gap: '4px',
+            height: '520px',
+            borderRadius: '12px',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Large card — left, 50% */}
+          <LargeCard service={services[0]} />
+
+          {/* Three stacked cards — right, 50% */}
+          <div
+            className="services-right"
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4px',
+            }}
+          >
+            {services.slice(1).map((service, i) => (
+              <SmallCard key={service.href} service={service} index={i} />
+            ))}
+          </div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .services-layout {
+            flex-direction: column !important;
+            height: auto !important;
+          }
+          .services-right {
+            flex: none !important;
+          }
+          .service-card-large,
+          .service-card-small {
+            height: 280px !important;
+            flex: none !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }
