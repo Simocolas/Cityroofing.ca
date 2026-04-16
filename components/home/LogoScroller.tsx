@@ -131,7 +131,7 @@ export default function LogoScroller() {
       </div>
 
       {/* Certification badges */}
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '80px', flexWrap: 'wrap', padding: '24px 0', marginTop: '40px' }}>
+      <div className="cert-badges-row" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '80px', flexWrap: 'wrap', padding: '24px 0', marginTop: '40px' }}>
         {[
           { src: '/images/Partners/3/SeCOR-transparent.png', alt: 'SECOR Certified', size: 120 },
           { src: '/images/Partners/3/WCB-transparent.png',   alt: 'WCB Alberta',     size: 120 },
@@ -139,6 +139,7 @@ export default function LogoScroller() {
         ].map((badge) => (
           <div
             key={badge.alt}
+            className="cert-badge-wrapper"
             style={{ width: `${badge.size}px`, height: `${badge.size}px`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -154,6 +155,11 @@ export default function LogoScroller() {
       </div>
 
       <style>{`
+        @media (max-width: 768px) {
+          .brand-logo-item img { height: 30px !important; }
+          .cert-badge-wrapper { width: 60px !important; height: 60px !important; }
+          .cert-badges-row { gap: 32px !important; }
+        }
         @keyframes scrollLeft {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }

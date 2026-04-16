@@ -4,6 +4,7 @@ import { Manrope, Work_Sans } from 'next/font/google';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import LoadingWrapper from '@/components/LoadingWrapper';
+import MobileBottomNav from '@/components/MobileBottomNav';
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -101,6 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Navbar />
           <main>{children}</main>
           <Footer />
+          <MobileBottomNav />
         </LoadingWrapper>
       </body>
     </html>

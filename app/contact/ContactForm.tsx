@@ -9,10 +9,12 @@ const inputStyle: React.CSSProperties = {
   borderRadius: '4px',
   padding: '12px 16px',
   color: 'var(--color-text-dark)',
-  fontSize: '15px',
+  fontSize: '16px',
   fontFamily: 'var(--font-body)',
   outline: 'none',
   transition: 'border-color 150ms ease-out',
+  height: '52px',
+  boxSizing: 'border-box',
 };
 
 const labelStyle: React.CSSProperties = {
@@ -76,6 +78,7 @@ export default function ContactForm() {
       <div style={{ backgroundColor: 'var(--color-cream)' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '72px 24px' }}>
           <div
+            className="contact-grid"
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
@@ -204,7 +207,7 @@ export default function ContactForm() {
                       onFocus={() => setFocusedField('message')}
                       onBlur={() => setFocusedField(null)}
                       placeholder="Tell us about your project..."
-                      style={{ ...inputStyle, borderColor: fieldBorder('message'), resize: 'vertical', minHeight: '100px' }}
+                      style={{ ...inputStyle, borderColor: fieldBorder('message'), resize: 'vertical', minHeight: '100px', height: 'auto' }}
                     />
                   </div>
 
@@ -235,6 +238,14 @@ export default function ContactForm() {
                   </p>
                 </form>
               )}
+
+              <style>{`
+                @media (max-width: 768px) {
+                  .contact-submit-btn { height: 56px !important; }
+                  .contact-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+                  .contact-map iframe { height: 200px !important; }
+                }
+              `}</style>
             </div>
 
             {/* RIGHT: Contact info */}

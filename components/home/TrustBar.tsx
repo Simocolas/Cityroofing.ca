@@ -194,7 +194,7 @@ export default function TrustBar() {
           gap: '28px',
         }}
       >
-        {/* Row 1 — 5 stats centered */}
+        {/* Row 1 — 5 stats centered (2x3 grid on mobile) */}
         <div className="trust-stats-row">
           {trustItems.map((item, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center' }}>
@@ -236,7 +236,7 @@ export default function TrustBar() {
           ))}
         </div>
 
-        {/* Row 2 — certifications centered below */}
+        {/* Row 2 — certifications centered below (hidden on mobile) */}
         <div
           style={{
             fontFamily: 'var(--font-display)',
@@ -253,6 +253,33 @@ export default function TrustBar() {
           {certs.join(' · ')}
         </div>
       </div>
+      <style>{`
+        .trust-stats-row {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+        @media (max-width: 768px) {
+          .trust-stats-row {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            width: 100% !important;
+            gap: 0 !important;
+          }
+          .trust-stat-item {
+            padding: 16px !important;
+            border-bottom: 1px solid var(--color-border-light);
+          }
+          .trust-stat-item > div:first-child {
+            font-size: 36px !important;
+          }
+          .trust-stat-item > div:last-child {
+            font-size: 10px !important;
+          }
+          .trust-separator { display: none !important; }
+        }
+      `}</style>
     </section>
   );
 }

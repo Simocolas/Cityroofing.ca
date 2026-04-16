@@ -178,7 +178,7 @@ export default function Navbar() {
           position: 'fixed',
           inset: 0,
           zIndex: 99,
-          backgroundColor: 'var(--color-base)',
+          backgroundColor: '#1A1A1A',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -189,36 +189,29 @@ export default function Navbar() {
         }}
         className="mobile-menu"
       >
-        {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            onClick={() => setMenuOpen(false)}
-            style={{
-              color: '#F9F7F2',
-              textDecoration: 'none',
-              fontFamily: 'var(--font-display)',
-              fontWeight: 800,
-              fontSize: '32px',
-              letterSpacing: '1px',
-              transition: 'color 150ms ease-out',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-accent)')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = '#F9F7F2')}
-          >
-            {link.label}
-          </Link>
-        ))}
-        <a href="tel:403-608-9933" style={{ color: 'var(--color-accent)', textDecoration: 'none', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '22px', marginTop: '16px' }}>
-          403-608-9933
-        </a>
-        <Link
-          href="/contact"
-          onClick={() => setMenuOpen(false)}
-          style={{ backgroundColor: 'var(--color-primary)', color: '#fff', padding: '14px 36px', borderRadius: '4px', textDecoration: 'none', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '16px' }}
-        >
-          Get Estimate
-        </Link>
+        {navLinks.map((link) => {
+          const isActive = pathname === link.href;
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+              style={{
+                color: isActive ? 'var(--color-accent)' : '#F9F7F2',
+                textDecoration: 'none',
+                fontFamily: 'var(--font-display)',
+                fontWeight: 800,
+                fontSize: '28px',
+                letterSpacing: '1px',
+                transition: 'color 150ms ease-out',
+                borderLeft: isActive ? '3px solid var(--color-accent)' : '3px solid transparent',
+                paddingLeft: '16px',
+              }}
+            >
+              {link.label}
+            </Link>
+          );
+        })}
       </div>
 
       <style>{`

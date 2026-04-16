@@ -45,7 +45,7 @@ export default function ContactCTA() {
           >
             Free inspection. Honest estimate. No pressure.
           </p>
-          <div className="cta-buttons" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+          <div className="cta-buttons" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', width: '100%' }}>
             <a
               href="tel:403-608-9933"
               style={{
@@ -97,6 +97,13 @@ export default function ContactCTA() {
         </div>
 
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .cta-buttons { flex-direction: column !important; }
+          .cta-buttons a, .cta-buttons a[href] { width: 100% !important; text-align: center !important; padding: 16px !important; box-sizing: border-box !important; }
+        }
+      `}</style>
     </section>
   );
 }

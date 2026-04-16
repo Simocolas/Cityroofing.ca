@@ -56,6 +56,7 @@ export default function AboutSnippet() {
     <section style={{ backgroundColor: 'var(--color-cream)', padding: '96px 24px' }}>
       <div
         ref={ref}
+        className="about-grid"
         style={{
           maxWidth: '1280px',
           margin: '0 auto',
@@ -192,6 +193,14 @@ export default function AboutSnippet() {
           </Link>
         </div>
       </div>
+      <style>{`
+        @media (max-width: 768px) {
+          .about-grid { grid-template-columns: 1fr !important; gap: 0 !important; }
+          .about-video { height: 240px !important; aspect-ratio: unset !important; }
+          .about-text { padding: 24px 0 !important; }
+          .about-stats div[style*="font-size: 28px"] { font-size: 28px !important; }
+        }
+      `}</style>
     </section>
   );
 }

@@ -191,15 +191,22 @@ export default function ServicesGrid() {
           .services-layout {
             flex-direction: column !important;
             height: auto !important;
+            gap: 12px !important;
           }
           .services-right {
             flex: none !important;
+            gap: 12px !important;
           }
           .service-card-large,
           .service-card-small {
-            height: 280px !important;
+            height: 260px !important;
             flex: none !important;
+            width: 100% !important;
           }
+          .service-card-large h3 { font-size: 20px !important; }
+          .service-card-small h3 { font-size: 20px !important; }
+          .service-card-large p,
+          .service-card-small p { font-size: 13px !important; }
         }
       `}</style>
     </section>

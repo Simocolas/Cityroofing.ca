@@ -24,7 +24,7 @@ export default function ReviewsSection() {
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '16px', flexWrap: 'wrap' }}>
-            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '64px', color: 'var(--color-primary)', lineHeight: 1 }}>
+            <span className="reviews-rating-num" style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '64px', color: 'var(--color-primary)', lineHeight: 1 }}>
               {companyData.googleRating}
             </span>
             <div>
@@ -78,6 +78,12 @@ export default function ReviewsSection() {
 
         </div>
       </div>
+      <style>{`
+        @media (max-width: 768px) {
+          .reviews-rating-num { font-size: 56px !important; }
+          .review-card { width: 85vw !important; }
+        }
+      `}</style>
     </section>
   );
 }

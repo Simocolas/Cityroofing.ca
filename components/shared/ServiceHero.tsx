@@ -48,6 +48,7 @@ export default function ServiceHero({ title, subtitle, breadcrumb, breadcrumbPat
         />
       )}
       <div
+        className="service-hero-banner"
         style={{
           height: '50vh',
           minHeight: '360px',
@@ -128,6 +129,13 @@ export default function ServiceHero({ title, subtitle, breadcrumb, breadcrumbPat
           </p>
         </div>
       </div>
+      <style>{`
+        @media (max-width: 768px) {
+          .service-hero-banner { height: 40vh !important; min-height: 280px !important; padding: 24px 16px !important; }
+          .service-hero-banner h1 { font-size: clamp(32px, 8vw, 48px) !important; }
+          .service-hero-subtitle { font-size: 15px !important; }
+        }
+      `}</style>
     </>
   );
 }

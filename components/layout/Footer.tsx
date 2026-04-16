@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -49,7 +50,59 @@ function SocialIcon({ label, children }: { label: string; children: React.ReactN
   );
 }
 
+function AccordionSection({ title, open, onToggle, children }: { title: string; open: boolean; onToggle: () => void; children: React.ReactNode }) {
+  return (
+    <div className="footer-accordion-section">
+      <button
+        onClick={onToggle}
+        className="footer-accordion-header"
+        style={{
+          width: '100%',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '0',
+        }}
+      >
+        <h4
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontWeight: 700,
+            fontSize: '13px',
+            letterSpacing: '2px',
+            color: 'var(--color-text-muted)',
+            textTransform: 'uppercase',
+            margin: 0,
+          }}
+        >
+          {title}
+        </h4>
+        <span style={{ color: 'var(--color-text-muted)', fontSize: '18px', lineHeight: 1, transition: 'transform 200ms ease', transform: open ? 'rotate(180deg)' : 'none' }}>
+          ›
+        </span>
+      </button>
+      <div
+        style={{
+          overflow: 'hidden',
+          maxHeight: open ? '400px' : '0',
+          transition: 'max-height 250ms ease-out',
+          marginTop: open ? '16px' : '0',
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 export default function Footer() {
+  const [openSection, setOpenSection] = useState<string | null>(null);
+
+  const toggle = (key: string) => setOpenSection((prev) => (prev === key ? null : key));
+
   return (
     <footer style={{ backgroundColor: 'var(--color-surface)', borderTop: '1px solid var(--color-border)' }}>
       <div
@@ -97,7 +150,7 @@ export default function Footer() {
         </div>
 
         {/* Col 2: Services */}
-        <div>
+        <div className="footer-col-desktop">
           <h4
             style={{
               fontFamily: 'var(--font-display)',
@@ -116,12 +169,7 @@ export default function Footer() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  style={{
-                    color: 'var(--color-text-primary)',
-                    textDecoration: 'none',
-                    fontSize: '15px',
-                    transition: 'color 150ms ease-out',
-                  }}
+                  style={{ color: 'var(--color-text-primary)', textDecoration: 'none', fontSize: '15px', transition: 'color 150ms ease-out' }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-accent)')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-text-primary)')}
                 >
@@ -132,8 +180,23 @@ export default function Footer() {
           </ul>
         </div>
 
+        {/* Col 2 mobile: accordion */}
+        <div className="footer-col-mobile">
+          <AccordionSection title="Services" open={openSection === 'services'} onToggle={() => toggle('services')}>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {serviceLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} style={{ color: 'var(--color-text-primary)', textDecoration: 'none', fontSize: '15px' }}>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </AccordionSection>
+        </div>
+
         {/* Col 3: Company */}
-        <div>
+        <div className="footer-col-desktop">
           <h4
             style={{
               fontFamily: 'var(--font-display)',
@@ -152,12 +215,7 @@ export default function Footer() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  style={{
-                    color: 'var(--color-text-primary)',
-                    textDecoration: 'none',
-                    fontSize: '15px',
-                    transition: 'color 150ms ease-out',
-                  }}
+                  style={{ color: 'var(--color-text-primary)', textDecoration: 'none', fontSize: '15px', transition: 'color 150ms ease-out' }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-accent)')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-text-primary)')}
                 >
@@ -168,8 +226,23 @@ export default function Footer() {
           </ul>
         </div>
 
+        {/* Col 3 mobile: accordion */}
+        <div className="footer-col-mobile">
+          <AccordionSection title="Company" open={openSection === 'company'} onToggle={() => toggle('company')}>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {companyLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} style={{ color: 'var(--color-text-primary)', textDecoration: 'none', fontSize: '15px' }}>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </AccordionSection>
+        </div>
+
         {/* Col 4: Contact info */}
-        <div>
+        <div className="footer-col-contact">
           <h4
             style={{
               fontFamily: 'var(--font-display)',
@@ -197,10 +270,7 @@ export default function Footer() {
               <svg width="16" height="16" fill="none" stroke="var(--color-accent)" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11.5 19.79 19.79 0 01.06 2.9 2 2 0 012.03 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
               </svg>
-              <a
-                href="tel:403-608-9933"
-                style={{ color: 'var(--color-accent)', textDecoration: 'none', fontSize: '15px', fontWeight: 700, fontFamily: 'var(--font-display)' }}
-              >
+              <a href="tel:403-608-9933" style={{ color: 'var(--color-accent)', textDecoration: 'none', fontSize: '15px', fontWeight: 700, fontFamily: 'var(--font-display)' }}>
                 403-608-9933
               </a>
             </div>
@@ -229,6 +299,35 @@ export default function Footer() {
           © 2025 City Roofing & Exteriors | Calgary, Alberta
         </p>
       </div>
+
+      <style>{`
+        .footer-grid {
+          display: grid;
+          grid-template-columns: 2fr 1fr 1fr 1.5fr;
+          gap: 48px;
+        }
+        .footer-col-mobile { display: none; }
+        .footer-accordion-section {
+          border-top: 1px solid var(--color-border);
+          padding: 16px 0;
+        }
+        @media (max-width: 768px) {
+          .footer-grid {
+            grid-template-columns: 1fr !important;
+            gap: 0 !important;
+            padding-bottom: 64px !important;
+          }
+          .footer-col-desktop { display: none !important; }
+          .footer-col-mobile { display: block !important; }
+          .footer-col-contact { border-top: 1px solid var(--color-border); padding-top: 24px; }
+          .footer-col-contact h4 { margin-bottom: 16px; }
+        }
+        @media (min-width: 769px) {
+          .footer-grid { display: grid !important; }
+          .footer-col-mobile { display: none !important; }
+          .footer-col-desktop { display: block !important; }
+        }
+      `}</style>
     </footer>
   );
 }

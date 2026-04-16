@@ -64,6 +64,7 @@ export default function HeroVideo() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
+        className="hero-content"
         style={{
           position: 'relative',
           zIndex: 10,
@@ -147,6 +148,7 @@ export default function HeroVideo() {
         >
           <Link
             href="/contact"
+            className="hero-btn-primary"
             style={{
               backgroundColor: 'var(--color-primary)',
               color: '#F9F7F2',
@@ -167,6 +169,7 @@ export default function HeroVideo() {
           </Link>
           <Link
             href="/projects"
+            className="hero-btn-secondary"
             style={{
               border: '2px solid #F9F7F2',
               backgroundColor: 'transparent',
@@ -188,6 +191,17 @@ export default function HeroVideo() {
           </Link>
         </motion.div>
       </motion.div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .hero-content { padding: 0 20px !important; }
+          .hero-content h1 { font-size: 42px !important; line-height: 1.1 !important; }
+          .hero-subtitle { font-size: 15px !important; max-width: 300px !important; margin-bottom: 32px !important; }
+          .hero-buttons { flex-direction: column !important; width: 100% !important; max-width: 320px !important; gap: 12px !important; }
+          .hero-btn-primary { width: 100% !important; text-align: center !important; font-size: 16px !important; padding: 16px !important; }
+          .hero-btn-secondary { width: 100% !important; text-align: center !important; font-size: 15px !important; padding: 14px !important; }
+        }
+      `}</style>
     </section>
   );
 }

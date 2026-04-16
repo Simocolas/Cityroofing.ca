@@ -111,7 +111,12 @@ export default function ProjectsScroll() {
         </Link>
       </div>
 
-      <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+      <style>{`
+        div::-webkit-scrollbar { display: none; }
+        @media (max-width: 768px) {
+          .project-card { width: 85vw !important; height: 260px !important; }
+        }
+      `}</style>
     </section>
   );
 }
