@@ -316,13 +316,6 @@ function getToday(): string {
   return new Date().toISOString().split('T')[0];
 }
 
-function extractText(response: { content?: { type: string; text?: string }[] }): string {
-  return (response.content ?? [])
-    .filter((c) => c.type === 'text')
-    .map((c) => c.text ?? '')
-    .join('');
-}
-
 function extractJson(text: string): Record<string, unknown> | null {
   try {
     const match = text.match(/\{[\s\S]*\}/);
@@ -331,36 +324,70 @@ function extractJson(text: string): Record<string, unknown> | null {
   return null;
 }
 
-async function callAnthropic(
-  messages: { role: string; content: string }[],
+// ── Gemini client (Stages 1, 2, 4) ───────────────────────────────────────────
+async function callGemini(
+  prompt: string,
   system: string,
   useWebSearch: boolean,
-): Promise<{ content?: { type: string; text?: string }[]; error?: string }> {
-  const key = process.env.ANTHROPIC_API_KEY;
-  if (!key) throw new Error('no_key');
+): Promise<string> {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) throw new Error('no_gemini_key');
 
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    'x-api-key': key,
-    'anthropic-version': '2023-06-01',
-  };
+  const model = useWebSearch ? 'gemini-2.0-flash' : 'gemini-2.0-flash';
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
 
   const body: Record<string, unknown> = {
-    model: 'claude-opus-4-6',
-    max_tokens: 5000,
-    system,
-    messages,
+    system_instruction: { parts: [{ text: system }] },
+    contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    generationConfig: { maxOutputTokens: 8192, temperature: 0.4 },
   };
 
   if (useWebSearch) {
-    headers['anthropic-beta'] = 'web-search-2025-03-05';
-    body.tools = [{ type: 'web_search_20250305', name: 'web_search' }];
+    body.tools = [{ google_search: {} }];
   }
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Gemini ${res.status}: ${err.slice(0, 300)}`);
+  }
+
+  const data = await res.json() as {
+    candidates?: { content?: { parts?: { text?: string }[] } }[];
+  };
+
+  return (data.candidates?.[0]?.content?.parts ?? [])
+    .filter((p) => p.text)
+    .map((p) => p.text ?? '')
+    .join('');
+}
+
+// ── Anthropic client (Stage 3 article writing + chat) ────────────────────────
+async function callAnthropic(
+  messages: { role: string; content: string }[],
+  system: string,
+): Promise<string> {
+  const key = process.env.ANTHROPIC_API_KEY;
+  if (!key) throw new Error('no_anthropic_key');
 
   const res = await fetch(ANTHROPIC_URL, {
     method: 'POST',
-    headers,
-    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-opus-4-6',
+      max_tokens: 6000,
+      system,
+      messages,
+    }),
   });
 
   if (!res.ok) {
@@ -368,7 +395,11 @@ async function callAnthropic(
     throw new Error(`Anthropic ${res.status}: ${err.slice(0, 200)}`);
   }
 
-  return res.json();
+  const data = await res.json() as { content?: { type: string; text?: string }[] };
+  return (data.content ?? [])
+    .filter((c) => c.type === 'text')
+    .map((c) => c.text ?? '')
+    .join('');
 }
 
 // ── Route handler ─────────────────────────────────────────────────────────────
@@ -379,11 +410,15 @@ export async function POST(req: NextRequest) {
 
     // ── Health check ──────────────────────────────────────────────────────────
     if (mode === 'check') {
-      if (!process.env.ANTHROPIC_API_KEY) return NextResponse.json({ error: 'no_key' });
-      return NextResponse.json({ ok: true });
+      const geminiOk = !!process.env.GEMINI_API_KEY;
+      const anthropicOk = !!process.env.ANTHROPIC_API_KEY;
+      if (!geminiOk || !anthropicOk) {
+        return NextResponse.json({ error: 'no_key', gemini: geminiOk, anthropic: anthropicOk });
+      }
+      return NextResponse.json({ ok: true, gemini: true, anthropic: true });
     }
 
-    // ── Stage 1 only: Research ────────────────────────────────────────────────
+    // ── Stage 1: Research — Gemini + Google Search ───────────────────────────
     if (mode === 'research') {
       const { topic, notes } = body as { topic?: string; notes?: string };
 
@@ -394,20 +429,14 @@ EDITOR NOTES: ${notes?.trim() || 'none'}
 
 Prioritize stories published within the last 30 days. Return ONLY valid JSON in the exact structure defined.`;
 
-      const response = await callAnthropic(
-        [{ role: 'user', content: userPrompt }],
-        RESEARCH_SYSTEM,
-        true,
-      );
-
-      const raw = extractText(response);
+      const raw = await callGemini(userPrompt, RESEARCH_SYSTEM, true);
       const research = extractJson(raw);
       if (!research) throw new Error('Research stage returned invalid JSON');
 
       return NextResponse.json({ research });
     }
 
-    // ── Stage 2 only: Blueprint ───────────────────────────────────────────────
+    // ── Stage 2: Blueprint — Gemini ───────────────────────────────────────────
     if (mode === 'blueprint') {
       const { researchContext, topic, contentType } = body as {
         researchContext: Record<string, unknown>;
@@ -433,25 +462,19 @@ ARTICLE FOCUS: Newsjack the selected story with a Calgary roofing expert perspec
 
 Return ONLY valid JSON in the exact structure defined.`;
 
-      const response = await callAnthropic(
-        [{ role: 'user', content: userPrompt }],
-        BLUEPRINT_SYSTEM,
-        false,
-      );
-
-      const raw = extractText(response);
+      const raw = await callGemini(userPrompt, BLUEPRINT_SYSTEM, false);
       const blueprint = extractJson(raw);
       if (!blueprint) throw new Error('Blueprint stage returned invalid JSON');
 
       return NextResponse.json({ blueprint });
     }
 
-    // ── Stage 3: Generate article ─────────────────────────────────────────────
+    // ── Stage 3: Article writing — Claude (second brain) ─────────────────────
     if (mode === 'generate') {
-      const { topic, contentType, autoSearch, sourceContext, researchContext, blueprintContext } = body as {
+      const { topic, contentType, sourceContext, researchContext, blueprintContext } = body as {
         topic: string | null;
         contentType: string;
-        autoSearch: boolean;
+        autoSearch?: boolean;
         sourceContext?: string;
         researchContext?: Record<string, unknown>;
         blueprintContext?: Record<string, unknown>;
@@ -459,7 +482,6 @@ Return ONLY valid JSON in the exact structure defined.`;
 
       const today = getToday();
 
-      // Build article user prompt — blueprint takes priority over raw research
       let userPrompt: string;
       if (blueprintContext) {
         userPrompt = `Write the complete article using this blueprint and research.
@@ -487,45 +509,13 @@ TODAY'S DATE: ${today}
 Apply all system instructions. Output the article now.`;
       }
 
-      // Legacy: auto mode with no pre-fetched context — run Stage 1 only (no blueprint)
-      if (autoSearch && !researchContext && !blueprintContext) {
-        const researchPrompt = `Find high-traffic Canadian news and identify the roofing professional angle.
-
-TOPIC DIRECTION: ${topic?.trim() || 'find the most relevant trending story right now'}
-EDITOR NOTES: none
-
-Prioritize stories published within the last 30 days. Return ONLY valid JSON in the exact structure defined.`;
-
-        const researchRes = await callAnthropic(
-          [{ role: 'user', content: researchPrompt }],
-          RESEARCH_SYSTEM,
-          true,
-        );
-        const research = extractJson(extractText(researchRes));
-        if (research) {
-          userPrompt = `Write the complete article using this research. No blueprint was generated — infer structure from research fields.
-
-RESEARCH: ${JSON.stringify(research, null, 2)}
-
-TODAY'S DATE: ${today}
-
-Apply all system instructions. Output the article now.`;
-        }
-      }
-
-      const response = await callAnthropic(
-        [{ role: 'user', content: userPrompt }],
-        WRITER_SYSTEM,
-        false,
-      );
-
-      const content = extractText(response);
-      if (!content) throw new Error('Empty response from Anthropic');
+      const content = await callAnthropic([{ role: 'user', content: userPrompt }], WRITER_SYSTEM);
+      if (!content) throw new Error('Empty response from Claude');
 
       return NextResponse.json({ content, research: researchContext, blueprint: blueprintContext });
     }
 
-    // ── Stage 4: Image prompts ────────────────────────────────────────────────
+    // ── Stage 4: Image prompts — Gemini ──────────────────────────────────────
     if (mode === 'image') {
       const { blueprintContext, researchContext, topic, category } = body as {
         blueprintContext?: Record<string, unknown>;
@@ -541,18 +531,12 @@ Apply all system instructions. Output the article now.`;
 
 TITLE: ${title}
 TOPIC: ${topic ?? title}
-CATEGORY: ${category ?? (blueprintContext?.article_type as string | undefined) ?? ''}
+CATEGORY: ${category ?? ''}
 KEY TECHNICAL ENTITIES: ${technicalEntities.join(', ')}
 
 Return ONLY valid JSON in the exact structure defined.`;
 
-      const response = await callAnthropic(
-        [{ role: 'user', content: userPrompt }],
-        IMAGE_SYSTEM,
-        false,
-      );
-
-      const raw = extractText(response);
+      const raw = await callGemini(userPrompt, IMAGE_SYSTEM, false);
       const images = extractJson(raw);
       if (!images) throw new Error('Image stage returned invalid JSON');
 
@@ -573,8 +557,7 @@ The user wants to modify the article below. Apply their request and return the c
 CURRENT ARTICLE:
 ${currentArticle}`;
 
-      const response = await callAnthropic(messages, systemWithContext, false);
-      const content = extractText(response);
+      const content = await callAnthropic(messages, systemWithContext);
 
       return NextResponse.json({ content });
     }
@@ -583,7 +566,6 @@ ${currentArticle}`;
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error('[news-generator]', msg);
-    if (msg === 'no_key') return NextResponse.json({ error: 'no_key' }, { status: 500 });
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

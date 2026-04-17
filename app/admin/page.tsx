@@ -663,12 +663,13 @@ function AINewsWriterSection() {
   const [publishMsg, setPublishMsg] = useState('');
   const [error, setError] = useState('');
   const [apiKeyOk, setApiKeyOk] = useState<boolean | null>(null);
+  const [keyStatus, setKeyStatus] = useState<{ gemini?: boolean; anthropic?: boolean }>({});
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch('/api/news-generator', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'check' }) })
       .then((r) => r.json())
-      .then((d) => setApiKeyOk(d.ok === true))
+      .then((d) => { setApiKeyOk(d.ok === true); setKeyStatus({ gemini: d.gemini, anthropic: d.anthropic }); })
       .catch(() => setApiKeyOk(false));
   }, []);
 
@@ -697,7 +698,7 @@ function AINewsWriterSection() {
           }),
         });
         const d1 = await r1.json();
-        if (d1.error) throw new Error(d1.error === 'no_key' ? '⚠️ ANTHROPIC_API_KEY not set in .env.local' : d1.error);
+        if (d1.error) throw new Error(d1.error.includes('no_gemini') ? '⚠️ GEMINI_API_KEY not set in .env.local' : d1.error);
 
         research = d1.research as ResearchResult;
         setResearchResult(research);
@@ -718,7 +719,7 @@ function AINewsWriterSection() {
           }),
         });
         const d2 = await r2.json();
-        if (d2.error) throw new Error(d2.error === 'no_key' ? '⚠️ ANTHROPIC_API_KEY not set in .env.local' : d2.error);
+        if (d2.error) throw new Error(d2.error.includes('no_gemini') ? '⚠️ GEMINI_API_KEY not set in .env.local' : d2.error);
 
         blueprint = d2.blueprint as BlueprintResult;
         setBlueprintResult(blueprint);
@@ -743,7 +744,7 @@ function AINewsWriterSection() {
         }),
       });
       const d3 = await r3.json();
-      if (d3.error) throw new Error(d3.error === 'no_key' ? '⚠️ ANTHROPIC_API_KEY not set in .env.local' : d3.error);
+      if (d3.error) throw new Error(d3.error.includes('no_anthropic') ? '⚠️ ANTHROPIC_API_KEY not set in .env.local' : d3.error);
 
       setDoneSteps([0, 1, 2, 3]);
       setActiveStep(4);
@@ -854,8 +855,15 @@ function AINewsWriterSection() {
         {/* API key warning */}
         {apiKeyOk === false && (
           <div style={{ backgroundColor: '#7c2d12', border: '1px solid #c2410c', borderRadius: '6px', padding: '14px 16px' }}>
-            <p style={{ color: '#fdba74', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '13px', marginBottom: '6px' }}>⚠️ API Key Missing</p>
-            <p style={{ color: '#b07a5a', fontSize: '12px', lineHeight: 1.5 }}>Add ANTHROPIC_API_KEY to .env.local to enable AI generation.</p>
+            <p style={{ color: '#fdba74', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '13px', marginBottom: '8px' }}>⚠️ API Key Missing</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <p style={{ color: keyStatus.gemini ? '#86efac' : '#fca5a5', fontSize: '12px' }}>
+                {keyStatus.gemini ? '✅' : '❌'} GEMINI_API_KEY — research, blueprint, images
+              </p>
+              <p style={{ color: keyStatus.anthropic ? '#86efac' : '#fca5a5', fontSize: '12px' }}>
+                {keyStatus.anthropic ? '✅' : '❌'} ANTHROPIC_API_KEY — article writing
+              </p>
+            </div>
           </div>
         )}
 
