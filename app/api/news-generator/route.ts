@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
 
 // ── Stage 1: News Intelligence System Prompt ─────────────────────────────────
 const RESEARCH_SYSTEM = `You are a news intelligence researcher and content strategist for City Roofing & Exteriors, a Calgary roofing contractor. Your job is NOT to find roofing articles. Your job is to find high-traffic, high-relevance Canadian news and identify how a Calgary roofing professional would uniquely comment on it.
@@ -367,40 +366,6 @@ async function callGemini(
     .join('');
 }
 
-// ── Anthropic client (Stage 3 article writing + chat) ────────────────────────
-async function callAnthropic(
-  messages: { role: string; content: string }[],
-  system: string,
-): Promise<string> {
-  const key = process.env.ANTHROPIC_API_KEY;
-  if (!key) throw new Error('no_anthropic_key');
-
-  const res = await fetch(ANTHROPIC_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': key,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model: 'claude-opus-4-6',
-      max_tokens: 6000,
-      system,
-      messages,
-    }),
-  });
-
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Anthropic ${res.status}: ${err.slice(0, 200)}`);
-  }
-
-  const data = await res.json() as { content?: { type: string; text?: string }[] };
-  return (data.content ?? [])
-    .filter((c) => c.type === 'text')
-    .map((c) => c.text ?? '')
-    .join('');
-}
 
 // ── Route handler ─────────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
@@ -411,9 +376,8 @@ export async function POST(req: NextRequest) {
     // ── Health check ──────────────────────────────────────────────────────────
     if (mode === 'check') {
       const geminiOk = !!process.env.GEMINI_API_KEY;
-      const anthropicOk = !!process.env.ANTHROPIC_API_KEY;
-      if (!geminiOk || !anthropicOk) {
-        return NextResponse.json({ error: 'no_key', gemini: geminiOk, anthropic: anthropicOk });
+      if (!geminiOk) {
+        return NextResponse.json({ error: 'no_key', gemini: false, anthropic: true });
       }
       return NextResponse.json({ ok: true, gemini: true, anthropic: true });
     }
@@ -509,7 +473,7 @@ TODAY'S DATE: ${today}
 Apply all system instructions. Output the article now.`;
       }
 
-      const content = await callAnthropic([{ role: 'user', content: userPrompt }], WRITER_SYSTEM);
+      const content = await callGemini(userPrompt, WRITER_SYSTEM, false);
       if (!content) throw new Error('Empty response from Claude');
 
       return NextResponse.json({ content, research: researchContext, blueprint: blueprintContext });
@@ -557,7 +521,7 @@ The user wants to modify the article below. Apply their request and return the c
 CURRENT ARTICLE:
 ${currentArticle}`;
 
-      const content = await callAnthropic(messages, systemWithContext);
+      const content = await callGemini(messages[messages.length - 1].content, systemWithContext, false);
 
       return NextResponse.json({ content });
     }
