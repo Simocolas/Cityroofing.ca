@@ -667,10 +667,9 @@ function ProjectsSection() {
 // ─── AI News Writer Section ───────────────────────────────────────────────────
 
 const GEN_STEPS = [
-  '🔍 Searching for news...',
-  '📰 Reading sources...',
-  '✍️ Writing article...',
-  '🖼️ Finding image...',
+  '🔍 Scanning Canadian news sources...',
+  '📰 Building roofing connection & research brief...',
+  '✍️ Writing SEO article from research...',
 ];
 
 const CONTENT_TYPES = ['Roofing Maintenance', 'Emergency Repair', 'Material Guide', 'Local Weather Tips', 'Cost & Financing', 'Insurance Claims'];
@@ -687,13 +686,23 @@ function renderMdxPreview(mdx: string): string {
     .replace(/\n/g, ' ');
 }
 
+// ── Research result types ─────────────────────────────────────────────────────
+interface ResearchResult {
+  selected_story?: { headline?: string; source?: string; published_date?: string; url?: string; why_high_traffic?: string };
+  connection_bridge?: { link_to_roofing?: string; professional_angle?: string; homeowner_implication?: string };
+  suggested_primary_keyword?: string;
+  best_category?: string;
+}
+
 function AINewsWriterSection() {
   const [topicMode, setTopicMode] = useState<'auto' | 'custom'>('auto');
   const [customTopic, setCustomTopic] = useState('');
+  const [editorNotes, setEditorNotes] = useState('');
   const [contentType, setContentType] = useState('Roofing Maintenance');
   const [generating, setGenerating] = useState(false);
   const [activeStep, setActiveStep] = useState(-1);
   const [doneSteps, setDoneSteps] = useState<number[]>([]);
+  const [researchResult, setResearchResult] = useState<ResearchResult | null>(null);
   const [article, setArticle] = useState('');
   const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([]);
   const [chatInput, setChatInput] = useState('');
@@ -720,32 +729,58 @@ function AINewsWriterSection() {
   async function generate() {
     if (topicMode === 'custom' && !customTopic.trim()) { setError('Please enter a topic.'); return; }
     setError(''); setGenerating(true); setActiveStep(0); setDoneSteps([]); setPublishMsg('');
-
-    const timers = [1800, 3800, 6000].map((delay, i) =>
-      setTimeout(() => { setDoneSteps((prev) => [...prev, i]); setActiveStep(i + 1); }, delay)
-    );
+    setResearchResult(null); setArticle('');
 
     try {
-      const res = await fetch('/api/news-generator', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode: 'generate', topic: topicMode === 'custom' ? customTopic : null, contentType, autoSearch: topicMode === 'auto' }),
-      });
-      const data = await res.json();
-      timers.forEach(clearTimeout);
+      // ── Stage 1: Research (auto mode only) ──────────────────────────────────
+      let research: ResearchResult | null = null;
 
-      if (data.error) {
-        setError(data.error === 'no_key' ? '⚠️ ANTHROPIC_API_KEY not set in .env.local' : data.error);
-        setActiveStep(-1);
-        return;
+      if (topicMode === 'auto') {
+        const r1 = await fetch('/api/news-generator', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mode: 'research',
+            topic: customTopic.trim() || null,
+            notes: editorNotes.trim() || null,
+          }),
+        });
+        const d1 = await r1.json();
+        if (d1.error) throw new Error(d1.error === 'no_key' ? '⚠️ ANTHROPIC_API_KEY not set in .env.local' : d1.error);
+
+        research = d1.research as ResearchResult;
+        setResearchResult(research);
+        // Auto-sync category from research
+        if (research?.best_category && CONTENT_TYPES.includes(research.best_category)) {
+          setContentType(research.best_category);
+        }
+        setDoneSteps([0, 1]);
+        setActiveStep(2);
+      } else {
+        setDoneSteps([0, 1]);
+        setActiveStep(2);
       }
 
-      setDoneSteps([0, 1, 2, 3]);
+      // ── Stage 2: Article writing ─────────────────────────────────────────────
+      const r2 = await fetch('/api/news-generator', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'generate',
+          topic: topicMode === 'custom' ? customTopic : null,
+          contentType,
+          autoSearch: false,
+          researchContext: research,
+        }),
+      });
+      const d2 = await r2.json();
+      if (d2.error) throw new Error(d2.error === 'no_key' ? '⚠️ ANTHROPIC_API_KEY not set in .env.local' : d2.error);
+
+      setDoneSteps([0, 1, 2]);
       setActiveStep(-1);
-      setArticle(data.content);
+      setArticle(d2.content);
       setChatMessages([{ role: 'assistant', content: '✅ Article generated! Ask me to modify it — e.g. "Make it shorter", "Add more Calgary context", "Change tone to urgent", "Add insurance section".' }]);
     } catch (e: unknown) {
-      timers.forEach(clearTimeout);
       setError(e instanceof Error ? e.message : 'Generation failed');
       setActiveStep(-1);
     } finally {
@@ -832,7 +867,7 @@ function AINewsWriterSection() {
         {/* Step 1: Topic */}
         <div style={S.card}>
           <p style={{ ...S.label, marginBottom: '12px' }}>Step 1 — Topic</p>
-          {([{ value: 'auto', label: 'Let AI decide (web search)' }, { value: 'custom', label: 'Custom topic...' }] as const).map((opt) => (
+          {([{ value: 'auto', label: 'Let AI find news (web search)' }, { value: 'custom', label: 'Custom topic...' }] as const).map((opt) => (
             <label key={opt.value} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: topicMode === opt.value ? '#f5f5f5' : '#666', fontSize: '13px', fontFamily: 'var(--font-display)', marginBottom: '8px' }}>
               <input type="radio" name="topicMode" value={opt.value} checked={topicMode === opt.value} onChange={() => setTopicMode(opt.value)} style={{ accentColor: '#C0392B' }} />
               {opt.label}
@@ -841,11 +876,20 @@ function AINewsWriterSection() {
           {topicMode === 'custom' && (
             <input value={customTopic} onChange={(e) => setCustomTopic(e.target.value)} style={{ ...S.input, marginTop: '8px' }} placeholder="e.g. Calgary hail season 2026" />
           )}
+          {topicMode === 'auto' && (
+            <textarea
+              value={editorNotes}
+              onChange={(e) => setEditorNotes(e.target.value)}
+              style={{ ...S.textarea, marginTop: '10px', minHeight: '64px', fontSize: '12px', resize: 'vertical' }}
+              placeholder="Editor notes (optional) — e.g. focus on insurance, avoid flood stories, prefer hail angle"
+            />
+          )}
         </div>
 
         {/* Step 2: Content Type */}
         <div style={S.card}>
           <p style={{ ...S.label, marginBottom: '12px' }}>Step 2 — Content Type</p>
+          <p style={{ color: '#555', fontSize: '11px', marginBottom: '10px', lineHeight: 1.4 }}>Auto-detected from research in auto mode.</p>
           {CONTENT_TYPES.map((ct) => (
             <label key={ct} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: contentType === ct ? '#f5f5f5' : '#666', fontSize: '13px', fontFamily: 'var(--font-display)', marginBottom: '8px' }}>
               <input type="radio" name="contentType" value={ct} checked={contentType === ct} onChange={() => setContentType(ct)} style={{ accentColor: '#C0392B' }} />
@@ -855,9 +899,9 @@ function AINewsWriterSection() {
         </div>
 
         {/* Step progress */}
-        {generating && (
+        {(generating || doneSteps.length > 0) && (
           <div style={S.card}>
-            <p style={{ ...S.label, marginBottom: '12px' }}>Generating...</p>
+            <p style={{ ...S.label, marginBottom: '12px' }}>{generating ? 'In progress...' : '✅ Complete'}</p>
             {GEN_STEPS.map((step, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '5px 0', opacity: activeStep === i || doneSteps.includes(i) ? 1 : 0.25, transition: 'opacity 300ms' }}>
                 <span>{doneSteps.includes(i) ? '✅' : activeStep === i ? '⏳' : '⬜'}</span>
@@ -874,12 +918,50 @@ function AINewsWriterSection() {
 
         {/* Generate button */}
         <button onClick={generate} disabled={generating} style={{ ...S.btn('primary'), padding: '15px 24px', fontSize: '14px', width: '100%', opacity: generating ? 0.6 : 1 }}>
-          {generating ? 'Generating...' : '✨ Generate Article'}
+          {generating ? (activeStep === 2 ? 'Writing article...' : 'Researching...') : '✨ Generate Article'}
         </button>
       </div>
 
       {/* ── RIGHT PANEL ─────────────────────────────────────────── */}
       <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+        {/* Research preview card */}
+        {researchResult && researchResult.selected_story && (
+          <div style={{ backgroundColor: '#0d1f0d', border: '1px solid #1e3a1e', borderRadius: '6px', padding: '16px 18px' }}>
+            <p style={{ ...S.label, color: '#86efac', marginBottom: '12px', letterSpacing: '1.5px' }}>📰 Research Brief</p>
+
+            {/* Story */}
+            <div style={{ marginBottom: '12px' }}>
+              <p style={{ color: '#f5f5f5', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '14px', lineHeight: 1.4, marginBottom: '4px' }}>
+                {researchResult.selected_story.headline}
+              </p>
+              <p style={{ color: '#6b9e6b', fontSize: '12px' }}>
+                {researchResult.selected_story.source}
+                {researchResult.selected_story.published_date && ` · ${researchResult.selected_story.published_date}`}
+              </p>
+            </div>
+
+            {/* Connection bridge */}
+            {researchResult.connection_bridge?.link_to_roofing && (
+              <div style={{ borderTop: '1px solid #1e3a1e', paddingTop: '10px', marginBottom: '8px' }}>
+                <p style={{ color: '#9ca3af', fontSize: '11px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '4px', fontFamily: 'var(--font-display)', fontWeight: 700 }}>Roofing Connection</p>
+                <p style={{ color: '#d1fae5', fontSize: '13px', lineHeight: 1.5 }}>{researchResult.connection_bridge.link_to_roofing}</p>
+              </div>
+            )}
+            {researchResult.connection_bridge?.professional_angle && (
+              <div style={{ borderTop: '1px solid #1e3a1e', paddingTop: '10px', marginBottom: '8px' }}>
+                <p style={{ color: '#9ca3af', fontSize: '11px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '4px', fontFamily: 'var(--font-display)', fontWeight: 700 }}>Pro Angle</p>
+                <p style={{ color: '#d1fae5', fontSize: '13px', lineHeight: 1.5 }}>{researchResult.connection_bridge.professional_angle}</p>
+              </div>
+            )}
+            {researchResult.suggested_primary_keyword && (
+              <div style={{ borderTop: '1px solid #1e3a1e', paddingTop: '10px' }}>
+                <p style={{ color: '#9ca3af', fontSize: '11px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '4px', fontFamily: 'var(--font-display)', fontWeight: 700 }}>Target Keyword</p>
+                <p style={{ color: '#86efac', fontSize: '13px', fontFamily: 'monospace' }}>{researchResult.suggested_primary_keyword}</p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Chat */}
         <div style={{ ...S.card, display: 'flex', flexDirection: 'column', height: '260px' }}>
