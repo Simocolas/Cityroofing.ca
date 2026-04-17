@@ -310,30 +310,159 @@ function DashboardSection({ posts, onNavigate }: { posts: PostData[]; onNavigate
 
 // ─── Post List Section ─────────────────────────────────────────────────────────
 
-function PostListSection({ posts }: { posts: PostData[] }) {
+function PostListSection({ posts, onRefresh }: { posts: PostData[]; onRefresh: () => void }) {
   const now = new Date();
+  const [deleteTarget, setDeleteTarget] = useState<PostData | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteMsg, setDeleteMsg] = useState('');
+  const [editTarget, setEditTarget] = useState<PostData | null>(null);
+  const [editContent, setEditContent] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState('');
+
+  function openEdit(post: PostData) {
+    setEditTarget(post);
+    setEditContent(post.rawContent);
+    setSaveMsg('');
+  }
+
+  function closeEdit() {
+    setEditTarget(null);
+    setEditContent('');
+    setSaveMsg('');
+  }
+
+  async function handleSave() {
+    if (!editTarget) return;
+    setSaving(true);
+    setSaveMsg('');
+    const isDraft = editTarget.frontmatter.status === 'draft';
+    try {
+      const res = await fetch('/api/posts', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': ADMIN_PASSWORD },
+        body: JSON.stringify({ slug: editTarget.slug, mdxContent: editContent, draft: isDraft }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSaveMsg('✅ Saved' + (data.gitOutput ? `\n\n─── Git ───\n${data.gitOutput}` : ''));
+        onRefresh();
+      } else {
+        setSaveMsg(`❌ ${data.error}`);
+      }
+    } catch (e: unknown) {
+      setSaveMsg(`❌ ${e instanceof Error ? e.message : 'Failed'}`);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    setDeleteMsg('');
+    const isDraft = deleteTarget.frontmatter.status === 'draft';
+    try {
+      const res = await fetch('/api/posts', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': ADMIN_PASSWORD },
+        body: JSON.stringify({ slug: deleteTarget.slug, draft: isDraft }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setDeleteTarget(null);
+        onRefresh();
+      } else {
+        setDeleteMsg(`❌ ${data.error}`);
+      }
+    } catch (e: unknown) {
+      setDeleteMsg(`❌ ${e instanceof Error ? e.message : 'Failed'}`);
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   return (
     <div>
+      {/* Delete confirmation */}
+      {deleteTarget && (
+        <div style={{ backgroundColor: '#7f1d1d', border: '1px solid #991b1b', borderRadius: '6px', padding: '20px 24px', marginBottom: '20px' }}>
+          <p style={{ color: '#fca5a5', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '14px', marginBottom: '16px' }}>
+            Delete &ldquo;{deleteTarget.frontmatter.title ?? deleteTarget.slug}&rdquo;? This cannot be undone.
+          </p>
+          {deleteMsg && <p style={{ color: '#fca5a5', fontSize: '12px', marginBottom: '12px' }}>{deleteMsg}</p>}
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button onClick={handleDelete} disabled={deleting} style={{ ...S.btn('danger'), opacity: deleting ? 0.6 : 1 }}>
+              {deleting ? 'Deleting...' : 'Delete'}
+            </button>
+            <button onClick={() => { setDeleteTarget(null); setDeleteMsg(''); }} style={S.btn('secondary')}>Cancel</button>
+          </div>
+        </div>
+      )}
+
+      {/* Post list */}
       {posts.length === 0 ? <p style={{ color: '#666', fontSize: '14px' }}>No posts in this category.</p> : (
         <div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px 140px', gap: '16px', padding: '10px 16px', backgroundColor: '#111', borderRadius: '4px 4px 0 0', borderBottom: '1px solid #2a2a2a' }}>
-            {['Title', 'Category', 'Date'].map((h) => <span key={h} style={{ ...S.label, margin: 0, fontSize: '11px' }}>{h}</span>)}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px 140px 150px', gap: '16px', padding: '10px 16px', backgroundColor: '#111', borderRadius: '4px 4px 0 0', borderBottom: '1px solid #2a2a2a' }}>
+            {['Title', 'Category', 'Date', 'Actions'].map((h) => <span key={h} style={{ ...S.label, margin: 0, fontSize: '11px' }}>{h}</span>)}
           </div>
           {posts.map((p) => {
             const diff = p.frontmatter.scheduledDate ? new Date(p.frontmatter.scheduledDate).getTime() - now.getTime() : 0;
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const countdown = p.frontmatter.status === 'scheduled' && diff > 0 ? (days === 0 ? 'Today' : `In ${days}d`) : '';
             return (
-              <div key={p.slug} style={{ display: 'grid', gridTemplateColumns: '1fr 120px 140px', gap: '16px', padding: '14px 16px', borderBottom: '1px solid #2a2a2a', alignItems: 'center', backgroundColor: '#1a1a1a' }}>
+              <div key={p.slug} style={{ display: 'grid', gridTemplateColumns: '1fr 120px 140px 150px', gap: '16px', padding: '14px 16px', borderBottom: '1px solid #2a2a2a', alignItems: 'center', backgroundColor: '#1a1a1a' }}>
                 <div>
                   <div style={{ color: '#f5f5f5', fontSize: '14px', fontFamily: 'var(--font-display)', fontWeight: 600 }}>{p.frontmatter.title ?? p.slug}</div>
                   {countdown && <div style={{ color: '#93c5fd', fontSize: '11px', marginTop: '4px', fontFamily: 'var(--font-display)' }}>Publishes {countdown}</div>}
                 </div>
                 <span style={{ color: '#9a9a9a', fontSize: '13px' }}>{p.frontmatter.category ?? '—'}</span>
                 <span style={{ color: '#666', fontSize: '12px' }}>{p.frontmatter.date ?? '—'}</span>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <button onClick={() => openEdit(p)} style={{ ...S.btn('ghost'), padding: '6px 10px', fontSize: '12px' }}>Edit</button>
+                  <button onClick={() => setDeleteTarget(p)} style={{ ...S.btn('danger'), padding: '6px 10px', fontSize: '12px' }}>Delete</button>
+                </div>
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Edit modal overlay */}
+      {editTarget && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.88)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ ...S.card, width: '100%', maxWidth: '940px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            {/* Modal header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexShrink: 0 }}>
+              <div>
+                <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '17px', color: '#f5f5f5', margin: 0 }}>Edit Article</h2>
+                <p style={{ color: '#555', fontSize: '12px', marginTop: '4px', fontFamily: 'monospace' }}>{editTarget.slug}.mdx</p>
+              </div>
+              <button onClick={closeEdit} style={{ ...S.btn('ghost'), padding: '6px 14px', flexShrink: 0 }}>✕ Close</button>
+            </div>
+
+            {/* MDX editor */}
+            <textarea
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+              style={{ ...S.textarea, flex: 1, minHeight: '460px', fontFamily: 'monospace', fontSize: '12px', lineHeight: 1.6 }}
+            />
+
+            {/* Save result */}
+            {saveMsg && (
+              <pre style={{ backgroundColor: '#0d0d0d', border: '1px solid #2a2a2a', borderRadius: '4px', padding: '10px 14px', color: '#86efac', fontSize: '12px', fontFamily: 'monospace', whiteSpace: 'pre-wrap', margin: 0, flexShrink: 0 }}>
+                {saveMsg}
+              </pre>
+            )}
+
+            {/* Actions */}
+            <div style={{ display: 'flex', gap: '10px', flexShrink: 0 }}>
+              <button onClick={handleSave} disabled={saving} style={{ ...S.btn('primary'), opacity: saving ? 0.6 : 1 }}>
+                {saving ? 'Saving...' : editTarget.frontmatter.status === 'published' ? '🚀 Save & Push' : '💾 Save Draft'}
+              </button>
+              <button onClick={closeEdit} style={S.btn('secondary')}>Cancel</button>
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -1394,9 +1523,9 @@ function AdminDashboard() {
         ) : (
           <>
             {section === 'dashboard' && <DashboardSection posts={posts} onNavigate={setSection} />}
-            {section === 'drafts' && <PostListSection posts={drafts} />}
-            {section === 'scheduled' && <PostListSection posts={scheduled} />}
-            {section === 'published' && <PostListSection posts={published} />}
+            {section === 'drafts' && <PostListSection posts={drafts} onRefresh={fetchPosts} />}
+            {section === 'scheduled' && <PostListSection posts={scheduled} onRefresh={fetchPosts} />}
+            {section === 'published' && <PostListSection posts={published} onRefresh={fetchPosts} />}
             {section === 'ai-news-writer' && <AINewsWriterSection />}
             {section === 'projects' && <ProjectsSection />}
             {section === 'reviews' && <ReviewsAdminSection />}
