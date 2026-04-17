@@ -115,7 +115,7 @@ export default function ProjectsGrid() {
       </div>
 
       {/* Service Coverage Map */}
-      <section className="coverage-section" style={{ backgroundColor: '#0E0E0E', padding: '80px 24px' }}>
+      <section className="coverage-section" style={{ backgroundColor: 'var(--color-cream-dark)', padding: '80px 24px', borderTop: '1px solid var(--color-border-light)' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
 
           {/* Header */}
@@ -123,16 +123,16 @@ export default function ProjectsGrid() {
             <p style={{ fontSize: '11px', letterSpacing: '3px', color: 'var(--color-primary)', fontFamily: 'var(--font-display)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '14px' }}>
               Service Area
             </p>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(26px, 3vw, 38px)', color: '#F9F7F2', marginBottom: '16px', lineHeight: 1.2 }}>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(26px, 3vw, 38px)', color: 'var(--color-text-dark)', marginBottom: '16px', lineHeight: 1.2 }}>
               From the Okanagan to Edmonton
             </h2>
-            <p style={{ color: 'rgba(249,247,242,0.55)', fontSize: '16px', lineHeight: 1.65, maxWidth: '560px', margin: '0 auto' }}>
+            <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '16px', lineHeight: 1.65, maxWidth: '560px', margin: '0 auto' }}>
               From BC&rsquo;s Okanagan Valley to Edmonton and south through Alberta — our crews have worked across the region. Every location on this map has a City Roofing story.
             </p>
           </div>
 
           {/* Map image */}
-          <div style={{ position: 'relative', width: '100%', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <div style={{ position: 'relative', width: '100%', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 16px rgba(0,0,0,0.07)' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className="range-map-img"
@@ -147,7 +147,7 @@ export default function ProjectsGrid() {
             {['Calgary (All Quadrants)', 'Airdrie', 'Cochrane', 'Chestermere', 'Okotoks', 'Edmonton Region', 'BC Okanagan', 'Southern Alberta'].map((area) => (
               <span
                 key={area}
-                style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(249,247,242,0.65)', padding: '6px 14px', borderRadius: '3px', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '12px', letterSpacing: '0.5px', whiteSpace: 'nowrap' }}
+                style={{ backgroundColor: 'rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.1)', color: 'var(--color-text-dark-muted)', padding: '6px 14px', borderRadius: '3px', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '12px', letterSpacing: '0.5px', whiteSpace: 'nowrap' }}
               >
                 {area}
               </span>
