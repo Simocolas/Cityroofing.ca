@@ -271,6 +271,46 @@ Output ONLY the MDX file. No preamble, no commentary.`;
 
 
 
+// ── Stage 4: Image Prompt System ─────────────────────────────────────────────
+const IMAGE_SYSTEM = `You are a creative director generating image prompts for a Calgary roofing contractor's premium content. All images must look like high-end architectural photography — not stock photos, not AI illustration, not 3D renders.
+
+BRAND IMAGE STANDARDS:
+- Realistic DSLR photography aesthetic — Canon or Sony full-frame look
+- Calgary suburban or commercial setting: two-story homes, prairie sky, Rockies in far background where natural
+- Roofing materials: dark charcoal, slate grey, or weathered cedar — never bright colors
+- Exterior materials: warm brick, light stucco, hardie board — common Calgary housing stock
+- No people, no pets, no vehicles, no logos, no text in frame
+- Natural lighting: golden hour or bright overcast — avoid harsh midday shadows
+- No dramatic storms or catastrophic damage for standard articles — reserve for Emergency Repair category only
+
+PROMPT STRUCTURE — follow this formula exactly:
+[Primary subject with material detail], [location/setting with Calgary context], [weather and light condition], [camera angle and lens feel], [style qualifiers]
+
+Example: "Close-up of dark charcoal asphalt shingles with visible granule texture and ridge cap detail on a Calgary suburban home, overcast Alberta sky, shallow depth of field, Canon 5D Mark IV look, photorealistic architectural photography, ultra-detailed"
+
+Return ONLY a valid JSON object — no markdown fences, no preamble:
+
+{
+  "featured_image": {
+    "prompt": "50-80 word Midjourney/DALL-E 3 prompt following the brand formula exactly. Wide establishing shot — full roof or exterior visible. This is the hero image.",
+    "negative_prompt": "people, person, human, pets, cars, vehicles, text, logos, cartoon, illustration, 3D render, stock photo look, bright colors, green roof, blue shingles",
+    "alt_text": "Describe literally what is in the image. Under 120 characters. Include Calgary.",
+    "use_case": "Featured/hero image — appears at top of article and in social sharing"
+  },
+  "inline_1": {
+    "prompt": "50-70 word prompt. Close-up or detail shot illustrating a specific section of the article. Reference the specific roofing component or condition covered in the article.",
+    "negative_prompt": "people, text, logos, cartoon, illustration, 3D render",
+    "alt_text": "Literal description under 120 chars with Calgary reference",
+    "use_case": "Placed after [specific H2 section heading] to illustrate [what specifically]"
+  },
+  "inline_2": {
+    "prompt": "50-70 word prompt. Different angle or subject than inline_1. Could show damage detail, material comparison, inspection result, or seasonal condition relevant to the article topic.",
+    "negative_prompt": "people, text, logos, cartoon, illustration, 3D render",
+    "alt_text": "Literal description under 120 chars",
+    "use_case": "Placed after [specific H2 section heading] to illustrate [what specifically]"
+  }
+}`;
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function getToday(): string {
   return new Date().toISOString().split('T')[0];
@@ -483,6 +523,40 @@ Apply all system instructions. Output the article now.`;
       if (!content) throw new Error('Empty response from Anthropic');
 
       return NextResponse.json({ content, research: researchContext, blueprint: blueprintContext });
+    }
+
+    // ── Stage 4: Image prompts ────────────────────────────────────────────────
+    if (mode === 'image') {
+      const { blueprintContext, researchContext, topic, category } = body as {
+        blueprintContext?: Record<string, unknown>;
+        researchContext?: Record<string, unknown>;
+        topic?: string;
+        category?: string;
+      };
+
+      const title = (blueprintContext?.chosen_title as string | undefined) ?? topic ?? '';
+      const technicalEntities = (researchContext?.technical_entities as string[] | undefined) ?? [];
+
+      const userPrompt = `Generate image prompts for this article.
+
+TITLE: ${title}
+TOPIC: ${topic ?? title}
+CATEGORY: ${category ?? (blueprintContext?.article_type as string | undefined) ?? ''}
+KEY TECHNICAL ENTITIES: ${technicalEntities.join(', ')}
+
+Return ONLY valid JSON in the exact structure defined.`;
+
+      const response = await callAnthropic(
+        [{ role: 'user', content: userPrompt }],
+        IMAGE_SYSTEM,
+        false,
+      );
+
+      const raw = extractText(response);
+      const images = extractJson(raw);
+      if (!images) throw new Error('Image stage returned invalid JSON');
+
+      return NextResponse.json({ images });
     }
 
     // ── Chat / edit ───────────────────────────────────────────────────────────
