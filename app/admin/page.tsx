@@ -312,7 +312,7 @@ function DashboardSection({ posts, onNavigate }: { posts: PostData[]; onNavigate
 // ─── New Post Section ─────────────────────────────────────────────────────────
 
 function NewPostSection({ initialContent }: { initialContent?: string }) {
-  const [contentType, setContentType] = useState('Industry Update');
+  const [contentType, setContentType] = useState('Roofing Maintenance');
   const [topic, setTopic] = useState('');
   const [sourceContext, setSourceContext] = useState('');
   const [length, setLength] = useState('Standard (1000w)');
@@ -349,7 +349,7 @@ function NewPostSection({ initialContent }: { initialContent?: string }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div><label style={S.label}>Content Type</label>
             <select value={contentType} onChange={(e) => setContentType(e.target.value)} style={S.select}>
-              <option>Industry Update</option><option>Calgary Local News</option><option>Maintenance Tip</option><option>Project Showcase</option>
+              <option>Roofing Maintenance</option><option>Emergency Repair</option><option>Material Guide</option><option>Local Weather Tips</option><option>Cost &amp; Financing</option><option>Insurance Claims</option>
             </select>
           </div>
           <div><label style={S.label}>Topic / Keywords</label>
@@ -673,7 +673,7 @@ const GEN_STEPS = [
   '🖼️ Finding image...',
 ];
 
-const CONTENT_TYPES = ['Industry Update', 'Local Calgary News', 'Maintenance Tips', 'Hail & Storm Alert'];
+const CONTENT_TYPES = ['Roofing Maintenance', 'Emergency Repair', 'Material Guide', 'Local Weather Tips', 'Cost & Financing', 'Insurance Claims'];
 
 function renderMdxPreview(mdx: string): string {
   const withoutFm = mdx.replace(/^---[\s\S]*?---\n?/, '');
@@ -690,7 +690,7 @@ function renderMdxPreview(mdx: string): string {
 function AINewsWriterSection() {
   const [topicMode, setTopicMode] = useState<'auto' | 'custom'>('auto');
   const [customTopic, setCustomTopic] = useState('');
-  const [contentType, setContentType] = useState('Industry Update');
+  const [contentType, setContentType] = useState('Roofing Maintenance');
   const [generating, setGenerating] = useState(false);
   const [activeStep, setActiveStep] = useState(-1);
   const [doneSteps, setDoneSteps] = useState<number[]>([]);
