@@ -332,7 +332,7 @@ async function callGemini(
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error('no_gemini_key');
 
-  const model = useWebSearch ? 'gemini-2.0-flash' : 'gemini-2.0-flash';
+  const model = 'gemini-3-flash-preview';
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
 
   const body: Record<string, unknown> = {
