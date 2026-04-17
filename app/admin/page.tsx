@@ -665,6 +665,7 @@ function AINewsWriterSection() {
   const [apiKeyOk, setApiKeyOk] = useState<boolean | null>(null);
   const [keyStatus, setKeyStatus] = useState<{ gemini?: boolean; anthropic?: boolean }>({});
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const publishMsgRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch('/api/news-generator', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'check' }) })
@@ -676,6 +677,10 @@ function AINewsWriterSection() {
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatMessages, chatting]);
+
+  useEffect(() => {
+    if (publishMsg) publishMsgRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [publishMsg]);
 
   async function generate() {
     if (topicMode === 'custom' && !customTopic.trim()) { setError('Please enter a topic.'); return; }
@@ -831,9 +836,9 @@ function AINewsWriterSection() {
       });
       const data = await res.json();
       if (data.success) {
-        setPublishMsg(draft
-          ? `💾 Draft saved to ${data.path}`
-          : `✅ Published to ${data.path}\n\nTo deploy:\ngit add . && git commit -m "Add article: ${title}" && git push`);
+        const base = draft ? `💾 Draft saved → ${data.path}` : `✅ Published → ${data.path}`;
+        const git = data.gitOutput ? `\n\n─── Git ───\n${data.gitOutput}` : '';
+        setPublishMsg(base + git);
       } else {
         setPublishMsg(`❌ ${data.error}`);
       }
@@ -844,7 +849,6 @@ function AINewsWriterSection() {
     }
   }
 
-  const gitCmd = publishMsg.includes('git add') ? publishMsg.split('To deploy:\n')[1] : '';
 
   return (
     <div className="ai-writer-layout" style={{ display: 'flex', gap: '24px' }}>
@@ -1136,16 +1140,8 @@ function AINewsWriterSection() {
 
           {/* Publish result */}
           {publishMsg && (
-            <div style={{ marginTop: '12px', backgroundColor: '#111', border: '1px solid #2a2a2a', borderRadius: '4px', padding: '14px 16px' }}>
+            <div ref={publishMsgRef} style={{ marginTop: '12px', backgroundColor: '#111', border: '1px solid #2a2a2a', borderRadius: '4px', padding: '14px 16px' }}>
               <pre style={{ color: '#86efac', fontSize: '12px', fontFamily: 'monospace', whiteSpace: 'pre-wrap', margin: 0, lineHeight: 1.6 }}>{publishMsg}</pre>
-              {gitCmd && (
-                <button
-                  onClick={() => navigator.clipboard.writeText(gitCmd)}
-                  style={{ ...S.btn('ghost'), marginTop: '10px', padding: '6px 14px', fontSize: '11px' }}
-                >
-                  Copy Git Command
-                </button>
-              )}
             </div>
           )}
         </div>

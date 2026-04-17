@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+
+const execAsync = promisify(exec);
 
 export const dynamic = 'force-dynamic';
 
@@ -48,7 +52,23 @@ export async function POST(req: NextRequest) {
       ? `content/news/drafts/${safeSlug}.mdx`
       : `content/news/${safeSlug}.mdx`;
 
-    return NextResponse.json({ success: true, path: relativePath, slug: safeSlug });
+    // ── Git: add, commit, push ────────────────────────────────────────────────
+    let gitOutput = '';
+    if (!draft) {
+      try {
+        const commitMsg = `Add article: ${safeSlug}`;
+        const { stdout, stderr } = await execAsync(
+          `git -C "${process.cwd()}" add "${relativePath}" && git -C "${process.cwd()}" commit -m "${commitMsg}" && git -C "${process.cwd()}" push`,
+          { timeout: 60000 }
+        );
+        gitOutput = (stdout + (stderr ? `\n${stderr}` : '')).trim();
+      } catch (gitErr: unknown) {
+        const msg = gitErr instanceof Error ? gitErr.message : String(gitErr);
+        gitOutput = `⚠️ Git error: ${msg}`;
+      }
+    }
+
+    return NextResponse.json({ success: true, path: relativePath, slug: safeSlug, gitOutput });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error('[publish-article]', msg);
