@@ -68,7 +68,6 @@ interface CompanyData {
 
 type Section =
   | 'dashboard'
-  | 'new-post'
   | 'drafts'
   | 'scheduled'
   | 'published'
@@ -304,114 +303,34 @@ function DashboardSection({ posts, onNavigate }: { posts: PostData[]; onNavigate
           </div>
         )}
       </div>
-      <button onClick={() => onNavigate('new-post')} style={{ ...S.btn('primary'), padding: '14px 32px', fontSize: '15px' }}>+ Create New Post</button>
-    </div>
-  );
-}
-
-// ─── New Post Section ─────────────────────────────────────────────────────────
-
-function NewPostSection({ initialContent }: { initialContent?: string }) {
-  const [contentType, setContentType] = useState('Roofing Maintenance');
-  const [topic, setTopic] = useState('');
-  const [sourceContext, setSourceContext] = useState('');
-  const [length, setLength] = useState('Standard (1000w)');
-  const [generating, setGenerating] = useState(false);
-  const [generated, setGenerated] = useState(initialContent ?? '');
-  const [error, setError] = useState('');
-  const [copied, setCopied] = useState(false);
-
-  async function generate() {
-    if (!topic.trim()) { setError('Please enter a topic or keywords.'); return; }
-    setError(''); setGenerating(true);
-    try {
-      const res = await fetch('/api/news-generator', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'generate', contentType, topic, sourceContext, length, autoSearch: false }) });
-      const data = await res.json();
-      if (data.error) setError(data.error); else setGenerated(data.content);
-    } catch { setError('Network error. Check your connection and try again.'); }
-    finally { setGenerating(false); }
-  }
-
-  function saveDraft() {
-    if (!generated) return;
-    const slugMatch = generated.match(/^slug:\s*"?([^"\n]+)"?/m);
-    const slug = slugMatch?.[1]?.trim() || 'draft-post';
-    const blob = new Blob([generated], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = `${slug}.mdx`; a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'start' }}>
-      <div>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '20px', color: '#f5f5f5', marginBottom: '24px' }}>AI Content Generator</h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div><label style={S.label}>Content Type</label>
-            <select value={contentType} onChange={(e) => setContentType(e.target.value)} style={S.select}>
-              <option>Roofing Maintenance</option><option>Emergency Repair</option><option>Material Guide</option><option>Local Weather Tips</option><option>Cost &amp; Financing</option><option>Insurance Claims</option>
-            </select>
-          </div>
-          <div><label style={S.label}>Topic / Keywords</label>
-            <input type="text" value={topic} onChange={(e) => setTopic(e.target.value)} style={S.input} placeholder="e.g. Calgary hail season 2026, roof maintenance tips, Alberta building code update" />
-          </div>
-          <div><label style={S.label}>Source Context (optional)</label>
-            <textarea value={sourceContext} onChange={(e) => setSourceContext(e.target.value)} style={{ ...S.textarea, minHeight: '120px' }} placeholder="Paste any reference information here — news snippet, data point, or topic notes. AI will use this as context only, not copy it." />
-          </div>
-          <div><label style={S.label}>Target Length</label>
-            <select value={length} onChange={(e) => setLength(e.target.value)} style={S.select}>
-              <option>Short (600w)</option><option>Standard (1000w)</option><option>Detailed (1400w)</option>
-            </select>
-          </div>
-          {error && <p style={{ color: '#C0392B', fontSize: '13px', fontFamily: 'var(--font-display)' }}>{error}</p>}
-          <button onClick={generate} disabled={generating} style={{ ...S.btn('primary'), padding: '12px 24px', opacity: generating ? 0.6 : 1 }}>
-            {generating ? 'Generating your draft...' : 'Generate Draft'}
-          </button>
-        </div>
-      </div>
-      <div>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '20px', color: '#f5f5f5', marginBottom: '24px' }}>Live Preview &amp; Editor</h2>
-        <textarea value={generated} onChange={(e) => setGenerated(e.target.value)} style={{ ...S.textarea, minHeight: '480px', fontFamily: 'monospace', fontSize: '12px', lineHeight: 1.6, marginBottom: '16px' }} placeholder="Generated MDX will appear here. You can edit it directly before saving." />
-        <div style={{ backgroundColor: '#111', border: '1px solid #2a2a2a', borderRadius: '4px', padding: '12px 16px', marginBottom: '16px' }}>
-          <p style={{ color: '#666', fontSize: '12px', lineHeight: 1.6 }}>
-            After saving, place the <code style={{ color: '#93c5fd' }}>.mdx</code> file in <code style={{ color: '#93c5fd' }}>content/news/</code> and run <code style={{ color: '#93c5fd' }}>npm run build</code> to publish.
-          </p>
-        </div>
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <button onClick={saveDraft} style={S.btn('primary')} disabled={!generated}>Save Draft (.mdx)</button>
-          <button onClick={() => { navigator.clipboard.writeText(generated).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); }); }} style={S.btn('secondary')} disabled={!generated}>
-            {copied ? 'Copied!' : 'Copy MDX'}
-          </button>
-        </div>
-      </div>
+      <button onClick={() => onNavigate('ai-news-writer')} style={{ ...S.btn('primary'), padding: '14px 32px', fontSize: '15px' }}>✨ Generate New Article</button>
     </div>
   );
 }
 
 // ─── Post List Section ─────────────────────────────────────────────────────────
 
-function PostListSection({ posts, onEdit }: { posts: PostData[]; onEdit: (content: string) => void }) {
+function PostListSection({ posts }: { posts: PostData[] }) {
   const now = new Date();
   return (
     <div>
       {posts.length === 0 ? <p style={{ color: '#666', fontSize: '14px' }}>No posts in this category.</p> : (
         <div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px 140px 100px', gap: '16px', padding: '10px 16px', backgroundColor: '#111', borderRadius: '4px 4px 0 0', borderBottom: '1px solid #2a2a2a' }}>
-            {['Title', 'Category', 'Date', 'Actions'].map((h) => <span key={h} style={{ ...S.label, margin: 0, fontSize: '11px' }}>{h}</span>)}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px 140px', gap: '16px', padding: '10px 16px', backgroundColor: '#111', borderRadius: '4px 4px 0 0', borderBottom: '1px solid #2a2a2a' }}>
+            {['Title', 'Category', 'Date'].map((h) => <span key={h} style={{ ...S.label, margin: 0, fontSize: '11px' }}>{h}</span>)}
           </div>
           {posts.map((p) => {
             const diff = p.frontmatter.scheduledDate ? new Date(p.frontmatter.scheduledDate).getTime() - now.getTime() : 0;
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const countdown = p.frontmatter.status === 'scheduled' && diff > 0 ? (days === 0 ? 'Today' : `In ${days}d`) : '';
             return (
-              <div key={p.slug} style={{ display: 'grid', gridTemplateColumns: '1fr 120px 140px 100px', gap: '16px', padding: '14px 16px', borderBottom: '1px solid #2a2a2a', alignItems: 'center', backgroundColor: '#1a1a1a' }}>
+              <div key={p.slug} style={{ display: 'grid', gridTemplateColumns: '1fr 120px 140px', gap: '16px', padding: '14px 16px', borderBottom: '1px solid #2a2a2a', alignItems: 'center', backgroundColor: '#1a1a1a' }}>
                 <div>
                   <div style={{ color: '#f5f5f5', fontSize: '14px', fontFamily: 'var(--font-display)', fontWeight: 600 }}>{p.frontmatter.title ?? p.slug}</div>
                   {countdown && <div style={{ color: '#93c5fd', fontSize: '11px', marginTop: '4px', fontFamily: 'var(--font-display)' }}>Publishes {countdown}</div>}
                 </div>
                 <span style={{ color: '#9a9a9a', fontSize: '13px' }}>{p.frontmatter.category ?? '—'}</span>
                 <span style={{ color: '#666', fontSize: '12px' }}>{p.frontmatter.date ?? '—'}</span>
-                <button onClick={() => onEdit(p.rawContent)} style={S.btn('ghost')}>Edit</button>
               </div>
             );
           })}
@@ -1396,8 +1315,6 @@ function AdminDashboard() {
   const [section, setSection] = useState<Section>('dashboard');
   const [posts, setPosts] = useState<PostData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editContent, setEditContent] = useState<string | undefined>(undefined);
-
   const fetchPosts = useCallback(async () => {
     setLoading(true);
     try { const res = await fetch('/api/posts'); const data = await res.json(); setPosts(data.posts ?? []); }
@@ -1406,8 +1323,6 @@ function AdminDashboard() {
   }, []);
 
   useEffect(() => { fetchPosts(); }, [fetchPosts]);
-
-  function handleEdit(content: string) { setEditContent(content); setSection('new-post'); }
 
   const published = posts.filter((p) => p.frontmatter.status === 'published');
   const drafts = posts.filter((p) => p.frontmatter.status === 'draft');
@@ -1418,11 +1333,10 @@ function AdminDashboard() {
       label: 'Content',
       items: [
         { label: 'Dashboard', key: 'dashboard' as Section },
-        { label: 'New Post', key: 'new-post' as Section },
+        { label: 'AI News Writer', key: 'ai-news-writer' as Section },
         { label: `Drafts (${drafts.length})`, key: 'drafts' as Section },
         { label: `Scheduled (${scheduled.length})`, key: 'scheduled' as Section },
         { label: `Published (${published.length})`, key: 'published' as Section },
-        { label: 'AI News Writer', key: 'ai-news-writer' as Section },
       ],
     },
     {
@@ -1436,7 +1350,7 @@ function AdminDashboard() {
   ];
 
   const titles: Record<Section, string> = {
-    dashboard: 'Dashboard', 'new-post': editContent ? 'Edit Post' : 'New Post',
+    dashboard: 'Dashboard',
     drafts: 'Drafts', scheduled: 'Scheduled', published: 'Published',
     'ai-news-writer': 'AI News Writer',
     projects: 'Projects', reviews: 'Reviews', company: 'Company Info',
@@ -1456,7 +1370,7 @@ function AdminDashboard() {
             {group.items.map((item) => (
               <button
                 key={item.key}
-                onClick={() => { if (item.key === 'new-post') setEditContent(undefined); setSection(item.key); }}
+                onClick={() => setSection(item.key)}
                 style={S.sideLink(section === item.key)}
               >
                 {item.label}
@@ -1476,10 +1390,9 @@ function AdminDashboard() {
         ) : (
           <>
             {section === 'dashboard' && <DashboardSection posts={posts} onNavigate={setSection} />}
-            {section === 'new-post' && <NewPostSection initialContent={editContent} />}
-            {section === 'drafts' && <PostListSection posts={drafts} onEdit={handleEdit} />}
-            {section === 'scheduled' && <PostListSection posts={scheduled} onEdit={handleEdit} />}
-            {section === 'published' && <PostListSection posts={published} onEdit={handleEdit} />}
+            {section === 'drafts' && <PostListSection posts={drafts} />}
+            {section === 'scheduled' && <PostListSection posts={scheduled} />}
+            {section === 'published' && <PostListSection posts={published} />}
             {section === 'ai-news-writer' && <AINewsWriterSection />}
             {section === 'projects' && <ProjectsSection />}
             {section === 'reviews' && <ReviewsAdminSection />}
