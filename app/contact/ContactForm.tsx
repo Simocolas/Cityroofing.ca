@@ -37,15 +37,42 @@ export default function ContactForm() {
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setError('');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          phone: form.phone,
+          email: form.email,
+          serviceType: form.service,
+          address: form.address,
+          message: form.message,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        setError(data.error ?? 'Something went wrong. Please call us at 403-608-9933.');
+      } else {
+        setSubmitted(true);
+      }
+    } catch {
+      setError('Network error. Please call us at 403-608-9933.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const fieldBorder = (field: string) =>
@@ -211,8 +238,15 @@ export default function ContactForm() {
                     />
                   </div>
 
+                  {error && (
+                    <div style={{ backgroundColor: '#fff5f5', border: '1px solid #fca5a5', borderRadius: '4px', padding: '12px 16px', color: '#991b1b', fontSize: '14px', lineHeight: 1.5 }}>
+                      {error}
+                    </div>
+                  )}
+
                   <button
                     type="submit"
+                    disabled={submitting}
                     style={{
                       width: '100%',
                       backgroundColor: 'var(--color-primary)',
@@ -224,13 +258,14 @@ export default function ContactForm() {
                       fontWeight: 700,
                       fontSize: '16px',
                       letterSpacing: '0.5px',
-                      cursor: 'pointer',
+                      cursor: submitting ? 'not-allowed' : 'pointer',
+                      opacity: submitting ? 0.7 : 1,
                       transition: 'background-color 150ms ease-out',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-accent)')}
-                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary)')}
+                    onMouseEnter={(e) => { if (!submitting) e.currentTarget.style.backgroundColor = 'var(--color-accent)'; }}
+                    onMouseLeave={(e) => { if (!submitting) e.currentTarget.style.backgroundColor = 'var(--color-primary)'; }}
                   >
-                    Request Free Estimate
+                    {submitting ? 'Sending…' : 'Request Free Estimate'}
                   </button>
 
                   <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '13px', textAlign: 'center' }}>
