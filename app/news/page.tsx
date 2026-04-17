@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { getPublishedPosts } from '@/lib/mdx';
 import NewsGrid from './NewsGrid';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Roofing News & Tips Calgary | City Roofing & Exteriors',
   description:

@@ -44,8 +44,13 @@ const CATEGORY_IMAGES: Record<string, string> = {
 };
 const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80';
 
+function isImageUrl(s: string): boolean {
+  return s.startsWith('http://') || s.startsWith('https://') || s.startsWith('/');
+}
+
 function getCardImage(post: PostMeta): string {
-  if (post.frontmatter.featuredImage) return post.frontmatter.featuredImage;
+  const fi = post.frontmatter.featuredImage;
+  if (fi && isImageUrl(fi)) return fi;
   return CATEGORY_IMAGES[post.frontmatter.category] ?? FALLBACK_IMAGE;
 }
 

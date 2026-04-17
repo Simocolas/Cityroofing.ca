@@ -16,6 +16,9 @@ const categoryBadgeStyles: Record<string, { bg: string; color: string }> = {
   projects: { bg: '#7f1d1d', color: '#fca5a5' },
 };
 
+// New slugs (published after build) are rendered on-demand; cache revalidates hourly
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
   const posts = getPublishedPosts();
   return posts.map((post) => ({ slug: post.slug }));
@@ -158,8 +161,8 @@ export default async function NewsPostPage({ params }: PageProps) {
       {/* Cream zone — everything below header */}
       <div style={{ backgroundColor: 'var(--color-cream)' }}>
 
-      {/* Featured image */}
-      {frontmatter.featuredImage && (
+      {/* Featured image — only render when featuredImage is an actual URL */}
+      {frontmatter.featuredImage && /^https?:\/\/|^\//.test(frontmatter.featuredImage) && (
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 24px' }}>
           <div style={{ position: 'relative', height: '400px', borderRadius: '6px', overflow: 'hidden', marginTop: '40px' }}>
             <Image
