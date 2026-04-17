@@ -325,7 +325,7 @@ function NewPostSection({ initialContent }: { initialContent?: string }) {
     if (!topic.trim()) { setError('Please enter a topic or keywords.'); return; }
     setError(''); setGenerating(true);
     try {
-      const res = await fetch('/api/generate-post', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contentType, topic, sourceContext, length }) });
+      const res = await fetch('/api/news-generator', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'generate', contentType, topic, sourceContext, length, autoSearch: false }) });
       const data = await res.json();
       if (data.error) setError(data.error); else setGenerated(data.content);
     } catch { setError('Network error. Check your connection and try again.'); }
@@ -795,7 +795,7 @@ function AINewsWriterSection() {
     try {
       const res = await fetch('/api/publish-article', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': ADMIN_PASSWORD },
         body: JSON.stringify({ mdxContent: article, slug, draft }),
       });
       const data = await res.json();

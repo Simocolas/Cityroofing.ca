@@ -5,6 +5,13 @@ import path from 'path';
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
+  // ── Auth check ───────────────────────────────────────────────────────────────
+  const adminSecret = process.env.ADMIN_SECRET ?? 'cityroofing2026';
+  const providedKey = req.headers.get('x-admin-key');
+  if (providedKey !== adminSecret) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const { mdxContent, slug, draft } = (await req.json()) as {
       mdxContent: string;

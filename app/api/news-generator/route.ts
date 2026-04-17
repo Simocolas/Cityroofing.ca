@@ -97,11 +97,20 @@ export async function POST(req: NextRequest) {
 
     // ── Generate article ────────────────────────────────────────────────────────
     if (mode === 'generate') {
-      const { topic, contentType, autoSearch } = body as {
+      const { topic, contentType, autoSearch, sourceContext, length } = body as {
         topic: string | null;
         contentType: string;
         autoSearch: boolean;
+        sourceContext?: string;
+        length?: string;
       };
+
+      const wordCountMap: Record<string, number> = {
+        'Short': 600, 'Short (600w)': 600,
+        'Standard': 1000, 'Standard (1000w)': 1000,
+        'Detailed': 1400, 'Detailed (1400w)': 1400,
+      };
+      const wordCount = wordCountMap[length ?? 'Standard'] ?? 1000;
 
       const today = getToday();
       const category = getCategoryFromType(contentType);
@@ -140,8 +149,8 @@ Requirements:
 - 3–5 H2 sections with Calgary context
 - FAQ section with 5–7 conversational homeowner questions (use faqItems frontmatter)
 - End with Get a Free Estimate CTA mentioning 403-608-9933`
-        : `Write a ${contentType} article about: ${topic}
-
+        : `Write a ${wordCount}-word ${contentType} article about: ${topic}
+${sourceContext ? `\nReference context (use as background, do not copy):\n${sourceContext}\n` : ''}
 Output a complete MDX file using this frontmatter, filling in all fields:
 ${frontmatterTemplate}
 
