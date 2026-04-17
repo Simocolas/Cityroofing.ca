@@ -79,7 +79,76 @@ Return ONLY a valid JSON object — no markdown fences, no preamble, no explanat
   "best_category": "MUST be exactly one of: Roofing Maintenance | Emergency Repair | Material Guide | Local Weather Tips | Cost & Financing | Insurance Claims"
 }`;
 
-// ── Stage 2: Article Writing System Prompt ───────────────────────────────────
+// ── Stage 2: Blueprint System Prompt ─────────────────────────────────────────
+const BLUEPRINT_SYSTEM = `You are a senior SEO content strategist. You receive verified research and news data and transform it into a precise, actionable article blueprint.
+
+You must resolve three tensions in every blueprint:
+1. Search engines want structured scannable content — homeowners want to feel guided by an expert they trust
+2. Keywords must appear frequently enough to rank — but naturally enough to pass Helpful Content Update filters
+3. The article must genuinely inform — and move the reader toward contacting City Roofing
+
+CITY ROOFING DIFFERENTIATION TO PROTECT:
+- In-house crews = accountability and quality control (competitors use subcontractors)
+- Xactimate software = insurance claim precision (most roofers estimate by eye)
+- SECOR certification = documented safety standards
+- 15+ years = pattern recognition competitors lack
+Surface these where they solve a homeowner fear, never as a generic credential dump.
+
+APPROVED INTERNAL LINKS (use ONLY these exact paths — no others):
+/services/roof-replacement
+/services/roof-repair
+/services/commercial
+/services/flat-roofing
+/services/siding
+/contact
+
+Return ONLY a valid JSON object — no markdown fences, no preamble:
+
+{
+  "article_type": "newsjack",
+  "chosen_title": "Under 60 characters. Contains primary keyword naturally. Creates urgency or resolves a fear. Does not start with a number if avoidable — prefer action or question framing.",
+  "slug": "lowercase-hyphenated-alphanumeric-only-no-special-chars",
+  "unique_angle": "One sentence: the specific lens that separates this article from every other page on this topic — the national news story plus the Calgary expert response",
+  "description": "Meta description between 140-155 characters exactly. Include primary keyword, Calgary, and a soft CTA like 'free estimate' or 'trusted Calgary roofers'",
+  "keywords_list": ["5-8 long-tail keywords, minimum 3 words each, phrased as a homeowner would actually search them"],
+  "quick_answer": "Polished version of the quick answer draft from research. 2-3 sentences. AI-extractable. No fluff.",
+  "news_hook_section": {
+    "heading": "The opening H2 that names or references the news story and establishes its relevance to Calgary homeowners",
+    "purpose": "Hook reader with the national story context before pivoting to professional roofing analysis — this is what creates search novelty"
+  },
+  "structure": [
+    {
+      "level": "h2 or h3",
+      "heading": "Exact heading text — descriptive, contains keyword signal, no clickbait",
+      "word_count_target": 180,
+      "key_points": ["Specific claims or information that must appear in this section"],
+      "contains_bulleted_list": false,
+      "contains_table": false,
+      "eeeat_injection": "Which City Roofing credential fits here naturally, or null",
+      "internal_link": "Which /services/ page to link here with suggested anchor text, or null"
+    }
+  ],
+  "table": {
+    "placed_after_heading": "Exact H2 text after which the table appears",
+    "purpose": "What decision or comparison this table helps the homeowner make",
+    "headers": ["Column header 1", "Column header 2", "Column header 3"],
+    "rows": [["value","value","value"],["value","value","value"],["value","value","value"],["value","value","value"]]
+  },
+  "faq": [
+    {
+      "question": "Phrased exactly as a homeowner would ask Google voice search or ChatGPT",
+      "answer_direction": "What the answer must cover in under 50 words — written to be extracted by AI systems"
+    },
+    {
+      "question": "Second question addressing a different homeowner fear or the news story angle",
+      "answer_direction": "Answer direction"
+    }
+  ],
+  "cta_primary_page": "/services/most-contextually-relevant-page",
+  "target_word_count": 1200
+}`;
+
+// ── Stage 3: Article Writing System Prompt ───────────────────────────────────
 function buildSystem(today: string): string {
   return `You are a senior content strategist and SEO specialist writing for City Roofing & Exteriors, a Calgary-based roofing contractor with 15+ years of experience. Your target audience is technically search engine crawlers AND AI citation systems (ChatGPT, Perplexity, Google AI Overviews), but all content MUST read as highly authoritative and indistinguishable from a seasoned local roofing professional to pass Google's Helpful Content Update (HCU) and E-E-A-T filters.
 
@@ -293,22 +362,106 @@ Prioritize stories published within the last 30 days. Return ONLY valid JSON in 
       return NextResponse.json({ research });
     }
 
-    // ── Generate article ──────────────────────────────────────────────────────
+    // ── Stage 2 only: Blueprint ───────────────────────────────────────────────
+    if (mode === 'blueprint') {
+      const { researchContext, topic, contentType } = body as {
+        researchContext: Record<string, unknown>;
+        topic?: string;
+        contentType?: string;
+      };
+
+      if (!researchContext) throw new Error('researchContext is required for blueprint mode');
+
+      const r = researchContext as {
+        suggested_primary_keyword?: string;
+        best_category?: string;
+        suggested_title_angle?: string;
+      };
+
+      const userPrompt = `Build a precise article blueprint from this research.
+
+RESEARCH: ${JSON.stringify(researchContext, null, 2)}
+TOPIC: ${topic?.trim() || r.suggested_title_angle || 'Calgary roofing'}
+PRIMARY KEYWORD: ${r.suggested_primary_keyword || ''}
+CATEGORY: ${contentType || r.best_category || 'Roofing Maintenance'}
+ARTICLE FOCUS: Newsjack the selected story with a Calgary roofing expert perspective
+
+Return ONLY valid JSON in the exact structure defined.`;
+
+      const response = await callAnthropic(
+        [{ role: 'user', content: userPrompt }],
+        BLUEPRINT_SYSTEM,
+        false,
+      );
+
+      const raw = extractText(response);
+      const blueprint = extractJson(raw);
+      if (!blueprint) throw new Error('Blueprint stage returned invalid JSON');
+
+      return NextResponse.json({ blueprint });
+    }
+
+    // ── Stage 3: Generate article ─────────────────────────────────────────────
     if (mode === 'generate') {
-      const { topic, contentType, autoSearch, sourceContext, researchContext } = body as {
+      const { topic, contentType, autoSearch, sourceContext, researchContext, blueprintContext } = body as {
         topic: string | null;
         contentType: string;
         autoSearch: boolean;
         sourceContext?: string;
         researchContext?: Record<string, unknown>;
+        blueprintContext?: Record<string, unknown>;
       };
 
       const today = getToday();
       const system = buildSystem(today);
-      let research: Record<string, unknown> | null = researchContext ?? null;
 
-      // Auto mode with no pre-fetched research → run Stage 1 first
-      if (autoSearch && !research) {
+      // Build article user prompt — blueprint takes priority over raw research
+      let userPrompt: string;
+      if (blueprintContext) {
+        userPrompt = `Write a complete article following your output_structure exactly. Use the blueprint below as your authoritative guide — every heading, table, FAQ, and structural decision is already resolved for you.
+
+ARTICLE BLUEPRINT:
+${JSON.stringify(blueprintContext, null, 2)}
+
+${researchContext ? `SUPPORTING RESEARCH (for fact depth and quotes):
+${JSON.stringify(researchContext, null, 2)}` : ''}
+
+Instructions:
+- Use chosen_title verbatim as the frontmatter title
+- Use slug verbatim
+- Use description verbatim
+- Use keywords_list for the frontmatter keywords array
+- Use category from best_category / article_type context
+- Use quick_answer verbatim as the Quick Answer block
+- Follow structure[] section order and word_count_target for each section
+- Insert the table after the heading specified in table.placed_after_heading
+- Use eeeat_injection hints where specified
+- Use internal_link hints where specified
+- Write the FAQ section using faq[] questions and answer_direction as a guide
+- Target ${blueprintContext.target_word_count ?? 1200} words in the article body`;
+      } else if (researchContext) {
+        userPrompt = `Based on the following news research, write a complete article following your output_structure exactly.
+
+RESEARCH CONTEXT:
+${JSON.stringify(researchContext, null, 2)}
+
+Your article MUST:
+- Use quick_answer_draft as the starting point for the Quick Answer block
+- Incorporate professional_angle and supporting_facts naturally
+- Target suggested_primary_keyword as the primary SEO focus
+- Reflect suggested_title_angle in your title approach
+- Use technical_entities for semantic depth
+- Include eeeat_hooks where contextually appropriate
+- Set category to best_category from the research
+- Use ONLY internal links from the approved list in the system prompt`;
+      } else {
+        userPrompt = `Write a complete "${contentType}" category article about: ${topic}${sourceContext ? `\n\nReference context (use as background only, do not copy):\n${sourceContext}` : ''}
+
+Follow the system prompt output_structure exactly.`;
+      }
+
+      // Legacy: auto mode with no pre-fetched context — run Stage 1 only (no blueprint)
+      if (autoSearch && !researchContext && !blueprintContext) {
         const researchPrompt = `Find high-traffic Canadian news and identify the roofing professional angle.
 
 TOPIC DIRECTION: ${topic?.trim() || 'find the most relevant trending story right now'}
@@ -321,12 +474,9 @@ Prioritize stories published within the last 30 days. Return ONLY valid JSON in 
           RESEARCH_SYSTEM,
           true,
         );
-        research = extractJson(extractText(researchRes));
-      }
-
-      // Build article user prompt
-      const userPrompt = research
-        ? `Based on the following news research, write a complete article following your output_structure exactly.
+        const research = extractJson(extractText(researchRes));
+        if (research) {
+          userPrompt = `Based on the following news research, write a complete article following your output_structure exactly.
 
 RESEARCH CONTEXT:
 ${JSON.stringify(research, null, 2)}
@@ -339,10 +489,9 @@ Your article MUST:
 - Use technical_entities for semantic depth
 - Include eeeat_hooks where contextually appropriate
 - Set category to best_category from the research
-- Use ONLY internal links from the approved list in the system prompt`
-        : `Write a complete "${contentType}" category article about: ${topic}${sourceContext ? `\n\nReference context (use as background only, do not copy):\n${sourceContext}` : ''}
-
-Follow the system prompt output_structure exactly.`;
+- Use ONLY internal links from the approved list in the system prompt`;
+        }
+      }
 
       const response = await callAnthropic(
         [{ role: 'user', content: userPrompt }],
@@ -353,7 +502,7 @@ Follow the system prompt output_structure exactly.`;
       const content = extractText(response);
       if (!content) throw new Error('Empty response from Anthropic');
 
-      return NextResponse.json({ content, research });
+      return NextResponse.json({ content, research: researchContext, blueprint: blueprintContext });
     }
 
     // ── Chat / edit ───────────────────────────────────────────────────────────

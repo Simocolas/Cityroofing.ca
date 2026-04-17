@@ -669,7 +669,8 @@ function ProjectsSection() {
 const GEN_STEPS = [
   '🔍 Scanning Canadian news sources...',
   '📰 Building roofing connection & research brief...',
-  '✍️ Writing SEO article from research...',
+  '🗂️ Designing article blueprint...',
+  '✍️ Writing SEO article from blueprint...',
 ];
 
 const CONTENT_TYPES = ['Roofing Maintenance', 'Emergency Repair', 'Material Guide', 'Local Weather Tips', 'Cost & Financing', 'Insurance Claims'];
@@ -686,12 +687,26 @@ function renderMdxPreview(mdx: string): string {
     .replace(/\n/g, ' ');
 }
 
-// ── Research result types ─────────────────────────────────────────────────────
+// ── Research / Blueprint result types ────────────────────────────────────────
 interface ResearchResult {
   selected_story?: { headline?: string; source?: string; published_date?: string; url?: string; why_high_traffic?: string };
   connection_bridge?: { link_to_roofing?: string; professional_angle?: string; homeowner_implication?: string };
   suggested_primary_keyword?: string;
   best_category?: string;
+}
+
+interface BlueprintResult {
+  chosen_title?: string;
+  slug?: string;
+  unique_angle?: string;
+  description?: string;
+  keywords_list?: string[];
+  quick_answer?: string;
+  news_hook_section?: { heading?: string; purpose?: string };
+  structure?: { level?: string; heading?: string; word_count_target?: number; key_points?: string[]; eeeat_injection?: string | null; internal_link?: string | null }[];
+  faq?: { question?: string; answer_direction?: string }[];
+  cta_primary_page?: string;
+  target_word_count?: number;
 }
 
 function AINewsWriterSection() {
@@ -703,6 +718,7 @@ function AINewsWriterSection() {
   const [activeStep, setActiveStep] = useState(-1);
   const [doneSteps, setDoneSteps] = useState<number[]>([]);
   const [researchResult, setResearchResult] = useState<ResearchResult | null>(null);
+  const [blueprintResult, setBlueprintResult] = useState<BlueprintResult | null>(null);
   const [article, setArticle] = useState('');
   const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([]);
   const [chatInput, setChatInput] = useState('');
@@ -729,13 +745,14 @@ function AINewsWriterSection() {
   async function generate() {
     if (topicMode === 'custom' && !customTopic.trim()) { setError('Please enter a topic.'); return; }
     setError(''); setGenerating(true); setActiveStep(0); setDoneSteps([]); setPublishMsg('');
-    setResearchResult(null); setArticle('');
+    setResearchResult(null); setBlueprintResult(null); setArticle('');
 
     try {
-      // ── Stage 1: Research (auto mode only) ──────────────────────────────────
       let research: ResearchResult | null = null;
+      let blueprint: BlueprintResult | null = null;
 
       if (topicMode === 'auto') {
+        // ── Stage 1: Research ──────────────────────────────────────────────────
         const r1 = await fetch('/api/news-generator', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -750,19 +767,36 @@ function AINewsWriterSection() {
 
         research = d1.research as ResearchResult;
         setResearchResult(research);
-        // Auto-sync category from research
-        if (research?.best_category && CONTENT_TYPES.includes(research.best_category)) {
-          setContentType(research.best_category);
-        }
+        const detectedCategory = research?.best_category ?? '';
+        if (detectedCategory && CONTENT_TYPES.includes(detectedCategory)) setContentType(detectedCategory);
         setDoneSteps([0, 1]);
         setActiveStep(2);
+
+        // ── Stage 2: Blueprint ─────────────────────────────────────────────────
+        const r2 = await fetch('/api/news-generator', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mode: 'blueprint',
+            researchContext: research,
+            topic: customTopic.trim() || null,
+            contentType: detectedCategory || contentType,
+          }),
+        });
+        const d2 = await r2.json();
+        if (d2.error) throw new Error(d2.error === 'no_key' ? '⚠️ ANTHROPIC_API_KEY not set in .env.local' : d2.error);
+
+        blueprint = d2.blueprint as BlueprintResult;
+        setBlueprintResult(blueprint);
+        setDoneSteps([0, 1, 2]);
+        setActiveStep(3);
       } else {
-        setDoneSteps([0, 1]);
-        setActiveStep(2);
+        setDoneSteps([0, 1, 2]);
+        setActiveStep(3);
       }
 
-      // ── Stage 2: Article writing ─────────────────────────────────────────────
-      const r2 = await fetch('/api/news-generator', {
+      // ── Stage 3: Article writing ───────────────────────────────────────────
+      const r3 = await fetch('/api/news-generator', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -771,14 +805,15 @@ function AINewsWriterSection() {
           contentType,
           autoSearch: false,
           researchContext: research,
+          blueprintContext: blueprint,
         }),
       });
-      const d2 = await r2.json();
-      if (d2.error) throw new Error(d2.error === 'no_key' ? '⚠️ ANTHROPIC_API_KEY not set in .env.local' : d2.error);
+      const d3 = await r3.json();
+      if (d3.error) throw new Error(d3.error === 'no_key' ? '⚠️ ANTHROPIC_API_KEY not set in .env.local' : d3.error);
 
-      setDoneSteps([0, 1, 2]);
+      setDoneSteps([0, 1, 2, 3]);
       setActiveStep(-1);
-      setArticle(d2.content);
+      setArticle(d3.content);
       setChatMessages([{ role: 'assistant', content: '✅ Article generated! Ask me to modify it — e.g. "Make it shorter", "Add more Calgary context", "Change tone to urgent", "Add insurance section".' }]);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Generation failed');
@@ -918,7 +953,9 @@ function AINewsWriterSection() {
 
         {/* Generate button */}
         <button onClick={generate} disabled={generating} style={{ ...S.btn('primary'), padding: '15px 24px', fontSize: '14px', width: '100%', opacity: generating ? 0.6 : 1 }}>
-          {generating ? (activeStep === 2 ? 'Writing article...' : 'Researching...') : '✨ Generate Article'}
+          {generating
+            ? activeStep === 3 ? 'Writing article...' : activeStep === 2 ? 'Building blueprint...' : 'Researching...'
+            : '✨ Generate Article'}
         </button>
       </div>
 
@@ -958,6 +995,61 @@ function AINewsWriterSection() {
               <div style={{ borderTop: '1px solid #1e3a1e', paddingTop: '10px' }}>
                 <p style={{ color: '#9ca3af', fontSize: '11px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '4px', fontFamily: 'var(--font-display)', fontWeight: 700 }}>Target Keyword</p>
                 <p style={{ color: '#86efac', fontSize: '13px', fontFamily: 'monospace' }}>{researchResult.suggested_primary_keyword}</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Blueprint preview card */}
+        {blueprintResult && (
+          <div style={{ backgroundColor: '#0d0f1f', border: '1px solid #1e2a4a', borderRadius: '6px', padding: '16px 18px' }}>
+            <p style={{ ...S.label, color: '#93c5fd', marginBottom: '12px', letterSpacing: '1.5px' }}>🗂️ Article Blueprint</p>
+
+            {/* Title + slug */}
+            {blueprintResult.chosen_title && (
+              <div style={{ marginBottom: '12px' }}>
+                <p style={{ color: '#f5f5f5', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '14px', lineHeight: 1.4, marginBottom: '4px' }}>
+                  {blueprintResult.chosen_title}
+                </p>
+                {blueprintResult.slug && (
+                  <p style={{ color: '#4b6ea8', fontSize: '11px', fontFamily: 'monospace' }}>/{blueprintResult.slug}</p>
+                )}
+              </div>
+            )}
+
+            {/* Unique angle */}
+            {blueprintResult.unique_angle && (
+              <div style={{ borderTop: '1px solid #1e2a4a', paddingTop: '10px', marginBottom: '10px' }}>
+                <p style={{ color: '#9ca3af', fontSize: '11px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '4px', fontFamily: 'var(--font-display)', fontWeight: 700 }}>Unique Angle</p>
+                <p style={{ color: '#bfdbfe', fontSize: '13px', lineHeight: 1.5 }}>{blueprintResult.unique_angle}</p>
+              </div>
+            )}
+
+            {/* Structure outline */}
+            {blueprintResult.structure && blueprintResult.structure.length > 0 && (
+              <div style={{ borderTop: '1px solid #1e2a4a', paddingTop: '10px', marginBottom: '10px' }}>
+                <p style={{ color: '#9ca3af', fontSize: '11px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px', fontFamily: 'var(--font-display)', fontWeight: 700 }}>Structure</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  {blueprintResult.structure.map((s, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'baseline' }}>
+                      <span style={{ color: '#4b6ea8', fontSize: '10px', fontFamily: 'monospace', flexShrink: 0, minWidth: '24px' }}>{s.level?.toUpperCase()}</span>
+                      <span style={{ color: '#dbeafe', fontSize: '12px', lineHeight: 1.4 }}>{s.heading}</span>
+                      {s.eeeat_injection && <span style={{ color: '#6b7280', fontSize: '10px', marginLeft: 'auto', flexShrink: 0 }}>+E-E-A-T</span>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Keywords */}
+            {blueprintResult.keywords_list && blueprintResult.keywords_list.length > 0 && (
+              <div style={{ borderTop: '1px solid #1e2a4a', paddingTop: '10px' }}>
+                <p style={{ color: '#9ca3af', fontSize: '11px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '6px', fontFamily: 'var(--font-display)', fontWeight: 700 }}>Keywords</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                  {blueprintResult.keywords_list.slice(0, 5).map((kw, i) => (
+                    <span key={i} style={{ backgroundColor: '#1e2a4a', color: '#93c5fd', padding: '3px 8px', borderRadius: '3px', fontSize: '11px', fontFamily: 'monospace' }}>{kw}</span>
+                  ))}
+                </div>
               </div>
             )}
           </div>
