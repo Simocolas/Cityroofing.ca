@@ -233,14 +233,17 @@ export default function ServicesPage() {
         }} />
 
         {/* Content */}
-        <div style={{
-          position: 'relative',
-          zIndex: 2,
-          maxWidth: '1280px',
-          margin: '0 auto',
-          padding: '80px 24px',
-          width: '100%',
-        }}>
+        <div
+          className="emergency-content"
+          style={{
+            position: 'relative',
+            zIndex: 2,
+            maxWidth: '1280px',
+            margin: '0 auto',
+            padding: '80px 24px',
+            width: '100%',
+          }}
+        >
           <div style={{ maxWidth: '520px' }}>
             <p style={{
               fontSize: '11px',
@@ -292,8 +295,10 @@ export default function ServicesPage() {
         </div>
 
         <style>{`
-          @media (max-width: 640px) {
-            .emergency-section { min-height: 360px !important; }
+          @media (max-width: 768px) {
+            .emergency-section { min-height: 400px !important; }
+            .emergency-section .emergency-content { padding: 52px 20px !important; }
+            .emergency-section p[style] { font-size: 15px !important; }
           }
         `}</style>
       </section>

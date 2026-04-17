@@ -115,7 +115,7 @@ export default function ProjectsGrid() {
       </div>
 
       {/* Service Coverage Map */}
-      <section style={{ backgroundColor: '#0E0E0E', padding: '80px 24px' }}>
+      <section className="coverage-section" style={{ backgroundColor: '#0E0E0E', padding: '80px 24px' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
 
           {/* Header */}
@@ -124,10 +124,10 @@ export default function ProjectsGrid() {
               Service Area
             </p>
             <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(26px, 3vw, 38px)', color: '#F9F7F2', marginBottom: '16px', lineHeight: 1.2 }}>
-              Serving Calgary and Beyond
+              From the Okanagan to Edmonton
             </h2>
-            <p style={{ color: 'rgba(249,247,242,0.55)', fontSize: '16px', lineHeight: 1.65, maxWidth: '580px', margin: '0 auto' }}>
-              From Calgary to Edmonton, across the Rockies into BC, and down to the southern Alberta border — we cover a wide service area.
+            <p style={{ color: 'rgba(249,247,242,0.55)', fontSize: '16px', lineHeight: 1.65, maxWidth: '560px', margin: '0 auto' }}>
+              From BC&rsquo;s Okanagan Valley to Edmonton and south through Alberta — our crews have worked across the region. Every location on this map has a City Roofing story.
             </p>
           </div>
 
@@ -135,9 +135,10 @@ export default function ProjectsGrid() {
           <div style={{ position: 'relative', width: '100%', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.07)' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
+              className="range-map-img"
               src="/images/range.png"
               alt="City Roofing service coverage area — Calgary, Edmonton, BC Okanagan, southern Alberta"
-              style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }}
+              style={{ width: '100%', height: 'auto', display: 'block' }}
             />
           </div>
 
@@ -160,6 +161,19 @@ export default function ProjectsGrid() {
       <style>{`
         .project-card { transition: filter 280ms ease; }
         .project-card:hover { filter: brightness(1.07); }
+
+        /* Coverage map — mobile crop */
+        @media (max-width: 768px) {
+          .range-map-img {
+            height: 280px !important;
+            object-fit: cover !important;
+            /* Focus on Alberta corridor: slightly east of center, mid-height
+               puts Calgary and Edmonton both in frame */
+            object-position: 62% 42% !important;
+          }
+          .coverage-tags { gap: 8px !important; }
+          .coverage-section { padding: 56px 20px !important; }
+        }
       `}</style>
     </div>
   );
