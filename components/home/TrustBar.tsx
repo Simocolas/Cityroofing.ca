@@ -1,164 +1,90 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
-
-interface TrustItem {
-  value: number;
+interface StatConfig {
+  target: number;
+  decimals: number;
+  prefix: string;
   suffix: string;
+  comma: boolean;
+  duration: number;
+  delay: number;
   label: string;
-  prefix?: string;
 }
 
-const trustItems: TrustItem[] = [
-  { prefix: '★', value: 4.8,  suffix: '',   label: 'Google Rating' },
-  { value: 158,               suffix: '+',  label: 'Reviews' },
-  { value: 15,                suffix: '+',  label: 'Years in Calgary' },
-  { value: 3000,              suffix: '+',  label: 'Projects Completed' },
-  { prefix: '$', value: 3,    suffix: 'M+', label: 'Commercial Experience' },
+const stats: StatConfig[] = [
+  { target: 4.8,  decimals: 1, prefix: '',  suffix: '★',  comma: false, duration: 1000, delay: 0,   label: 'Google Rating' },
+  { target: 158,  decimals: 0, prefix: '',  suffix: '+',  comma: false, duration: 1100, delay: 120, label: 'Verified Reviews' },
+  { target: 15,   decimals: 0, prefix: '',  suffix: '+',  comma: false, duration: 900,  delay: 200, label: 'Years in Calgary' },
+  { target: 3000, decimals: 0, prefix: '',  suffix: '+',  comma: true,  duration: 1200, delay: 60,  label: 'Projects Completed' },
+  { target: 3,    decimals: 0, prefix: '$', suffix: 'M+', comma: false, duration: 950,  delay: 280, label: 'Commercial Experience' },
 ];
 
 const certs = ['SECOR Certified', 'WCB Alberta', 'BBB Accredited'];
 
-// ─── Deterministic reel (avoids hydration mismatch) ───────────────────────────
-
-function buildReel(finalDigit: string, seed: number): string[] {
-  let s = seed | 0;
-  function rand() {
-    s = (s * 1664525 + 1013904223) & 0xffffffff;
-    return String((s >>> 0) % 10);
+function formatValue(val: number, config: StatConfig): string {
+  let numStr: string;
+  if (config.decimals > 0) {
+    numStr = val.toFixed(config.decimals);
+  } else {
+    const rounded = Math.round(val);
+    numStr = config.comma ? rounded.toLocaleString('en-CA') : String(rounded);
   }
-  const reel: string[] = [];
-  for (let i = 0; i < 20; i++) reel.push(rand());
-  reel.push(finalDigit); // final digit is always at index 20
-  return reel;
+  return `${config.prefix}${numStr}${config.suffix}`;
 }
 
-// ─── SlotDigit ────────────────────────────────────────────────────────────────
-
-function SlotDigit({ digit, delay, started }: { digit: string; delay: number; started: boolean }) {
-  const seed = (digit.charCodeAt(0) * 7919 + delay * 31) | 0;
-  const reel = useMemo(() => buildReel(digit, seed), [digit, seed]);
-  const finalIndex = reel.length - 1; // = 20
-
-  return (
-    <span
-      style={{
-        display: 'inline-block',
-        overflow: 'hidden',
-        height: '1em',
-        verticalAlign: 'bottom',
-      }}
-    >
-      <span
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          transform: started ? `translateY(calc(-${finalIndex} * 1em))` : 'translateY(0)',
-          transition: started
-            ? `transform 1200ms cubic-bezier(0.25, 0.1, 0.1, 1.0) ${delay}ms`
-            : 'none',
-          willChange: 'transform',
-        }}
-      >
-        {reel.map((d, i) => (
-          <span key={i} style={{ display: 'block', height: '1em', lineHeight: 1, textAlign: 'center' }}>
-            {d}
-          </span>
-        ))}
-      </span>
-    </span>
-  );
+function easeOut(t: number): number {
+  return 1 - Math.pow(1 - t, 3);
 }
-
-// ─── FadeChar (non-digit characters: ★ $ . + M) ───────────────────────────────
-
-function FadeChar({ char, started }: { char: string; started: boolean }) {
-  return (
-    <span
-      style={{
-        display: 'inline-block',
-        opacity: started ? 1 : 0,
-        transition: started ? 'opacity 200ms ease-out 1200ms' : 'none',
-      }}
-    >
-      {char}
-    </span>
-  );
-}
-
-// ─── StatNumber ───────────────────────────────────────────────────────────────
-
-function StatNumber({
-  value,
-  suffix,
-  prefix,
-  started,
-}: {
-  value: number;
-  suffix: string;
-  prefix?: string;
-  started: boolean;
-}) {
-  const displayStr = `${prefix ?? ''}${value % 1 !== 0 ? value.toFixed(1) : value}${suffix}`;
-  let digitIndex = 0;
-
-  const chars = displayStr.split('').map((char) => {
-    const isDigit = /[0-9]/.test(char);
-    const delay = isDigit ? digitIndex++ * 50 : 0;
-    return { char, isDigit, delay };
-  });
-
-  return (
-    <span style={{ display: 'inline-flex', alignItems: 'flex-end' }}>
-      {chars.map((c, i) =>
-        c.isDigit ? (
-          <SlotDigit key={i} digit={c.char} delay={c.delay} started={started} />
-        ) : (
-          <FadeChar key={i} char={c.char} started={started} />
-        )
-      )}
-    </span>
-  );
-}
-
-// ─── Separator ────────────────────────────────────────────────────────────────
-
-function Separator() {
-  return (
-    <div
-      className="trust-separator"
-      style={{
-        width: '1px',
-        height: '60px',
-        backgroundColor: 'var(--color-border-light)',
-        flexShrink: 0,
-        alignSelf: 'center',
-      }}
-    />
-  );
-}
-
-// ─── TrustBar ─────────────────────────────────────────────────────────────────
 
 export default function TrustBar() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [animating, setAnimating] = useState(false);
+  const numRefs = useRef<(HTMLSpanElement | null)[]>(Array(stats.length).fill(null));
+  const hasAnimated = useRef(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !animating) {
-          timer = setTimeout(() => setAnimating(true), 400);
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          setVisible(true);
+          observer.disconnect();
+
+          stats.forEach((config, i) => {
+            const el = numRefs.current[i];
+            if (!el) return;
+
+            const startTime = performance.now() + config.delay;
+
+            const tick = (now: number) => {
+              if (now < startTime) {
+                el.textContent = formatValue(0, config);
+                requestAnimationFrame(tick);
+                return;
+              }
+              const elapsed = now - startTime;
+              const progress = Math.min(elapsed / config.duration, 1);
+              el.textContent = formatValue(easeOut(progress) * config.target, config);
+              if (progress < 1) {
+                requestAnimationFrame(tick);
+              } else {
+                // Ensure exact final value
+                el.textContent = formatValue(config.target, config);
+              }
+            };
+
+            requestAnimationFrame(tick);
+          });
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.15 }
     );
+
     if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => { observer.disconnect(); clearTimeout(timer); };
-  }, [animating]);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section
@@ -186,80 +112,88 @@ export default function TrustBar() {
         style={{
           maxWidth: '1400px',
           margin: '0 auto',
-          padding: '56px 48px 40px',
+          padding: '48px 48px 36px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           position: 'relative',
-          gap: '28px',
+          gap: '24px',
         }}
       >
-        {/* Row 1 — 5 stats centered (2x3 grid on mobile) */}
-        <div className="trust-stats-row">
-          {trustItems.map((item, i) => (
+        {/* Stats row */}
+        <div className="trust-stats-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
+          {stats.map((stat, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center' }}>
-              <div className="trust-stat-item" style={{ textAlign: 'center', padding: '0 40px' }}>
-                {/* Number */}
+              <div
+                className="trust-stat-item"
+                style={{
+                  textAlign: 'center',
+                  padding: '0 40px',
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? 'translateY(0)' : 'translateY(12px)',
+                  transition: visible
+                    ? `opacity 400ms ease-out ${i * 80}ms, transform 400ms ease-out ${i * 80}ms`
+                    : 'none',
+                }}
+              >
                 <div
                   style={{
-                    fontFamily: "'Montserrat', sans-serif",
+                    fontFamily: "'Montserrat', var(--font-display)",
                     fontWeight: 900,
-                    fontSize: 'clamp(36px, 4vw, 64px)',
+                    fontSize: 'clamp(32px, 3.5vw, 56px)',
                     color: 'var(--color-primary)',
                     lineHeight: 1,
-                    marginBottom: '10px',
+                    marginBottom: '8px',
+                    letterSpacing: '-0.5px',
                   }}
                 >
-                  <StatNumber
-                    value={item.value}
-                    suffix={item.suffix}
-                    prefix={item.prefix}
-                    started={animating}
-                  />
+                  <span
+                    ref={(el) => { numRefs.current[i] = el; }}
+                  >
+                    {formatValue(0, stat)}
+                  </span>
                 </div>
-                {/* Label */}
                 <div
                   style={{
                     color: 'var(--color-text-dark-muted)',
                     fontSize: '11px',
                     letterSpacing: '2px',
                     textTransform: 'uppercase',
-                    opacity: animating ? 1 : 0,
-                    transition: animating ? 'opacity 300ms ease-out 1300ms' : 'none',
+                    fontFamily: 'var(--font-display)',
+                    fontWeight: 600,
                   }}
                 >
-                  {item.label}
+                  {stat.label}
                 </div>
               </div>
-              {i < trustItems.length - 1 && <Separator />}
+              {i < stats.length - 1 && (
+                <div
+                  className="trust-separator"
+                  style={{ width: '1px', height: '60px', backgroundColor: 'var(--color-border-light)', flexShrink: 0, alignSelf: 'center' }}
+                />
+              )}
             </div>
           ))}
         </div>
 
-        {/* Row 2 — certifications centered below (hidden on mobile) */}
+        {/* Certifications */}
         <div
           style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 700,
-            fontSize: '13px',
+            fontSize: '12px',
             color: 'var(--color-primary)',
             letterSpacing: '2px',
             textTransform: 'uppercase',
-            textShadow: 'none',
-            opacity: animating ? 1 : 0,
-            transition: animating ? 'opacity 300ms ease-out 1400ms' : 'none',
+            opacity: visible ? 1 : 0,
+            transition: visible ? 'opacity 400ms ease-out 500ms' : 'none',
           }}
         >
           {certs.join(' · ')}
         </div>
       </div>
+
       <style>{`
-        .trust-stats-row {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-wrap: wrap;
-        }
         @media (max-width: 768px) {
           .trust-stats-row {
             display: grid !important;
@@ -270,12 +204,6 @@ export default function TrustBar() {
           .trust-stat-item {
             padding: 16px !important;
             border-bottom: 1px solid var(--color-border-light);
-          }
-          .trust-stat-item > div:first-child {
-            font-size: 36px !important;
-          }
-          .trust-stat-item > div:last-child {
-            font-size: 10px !important;
           }
           .trust-separator { display: none !important; }
         }

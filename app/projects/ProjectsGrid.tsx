@@ -2,18 +2,11 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import FAQSection, { FAQItem } from '@/components/shared/FAQSection';
 import ServiceCTA from '@/components/shared/ServiceCTA';
 import projectsData from '@/data/projects.json';
 
 type FilterTab = 'All' | 'Residential' | 'Commercial' | 'Siding' | 'Repair';
 const filterTabs: FilterTab[] = ['All', 'Residential', 'Commercial', 'Siding', 'Repair'];
-
-const faqItems: FAQItem[] = [
-  { q: 'What types of roofing projects does City Roofing handle?', a: 'We handle residential and commercial roofing — shingle replacement, flat roofs, metal roofing, emergency repairs — as well as vinyl, Hardie board, and metal siding across all Calgary quadrants.' },
-  { q: 'Do you have photos of completed roofing projects in Calgary?', a: 'Yes. Contact us at 403-608-9933 and we can share project photos relevant to your property type and neighbourhood.' },
-  { q: 'Can you do a project in my Calgary neighbourhood?', a: 'We serve all Calgary quadrants — NE, NW, SE, SW — plus Airdrie, Cochrane, Chestermere, and Okotoks.' },
-];
 
 export default function ProjectsGrid() {
   const [activeFilter, setActiveFilter] = useState<FilterTab>('All');
@@ -78,7 +71,7 @@ export default function ProjectsGrid() {
             return (
               <div
                 key={project.id}
-                style={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '6px', aspectRatio: '4/3', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
+                style={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '6px', aspectRatio: '4/3', position: 'relative', overflow: 'hidden' }}
                 className="project-card"
               >
                 {imgSrc ? (
@@ -108,10 +101,6 @@ export default function ProjectsGrid() {
                   <p style={{ color: 'var(--color-text-muted)', fontSize: '12px' }}>📍 {project.location}</p>
                 </div>
 
-                {/* Hover overlay */}
-                <div className="project-overlay" style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(139,26,26,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 300ms ease-out', zIndex: 3 }}>
-                  <span style={{ color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '15px', letterSpacing: '1px' }}>View Project</span>
-                </div>
               </div>
             );
           })}
@@ -125,10 +114,53 @@ export default function ProjectsGrid() {
       </div>
       </div>
 
-      <FAQSection items={faqItems} title="Projects — FAQ" />
+      {/* Service Coverage Map */}
+      <section style={{ backgroundColor: '#0E0E0E', padding: '80px 24px' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+
+          {/* Header */}
+          <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+            <p style={{ fontSize: '11px', letterSpacing: '3px', color: 'var(--color-primary)', fontFamily: 'var(--font-display)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '14px' }}>
+              Service Area
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(26px, 3vw, 38px)', color: '#F9F7F2', marginBottom: '16px', lineHeight: 1.2 }}>
+              Serving Calgary and Beyond
+            </h2>
+            <p style={{ color: 'rgba(249,247,242,0.55)', fontSize: '16px', lineHeight: 1.65, maxWidth: '580px', margin: '0 auto' }}>
+              From Calgary to Edmonton, across the Rockies into BC, and down to the southern Alberta border — we cover a wide service area.
+            </p>
+          </div>
+
+          {/* Map image */}
+          <div style={{ position: 'relative', width: '100%', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.07)' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/range.png"
+              alt="City Roofing service coverage area — Calgary, Edmonton, BC Okanagan, southern Alberta"
+              style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }}
+            />
+          </div>
+
+          {/* Coverage tags */}
+          <div className="coverage-tags" style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap', marginTop: '32px' }}>
+            {['Calgary (All Quadrants)', 'Airdrie', 'Cochrane', 'Chestermere', 'Okotoks', 'Edmonton Region', 'BC Okanagan', 'Southern Alberta'].map((area) => (
+              <span
+                key={area}
+                style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(249,247,242,0.65)', padding: '6px 14px', borderRadius: '3px', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '12px', letterSpacing: '0.5px', whiteSpace: 'nowrap' }}
+              >
+                {area}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <ServiceCTA headline="Want Results Like These?" subtext="Free inspection — written estimate — no pressure." />
 
-      <style>{`.project-card:hover .project-overlay { opacity: 1 !important; }`}</style>
+      <style>{`
+        .project-card { transition: filter 280ms ease; }
+        .project-card:hover { filter: brightness(1.07); }
+      `}</style>
     </div>
   );
 }

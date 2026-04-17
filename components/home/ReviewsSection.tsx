@@ -22,15 +22,19 @@ export default function ReviewsSection() {
     <section style={{ backgroundColor: 'var(--color-cream)', padding: '96px 24px' }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '16px', flexWrap: 'wrap' }}>
-            <span className="reviews-rating-num" style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '64px', color: 'var(--color-primary)', lineHeight: 1 }}>
+        <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+          <p style={{ fontSize: '11px', letterSpacing: '3px', color: 'var(--color-primary)', fontFamily: 'var(--font-display)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '16px' }}>
+            What Calgary Homeowners Say
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px', flexWrap: 'wrap', marginBottom: '12px' }}>
+            <span className="reviews-rating-num" style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '72px', color: 'var(--color-primary)', lineHeight: 1 }}>
               {companyData.googleRating}
             </span>
-            <div>
+            <div style={{ textAlign: 'left' }}>
               <StarRating />
-              <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '14px', marginTop: '6px' }}>
-                Based on {companyData.googleReviewCount} Google Reviews
+              <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '14px', marginTop: '8px', lineHeight: 1.4 }}>
+                Based on {companyData.googleReviewCount} verified Google reviews<br />
+                <span style={{ fontSize: '13px', opacity: 0.8 }}>Calgary's most reviewed local roofing contractor</span>
               </p>
             </div>
           </div>

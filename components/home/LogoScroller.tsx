@@ -21,19 +21,6 @@ const row1: Brand[] = [
   { name: 'Malarkey',      file: 'Malarkey_Roofing_Products_id17PI6HKC_0.png' },
 ];
 
-const row2: Brand[] = [
-  { name: 'Kaycan',                  file: 'Kaycan_id3_8YvC6L_1.png' },
-  { name: 'Royal Building Products', file: 'Westlake_Royal_Building_Products_idZ2GoSO-E_0.jpeg' },
-  { name: 'Gentek',                  file: 'Gentek_Building_Products_idzufTCWwO_0.jpeg' },
-  { name: 'Ply Gem',                 file: 'Ply_Gem_idymUAG1SF_2.jpeg' },
-  { name: 'MITTEN',                  file: 'Mitten_Badge.png' },
-  // Duplicate for seamless scroll
-  { name: 'Kaycan',                  file: 'Kaycan_id3_8YvC6L_1.png' },
-  { name: 'Royal Building Products', file: 'Westlake_Royal_Building_Products_idZ2GoSO-E_0.jpeg' },
-  { name: 'Gentek',                  file: 'Gentek_Building_Products_idzufTCWwO_0.jpeg' },
-  { name: 'Ply Gem',                 file: 'Ply_Gem_idymUAG1SF_2.jpeg' },
-  { name: 'MITTEN',                  file: 'Mitten_Badge.png' },
-];
 
 
 function BrandLogo({ brand }: { brand: Brand }) {
@@ -111,23 +98,25 @@ function ScrollRow({ items, duration, reverse }: { items: Brand[]; duration: num
 
 export default function LogoScroller() {
   return (
-    <section style={{ backgroundColor: 'var(--color-cream-dark)', padding: '80px 0', overflow: 'hidden' }}>
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px', marginBottom: '48px', textAlign: 'center' }}>
+    <section style={{ backgroundColor: 'var(--color-cream-dark)', padding: '64px 0 72px', overflow: 'hidden' }}>
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px', marginBottom: '36px', textAlign: 'center' }}>
+        <p style={{ fontSize: '11px', letterSpacing: '3px', color: 'var(--color-primary)', fontFamily: 'var(--font-display)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '12px' }}>
+          Quality You Can See
+        </p>
         <h2
           style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 800,
-            fontSize: 'clamp(24px, 3vw, 36px)',
+            fontSize: 'clamp(22px, 2.5vw, 32px)',
             color: 'var(--color-text-dark)',
           }}
         >
-          Trusted Materials &amp; Partners
+          Premium Brands. Certified Installers.
         </h2>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', marginBottom: '48px' }}>
-        <ScrollRow items={row1} duration={35} />
-        <ScrollRow items={row2} duration={45} reverse />
+      <div style={{ marginBottom: '56px' }}>
+        <ScrollRow items={row1} duration={40} />
       </div>
 
       {/* Certification badges */}

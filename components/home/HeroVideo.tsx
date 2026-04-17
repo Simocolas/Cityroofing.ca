@@ -85,13 +85,13 @@ export default function HeroVideo() {
             display: 'flex',
             alignItems: 'center',
             gap: '16px',
-            marginBottom: '28px',
+            marginBottom: '24px',
           }}
         >
           <span style={{ display: 'block', width: '30px', height: '1px', backgroundColor: 'var(--color-accent)', flexShrink: 0 }} />
           <p
             style={{
-              fontSize: '13px',
+              fontSize: '12px',
               letterSpacing: '4px',
               color: 'var(--color-accent)',
               fontFamily: 'var(--font-display)',
@@ -101,7 +101,7 @@ export default function HeroVideo() {
               whiteSpace: 'nowrap',
             }}
           >
-            Calgary&apos;s #1 Rated Roofing Contractor
+            Calgary Roofing &amp; Exteriors — Since 2009
           </p>
           <span style={{ display: 'block', width: '30px', height: '1px', backgroundColor: 'var(--color-accent)', flexShrink: 0 }} />
         </motion.div>
@@ -110,16 +110,16 @@ export default function HeroVideo() {
         <motion.h1
           variants={itemVariants}
           style={{
-            fontSize: 'clamp(56px, 9vw, 110px)',
+            fontSize: 'clamp(48px, 8vw, 96px)',
             fontWeight: 900,
             fontFamily: 'var(--font-display)',
             lineHeight: 1.0,
             color: '#F9F7F2',
-            marginBottom: '28px',
+            marginBottom: '24px',
             textShadow: '0 2px 20px rgba(0,0,0,0.5)',
           }}
         >
-          Built to Last.<br />Beyond the Ordinary.
+          Calgary&rsquo;s Trusted<br />Roofing Experts.
         </motion.h1>
 
         {/* Subtitle */}
@@ -128,24 +128,20 @@ export default function HeroVideo() {
           className="hero-subtitle"
           style={{
             color: 'rgba(249,247,242,0.8)',
-            fontSize: '20px',
+            fontSize: '18px',
             fontWeight: 400,
             lineHeight: 1.6,
-            marginBottom: '44px',
-            maxWidth: '600px',
+            marginBottom: '40px',
+            maxWidth: '560px',
             textAlign: 'center',
           }}
         >
-          Residential &amp; Commercial Roofing, Siding &amp; Exteriors<br />
-          Serving Calgary for 15+ Years
+          Roof replacement, repairs, siding &amp; commercial projects.<br />
+          158 five-star reviews · In-house crew · Free estimates.
         </motion.p>
 
-        {/* CTA Buttons */}
-        <motion.div
-          variants={itemVariants}
-          className="hero-buttons"
-          style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}
-        >
+        {/* CTA */}
+        <motion.div variants={itemVariants}>
           <Link
             href="/contact"
             className="hero-btn-primary"
@@ -167,28 +163,6 @@ export default function HeroVideo() {
           >
             Get Free Estimate
           </Link>
-          <Link
-            href="/projects"
-            className="hero-btn-secondary"
-            style={{
-              border: '2px solid #F9F7F2',
-              backgroundColor: 'transparent',
-              color: '#F9F7F2',
-              padding: '16px 36px',
-              borderRadius: '4px',
-              textDecoration: 'none',
-              fontFamily: 'var(--font-display)',
-              fontWeight: 700,
-              fontSize: '15px',
-              letterSpacing: '0.5px',
-              transition: 'background-color 150ms ease-out, color 150ms ease-out',
-              display: 'inline-block',
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#fff'; e.currentTarget.style.color = '#000'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#F9F7F2'; }}
-          >
-            View Our Work
-          </Link>
         </motion.div>
       </motion.div>
 
@@ -197,9 +171,7 @@ export default function HeroVideo() {
           .hero-content { padding: 0 20px !important; }
           .hero-content h1 { font-size: 42px !important; line-height: 1.1 !important; }
           .hero-subtitle { font-size: 15px !important; max-width: 300px !important; margin-bottom: 32px !important; }
-          .hero-buttons { flex-direction: column !important; width: 100% !important; max-width: 320px !important; gap: 12px !important; }
-          .hero-btn-primary { width: 100% !important; text-align: center !important; font-size: 16px !important; padding: 16px !important; }
-          .hero-btn-secondary { width: 100% !important; text-align: center !important; font-size: 15px !important; padding: 14px !important; }
+          .hero-btn-primary { width: 100% !important; max-width: 320px !important; text-align: center !important; font-size: 16px !important; padding: 16px !important; }
         }
       `}</style>
     </section>

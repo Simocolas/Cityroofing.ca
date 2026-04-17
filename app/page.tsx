@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'City Roofing & Exteriors | Calgary Roofing Contractor',
     description: "Calgary's trusted roofing contractor since 2009. Free estimates — call 403-608-9933.",
-    url: 'https://www.calgarycityroofing.com',
+    url: 'https://www.calgarycityroofing.ca',
     siteName: 'City Roofing & Exteriors',
     locale: 'en_CA',
     type: 'website',
@@ -28,9 +28,9 @@ export default function HomePage() {
       <HeroVideo />
       <TrustBar />
       <ServicesGrid />
-      <AboutSnippet />
-      <ProjectsScroll />
       <ReviewsSection />
+      <ProjectsScroll />
+      <AboutSnippet />
       <LogoScroller />
       <ContactCTA />
     </>

@@ -3,42 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
-function CountUp({ target, suffix, prefix, duration = 800 }: { target: number; suffix: string; prefix?: string; duration?: number }) {
-  const [count, setCount] = useState(0);
-  const [started, setStarted] = useState(false);
-  const ref = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting && !started) setStarted(true); },
-      { threshold: 0.5 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [started]);
-
-  useEffect(() => {
-    if (!started) return;
-    const isDecimal = target % 1 !== 0;
-    const steps = 60;
-    const increment = target / steps;
-    let current = 0;
-    const interval = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        setCount(target);
-        clearInterval(interval);
-      } else {
-        setCount(isDecimal ? parseFloat(current.toFixed(1)) : Math.floor(current));
-      }
-    }, duration / steps);
-    return () => clearInterval(interval);
-  }, [started, target, duration]);
-
-  const display = target % 1 !== 0 ? count.toFixed(1) : count;
-  return <span ref={ref}>{prefix}{display}{suffix}</span>;
-}
-
 export default function AboutSnippet() {
   const [visible, setVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -155,9 +119,9 @@ export default function AboutSnippet() {
             }}
           >
             {[
-              { value: 15, suffix: '+', label: 'Years', prefix: '' },
-              { value: 1000, suffix: '+', label: 'Projects', prefix: '' },
-              { value: 4.8, suffix: '★', label: 'Rating', prefix: '' },
+              { display: '15+', label: 'Years in Calgary' },
+              { display: '3,000+', label: 'Projects' },
+              { display: '4.8★', label: 'Google Rating' },
             ].map((stat) => (
               <div key={stat.label}>
                 <div
@@ -170,7 +134,7 @@ export default function AboutSnippet() {
                     marginBottom: '4px',
                   }}
                 >
-                  <CountUp target={stat.value} suffix={stat.suffix} prefix={stat.prefix} />
+                  {stat.display}
                 </div>
                 <div style={{ color: 'var(--color-text-dark-muted)', fontSize: '13px' }}>{stat.label}</div>
               </div>

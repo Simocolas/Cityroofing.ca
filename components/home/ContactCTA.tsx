@@ -34,16 +34,18 @@ export default function ContactCTA() {
               lineHeight: 1.15,
             }}
           >
-            Ready for a Roof That Lasts?
+            Get a Free On-Site Estimate
           </h2>
           <p
             style={{
-              color: 'rgba(255,255,255,0.75)',
-              fontSize: '18px',
+              color: 'rgba(255,255,255,0.8)',
+              fontSize: '17px',
+              lineHeight: 1.6,
               marginBottom: '36px',
+              maxWidth: '480px',
             }}
           >
-            Free inspection. Honest estimate. No pressure.
+            We come to you, assess the job, and give you a straight answer — no pushy sales, no surprise costs. Most estimates delivered same-day.
           </p>
           <div className="cta-buttons" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', width: '100%' }}>
             <a

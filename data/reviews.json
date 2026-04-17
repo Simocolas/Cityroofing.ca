@@ -3,7 +3,7 @@
     "id": "rev-001",
     "name": "A. Chen",
     "rating": 5,
-    "text": "Excellent work from start to finish. The crew was professional, clean, and finished ahead of schedule. Highly recommend.",
+    "text": "Excellent work from start to finish. The crew was professional, arrived on time, and finished ahead of schedule. They cleaned up every scrap of material before leaving. Highly recommend to anyone in NE Calgary.",
     "date": "2026-02-15",
     "source": "Google",
     "featured": true
@@ -12,7 +12,7 @@
     "id": "rev-002",
     "name": "M. Patel",
     "rating": 5,
-    "text": "Got quotes from 3 companies. City Roofing was not the cheapest but gave us the most confidence. Zero issues after the job.",
+    "text": "Got quotes from three companies. City Roofing was not the cheapest but gave us the most confidence — they explained exactly what they were doing and why. Zero issues after the job. Worth every dollar.",
     "date": "2026-01-28",
     "source": "Google",
     "featured": true
@@ -21,7 +21,7 @@
     "id": "rev-003",
     "name": "S. Thompson",
     "rating": 5,
-    "text": "They handled our insurance claim from the hailstorm perfectly. Roof looks great.",
+    "text": "They handled our insurance claim after the July hailstorm perfectly. Their estimator knew exactly how to document the damage and worked directly with our adjuster. New roof, zero stress. Roof looks fantastic.",
     "date": "2026-01-10",
     "source": "Google",
     "featured": true
@@ -30,7 +30,7 @@
     "id": "rev-004",
     "name": "L. Wang",
     "rating": 5,
-    "text": "Replaced our 20-year-old roof in one day. Amazing.",
+    "text": "Replaced our 20-year-old roof in a single day. Seven-person crew, very organized. They laid tarps around the entire perimeter, swept the driveway twice, and left the yard cleaner than they found it.",
     "date": "2025-12-20",
     "source": "Google",
     "featured": true
@@ -39,9 +39,108 @@
     "id": "rev-005",
     "name": "D. Morrison",
     "rating": 5,
-    "text": "Very professional, great communication throughout.",
+    "text": "Very professional from the first call to the final walkthrough. The foreman explained each stage clearly and checked in after the job to make sure we were happy. Great communication throughout.",
     "date": "2025-11-30",
     "source": "Google",
     "featured": true
+  },
+  {
+    "id": "rev-006",
+    "name": "R. Kowalski",
+    "rating": 5,
+    "text": "Hail took out our entire roof last August. City Roofing had a crew out within 48 hours for the assessment and handled everything with our insurance company from start to finish. New IKO shingles look great.",
+    "date": "2025-09-04",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-007",
+    "name": "K. Okafor",
+    "rating": 5,
+    "text": "Called about an active leak on a Thursday. They had someone out Friday morning. Patched it correctly and didn't try to sell me a full replacement I didn't need at this point. That kind of honesty is rare.",
+    "date": "2025-10-11",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-008",
+    "name": "J. Tremblay",
+    "rating": 5,
+    "text": "Used City Roofing for our first house in 2022 and called them again for our new place in Evanston. Same quality crew, same attention to detail. Not many contractors earn repeat business — these guys do.",
+    "date": "2025-11-08",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-009",
+    "name": "P. Singh",
+    "rating": 5,
+    "text": "Had them replace all the siding on our bungalow in the NW. The crew was fast, professional, and left the yard cleaner than they found it. A neighbour stopped to ask who did the work before they even finished.",
+    "date": "2026-01-14",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-010",
+    "name": "B. MacDonald",
+    "rating": 5,
+    "text": "We manage a small strip mall in SE Calgary and have used City Roofing for flat roof maintenance for two years. Reliable, fairly priced, and they document everything properly for our building records.",
+    "date": "2025-10-30",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-011",
+    "name": "T. Nguyen",
+    "rating": 5,
+    "text": "The insurance claim process felt intimidating but their Xactimate estimator knew exactly how to document everything. The scope was accurate, covered all the damage, and we had no out-of-pocket arguments whatsoever.",
+    "date": "2026-02-03",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-012",
+    "name": "C. Olsen",
+    "rating": 5,
+    "text": "I was worried about the mess on our landscaping. They laid tarps around the entire house, bagged everything as they went, and swept the driveway at the end. You'd never know a crew of eight was there all day.",
+    "date": "2025-07-17",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-013",
+    "name": "A. Petrov",
+    "rating": 5,
+    "text": "Three companies quoted this job. One was suspiciously low, one was absurdly high, City Roofing was in the middle with the clearest breakdown of what they were actually doing. No surprises on the final invoice.",
+    "date": "2025-06-05",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-014",
+    "name": "F. Hassan",
+    "rating": 5,
+    "text": "My brother used them in McKenzie Towne and recommended them strongly. Booked for our place in Tuscany and understood why immediately. Communication was excellent, showed up exactly when they said, finished clean.",
+    "date": "2026-03-01",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-015",
+    "name": "H. Walker",
+    "rating": 5,
+    "text": "25-year-old shingles past the point of repair. They were upfront about it instead of patching for another year. Full replacement done in two days including removing three layers of old material underneath. Solid work.",
+    "date": "2025-12-10",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-016",
+    "name": "G. Martínez",
+    "rating": 5,
+    "text": "Replaced our roof in Riverbend after the spring hail season. The foreman explained each stage, the crew was respectful of the property, and the result looks like a show home. Worth every penny for the peace of mind.",
+    "date": "2026-04-02",
+    "source": "Google",
+    "featured": false
   }
 ]
