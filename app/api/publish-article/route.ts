@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
-const execAsync = promisify(exec);
+import { githubWriteFile } from '@/lib/github';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
-  // ── Auth check ───────────────────────────────────────────────────────────────
   const adminSecret = process.env.ADMIN_SECRET ?? 'cityroofing2026';
   const providedKey = req.headers.get('x-admin-key');
   if (providedKey !== adminSecret) {
@@ -27,7 +21,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'mdxContent and slug are required' }, { status: 400 });
     }
 
-    // Sanitize slug — only lowercase alphanumeric + hyphens
     const safeSlug = slug
       .toLowerCase()
       .replace(/[^a-z0-9-]/g, '-')
@@ -38,37 +31,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid slug' }, { status: 400 });
     }
 
-    const dir = draft
-      ? path.join(process.cwd(), 'content', 'news', 'drafts')
-      : path.join(process.cwd(), 'content', 'news');
-
-    // Ensure directory exists
-    fs.mkdirSync(dir, { recursive: true });
-
-    const filePath = path.join(dir, `${safeSlug}.mdx`);
-    fs.writeFileSync(filePath, mdxContent, 'utf-8');
-
-    const relativePath = draft
+    const ghPath = draft
       ? `content/news/drafts/${safeSlug}.mdx`
       : `content/news/${safeSlug}.mdx`;
 
-    // ── Git: add, commit, push ────────────────────────────────────────────────
-    let gitOutput = '';
-    if (!draft) {
-      try {
-        const commitMsg = `Add article: ${safeSlug}`;
-        const { stdout, stderr } = await execAsync(
-          `git -C "${process.cwd()}" add "${relativePath}" && git -C "${process.cwd()}" commit -m "${commitMsg}" && git -C "${process.cwd()}" push`,
-          { timeout: 60000 }
-        );
-        gitOutput = (stdout + (stderr ? `\n${stderr}` : '')).trim();
-      } catch (gitErr: unknown) {
-        const msg = gitErr instanceof Error ? gitErr.message : String(gitErr);
-        gitOutput = `⚠️ Git error: ${msg}`;
-      }
-    }
+    const commitMessage = draft
+      ? `Save draft: ${safeSlug}`
+      : `Add article: ${safeSlug}`;
 
-    return NextResponse.json({ success: true, path: relativePath, slug: safeSlug, gitOutput });
+    await githubWriteFile(ghPath, mdxContent, commitMessage);
+
+    return NextResponse.json({
+      success: true,
+      path: ghPath,
+      slug: safeSlug,
+      message: draft
+        ? 'Draft saved to GitHub.'
+        : 'Published to GitHub — Vercel redeploy triggered.',
+    });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error('[publish-article]', msg);
