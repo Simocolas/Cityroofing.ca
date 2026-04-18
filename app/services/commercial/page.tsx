@@ -9,7 +9,14 @@ import reviewsData from '@/data/reviews.json';
 export const metadata: Metadata = {
   title: 'Commercial Roofing Calgary | City Roofing & Exteriors',
   description:
-    'Commercial roofing in Calgary. $3M+ project experience, flat roof systems, torch-on, EPDM/TPO. 403-608-9933.',
+    'Best commercial roofing contractor in Calgary. Experienced commercial roofer serving Alberta — flat roof systems, TPO, EPDM, torch-on. Calgary commercial roof replacement & repair. 403-608-9933.',
+  keywords: [
+    'best commercial roofing contractor Calgary',
+    'experienced commercial roofer Calgary Alberta',
+    'Calgary commercial roof replacement',
+    'commercial roofing Calgary',
+    'flat roof installation Calgary',
+  ],
 };
 
 const serviceSchema = {
@@ -41,6 +48,18 @@ const faqItems: FAQItem[] = [
   {
     q: 'Are you able to handle commercial insurance claims?',
     a: 'Yes. We have experience documenting commercial hail and storm damage for insurance purposes and can work with your broker and adjuster throughout the process.',
+  },
+  {
+    q: 'What commercial roofing services do you offer in Calgary?',
+    a: 'City Roofing offers full-scope commercial roofing in Calgary including flat roof installation and replacement (TPO, EPDM, torch-on), emergency repairs, re-roofing, maintenance programs, and insurance claim documentation for commercial properties.',
+  },
+  {
+    q: 'How experienced is City Roofing with commercial projects?',
+    a: 'City Roofing & Exteriors has completed over $3 million in commercial roofing projects across Calgary — warehouses, retail strip plazas, industrial facilities, and multi-unit residential buildings. Our commercial crews are SECOR certified and WCB Alberta registered.',
+  },
+  {
+    q: 'Do you work with insurance adjusters on commercial claims?',
+    a: 'Yes. Our estimators are Xactimate-certified, which is the industry-standard software used by Alberta insurance adjusters. We document hail and storm damage, prepare detailed scope-of-loss reports, and coordinate directly with adjusters to support your commercial insurance claim.',
   },
 ];
 
@@ -236,6 +255,21 @@ export default function CommercialRoofingPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Internal link to flat roof page */}
+      <section style={{ backgroundColor: 'var(--color-cream-dark)', padding: '48px 24px' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto', backgroundColor: '#FFFFFF', border: '1px solid var(--color-border-light)', borderLeft: '4px solid var(--color-primary)', padding: '28px 32px', borderRadius: '0 6px 6px 0' }}>
+          <p style={{ color: 'var(--color-text-dark)', fontSize: '15px', lineHeight: 1.7, marginBottom: '12px' }}>
+            Looking specifically for flat roof installation in Calgary? Our dedicated flat roof division covers TPO, EPDM, modified bitumen, and BUR for commercial and residential properties across all Calgary quadrants.
+          </p>
+          <a
+            href="/services/flat-roof-calgary"
+            style={{ color: 'var(--color-primary)', textDecoration: 'none', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '15px' }}
+          >
+            Learn about flat roof installation Calgary →
+          </a>
         </div>
       </section>
 

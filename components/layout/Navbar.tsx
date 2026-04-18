@@ -4,6 +4,46 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
+
+function RooftopIndicator({ visible, spotX, id }: { visible: boolean; spotX: number; id: string }) {
+  const cx = Math.max(0, Math.min(60, spotX)) / 60;
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0, y: 2 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 2 }}
+          transition={{ duration: 0.18, ease: 'easeOut' }}
+          style={{
+            position: 'absolute',
+            top: '-36px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            pointerEvents: 'none',
+            filter: 'drop-shadow(0 0 3px rgba(139,30,30,0.55))',
+          }}
+        >
+          <svg width="60" height="28" viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id={`spot-${id}`} cx={cx} cy="0.3" r="0.65" gradientUnits="objectBoundingBox">
+                <stop offset="0%" stopColor="rgba(179,32,32,0.45)" />
+                <stop offset="100%" stopColor="rgba(139,30,30,0)" />
+              </radialGradient>
+            </defs>
+            {/* Base fill */}
+            <path d="M 0 14 L 30 0 L 60 14 L 60 28 L 0 28 Z" fill="rgba(139,30,30,0.08)" />
+            {/* Spotlight overlay */}
+            <path d="M 0 14 L 30 0 L 60 14 L 60 28 L 0 28 Z" fill={`url(#spot-${id})`} />
+            {/* Stroke */}
+            <path d="M 0 14 L 30 0 L 60 14 L 60 28 L 0 28 Z" stroke="#8B1E1E" strokeWidth="1.2" fill="none" />
+          </svg>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
 
 const navLinks = [
   { label: 'Services', href: '/services' },
@@ -17,6 +57,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [hoveredSpotX, setHoveredSpotX] = useState(30);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -85,7 +126,19 @@ export default function Navbar() {
               const isHovered = hoveredItem === link.href;
               const showBorder = hoveredItem !== null ? isHovered : isActive;
               return (
-                <li key={link.href}>
+                <li
+                  key={link.href}
+                  style={{ position: 'relative' }}
+                  onMouseMove={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    setHoveredSpotX(e.clientX - rect.left - (rect.width - 60) / 2);
+                  }}
+                >
+                  <RooftopIndicator
+                    visible={isHovered || isActive}
+                    spotX={isHovered ? hoveredSpotX : 30}
+                    id={link.href.replace('/', '')}
+                  />
                   <Link
                     href={link.href}
                     className="nav-link"

@@ -67,5 +67,10 @@ module.exports = {
       priority: 0.9,
       changefreq: 'weekly',
     },
+    {
+      loc: '/services/flat-roof-calgary',
+      priority: 0.95,
+      changefreq: 'weekly',
+    },
   ],
 }
