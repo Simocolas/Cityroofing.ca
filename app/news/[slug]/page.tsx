@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { getPublishedPosts, getPostBySlug, getPostsByCategory } from '@/lib/mdx';
+import { getArticleImage } from '@/lib/articleImage';
 import Link from 'next/link';
-import Image from 'next/image';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -161,19 +161,15 @@ export default async function NewsPostPage({ params }: PageProps) {
       {/* Cream zone — everything below header */}
       <div style={{ backgroundColor: 'var(--color-cream)' }}>
 
-      {/* Featured image — only render when featuredImage is an actual URL */}
-      {frontmatter.featuredImage && /^https?:\/\/|^\//.test(frontmatter.featuredImage) && (
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 24px' }}>
-          <div style={{ position: 'relative', height: '400px', borderRadius: '6px', overflow: 'hidden', marginTop: '40px' }}>
-            <Image
-              src={frontmatter.featuredImage}
-              alt={frontmatter.imageAlt ?? frontmatter.title}
-              fill
-              style={{ objectFit: 'cover' }}
-            />
-          </div>
-        </div>
-      )}
+      {/* Hero image — always shown; falls back to category photo when featuredImage is a prompt string */}
+      <div style={{ maxWidth: '800px', margin: '40px auto 0', padding: '0 24px' }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={getArticleImage(frontmatter.featuredImage, frontmatter.category)}
+          alt={frontmatter.imageAlt ?? frontmatter.title}
+          style={{ width: '100%', height: '400px', objectFit: 'cover', borderRadius: '6px', display: 'block' }}
+        />
+      </div>
 
       {/* Article body */}
       <div

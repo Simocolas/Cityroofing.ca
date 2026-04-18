@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { PostMeta } from '@/lib/mdx';
+import { getArticleImage } from '@/lib/articleImage';
 
 const POSTS_PER_PAGE = 9;
 
@@ -37,21 +38,8 @@ function CategoryBadge({ category }: { category: string }) {
   );
 }
 
-const CATEGORY_IMAGES: Record<string, string> = {
-  tips:     'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=80',
-  calgary:  'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=600&q=80',
-  industry: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80',
-};
-const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80';
-
-function isImageUrl(s: string): boolean {
-  return s.startsWith('http://') || s.startsWith('https://') || s.startsWith('/');
-}
-
 function getCardImage(post: PostMeta): string {
-  const fi = post.frontmatter.featuredImage;
-  if (fi && isImageUrl(fi)) return fi;
-  return CATEGORY_IMAGES[post.frontmatter.category] ?? FALLBACK_IMAGE;
+  return getArticleImage(post.frontmatter.featuredImage, post.frontmatter.category);
 }
 
 function NewsCard({ post }: { post: PostMeta }) {
