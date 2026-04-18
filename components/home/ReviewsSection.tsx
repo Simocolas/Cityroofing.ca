@@ -46,7 +46,7 @@ export default function ReviewsSection() {
             <div
               key={review.id}
               className="review-card"
-              style={{ flexShrink: 0, width: '320px', backgroundColor: '#FFFFFF', border: '1px solid var(--color-border-light)', borderRadius: '6px', padding: '28px', display: 'flex', flexDirection: 'column', gap: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}
+              style={{ flexShrink: 0, width: '320px', backgroundColor: '#FFFFFF', border: '1px solid var(--color-border-light)', borderRadius: '6px', padding: '28px', display: 'flex', flexDirection: 'column', gap: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }}
             >
               <StarRating count={review.rating} />
               <p style={{ color: 'var(--color-text-dark)', fontSize: '15px', lineHeight: 1.6, flex: 1 }}>
@@ -86,6 +86,10 @@ export default function ReviewsSection() {
         @media (max-width: 768px) {
           .reviews-rating-num { font-size: 56px !important; }
           .review-card { width: 85vw !important; }
+        }
+        .review-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
         }
       `}</style>
     </section>

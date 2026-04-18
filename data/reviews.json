@@ -142,5 +142,149 @@
     "date": "2026-04-02",
     "source": "Google",
     "featured": false
+  },
+  {
+    "id": "rev-017",
+    "name": "Wei Zhang",
+    "rating": 5,
+    "text": "Called City Roofing after the September hail storm damaged our roof in Sage Hill. Their estimator walked us through every item on the Xactimate report so we actually understood what was being claimed. The insurance process took about three weeks total, then the crew came out within days of approval. Brand new IKO shingles, full cleanup, and the foreman called the next morning to make sure everything looked right.",
+    "date": "2024-02-14",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-018",
+    "name": "Priya Sharma",
+    "rating": 5,
+    "text": "We had our 18-year-old roof replaced in Cochrane last spring and City Roofing beat our expectations on every count — speed, cleanliness, and price. The crew finished in one day and you couldn't tell they'd been there except for the beautiful new roof.",
+    "date": "2024-04-05",
+    "source": "Google",
+    "featured": true
+  },
+  {
+    "id": "rev-019",
+    "name": "James MacLeod",
+    "rating": 5,
+    "text": "Had a flat roof on our addition that was getting spongy and holding water near the drain. City Roofing replaced the whole EPDM membrane in a day and added proper tapered insulation to fix the drainage issue. The flat section hasn't given us a moment's trouble since — they fixed the actual problem rather than just re-coating the old surface.",
+    "date": "2024-06-18",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-020",
+    "name": "Olena Kovalenko",
+    "rating": 5,
+    "text": "Ice dam formed over our garage in Airdrie and water was running down the interior wall by the time I called. City Roofing had someone out the next morning, cleared the ice without damaging the shingles, and came back a few weeks later to add attic insulation — the root cause. We haven't had any ice problems since. Thorough and honest.",
+    "date": "2024-01-30",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-021",
+    "name": "Raj Bhatia",
+    "rating": 5,
+    "text": "Hired them for full Hardie board siding on our house in Taradale. The team was focused — no standing around, steady work all day. Finished in three days and the end result looks like a different house entirely.",
+    "date": "2024-08-11",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-022",
+    "name": "Linda Chan",
+    "rating": 5,
+    "text": "Reached out for a quote on our Signal Hill home and they came within two days. The estimator noticed our eavestrough hangers were pulling off the fascia and pointed it out before we even asked — they bundled the fix into the project. New shingles, repaired fascia, and two full sections of eavestrough replaced, all in a single visit. The attention to detail was what impressed me most.",
+    "date": "2024-03-22",
+    "source": "Google",
+    "featured": true
+  },
+  {
+    "id": "rev-023",
+    "name": "Brian Fletcher",
+    "rating": 5,
+    "text": "After the August hail hit Chestermere hard, City Roofing was one of the few companies that could get us on the schedule within a reasonable time. Their adjuster liaison managed the claim directly with our insurer and we ended up with a full replacement covered. No fighting, no back-and-forth — just a new roof.",
+    "date": "2024-09-07",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-024",
+    "name": "Navneet Gill",
+    "rating": 5,
+    "text": "Quick, clean, professional. They replaced our roof in Sage Hill in under eight hours and we didn't find a single nail in the yard.",
+    "date": "2024-07-03",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-025",
+    "name": "Ivan Petrenko",
+    "rating": 5,
+    "text": "We own a rental property in Auburn Bay with a large flat section over the rear addition. City Roofing installed a TPO membrane and added a proper drain with overflow — the previous contractor had just re-coated with tar every two years. This is the first real fix the roof has had in ten years. No more calls from tenants about leaks.",
+    "date": "2024-11-19",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-026",
+    "name": "Sarah Campbell",
+    "rating": 5,
+    "text": "This was the second time using City Roofing — the first was at our old place in Cougar Ridge in 2022. Called them without hesitation when we needed work done at our new house in Springbank Hill. The crew was just as professional as the last time. That kind of consistency is rare and it's what keeps me recommending them.",
+    "date": "2024-05-27",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-027",
+    "name": "Amir Rahimi",
+    "rating": 5,
+    "text": "Spotted a water stain on the ceiling the night before we had family coming over. Called City Roofing and they fit us in first thing the next morning, found a cracked flashing around the chimney in Evanston, and had it sealed within the hour. Straightforward job, fair charge, no upsell.",
+    "date": "2025-01-08",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-028",
+    "name": "Yolanda Ferreira",
+    "rating": 5,
+    "text": "They drove out to Okotoks without any extra charge for the distance, which I appreciated. New roof installed over two days — the crew tackled the more complex valleys and dormers first while everyone was fresh. Clean job, fair price, and they registered the shingle warranty in our name the same day.",
+    "date": "2024-10-15",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-029",
+    "name": "Jason Xu",
+    "rating": 5,
+    "text": "Our roof in Kincora took a beating in last summer's storm — obvious dimpling across most of the south face. City Roofing's estimator photographed every section, measured the impact density, and produced a report that left our adjuster with nothing to dispute. Full replacement approved within two weeks and the installation was done in a single day with a crew of six. Exactly what you want when you're dealing with insurance.",
+    "date": "2025-02-20",
+    "source": "Google",
+    "featured": true
+  },
+  {
+    "id": "rev-030",
+    "name": "Mike Holden",
+    "rating": 5,
+    "text": "I was skeptical about hiring a roofer to also manage the insurance claim — figured they'd inflate the scope or create issues. City Roofing's process proved me wrong. Their Xactimate report matched exactly what needed to be done, nothing extra, and our adjuster approved it on the first submission. Crew was on-site within a week of approval, finished our McKenzie Lake home in nine hours, and the cleanup was thorough. Changed my mind about contractor-managed claims.",
+    "date": "2025-03-14",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-031",
+    "name": "Anita Dhaliwal",
+    "rating": 5,
+    "text": "We live in Cranston and had significant hail damage from the storm earlier this spring. City Roofing's estimator came out the day after I called, spent two hours on the roof photographing damage section by section, and walked me through every line item before submitting to our insurance company. The adjuster came shortly after and there were no disputes on the scope at all. Installation took one long day — crew of eight, working by 7am. Three neighbours have already asked for the contact number.",
+    "date": "2025-04-28",
+    "source": "Google",
+    "featured": false
+  },
+  {
+    "id": "rev-032",
+    "name": "Terry Bourassa",
+    "rating": 5,
+    "text": "Hired City Roofing for fascia, soffit, and eavestrough replacement on our Hawkwood home. While working on the soffit the crew noticed our attic venting was inadequate and flagged it before it became a moisture problem. Small catch, but exactly the kind of thing I expect from a company worth hiring.",
+    "date": "2025-05-09",
+    "source": "Google",
+    "featured": false
   }
 ]

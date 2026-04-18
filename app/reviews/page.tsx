@@ -111,7 +111,7 @@ export default function ReviewsPage() {
               <div
                 key={review.id}
                 className="review-card-page"
-                style={{ backgroundColor: '#FFFFFF', border: '1px solid var(--color-border-light)', borderRadius: '6px', padding: '28px 24px', display: 'flex', flexDirection: 'column', gap: '14px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', transition: 'box-shadow 220ms ease, transform 220ms ease' }}
+                style={{ backgroundColor: '#FFFFFF', border: '1px solid var(--color-border-light)', borderRadius: '6px', padding: '28px 24px', display: 'flex', flexDirection: 'column', gap: '14px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }}
               >
                 <StarRating count={review.rating} />
                 <p style={{ color: 'var(--color-text-dark)', fontSize: '14.5px', lineHeight: 1.65, flex: 1, margin: 0 }}>
@@ -163,8 +163,8 @@ export default function ReviewsPage() {
           .reviews-grid { grid-template-columns: 1fr !important; }
         }
         .review-card-page:hover {
-          box-shadow: 0 6px 24px rgba(0,0,0,0.1) !important;
-          transform: translateY(-2px);
+          transform: translateY(-4px);
+          box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
         }
       `}</style>
     </div>
