@@ -4,42 +4,6 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-
-function RooftopIndicator({ visible }: { visible: boolean }) {
-  return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          initial={{ opacity: 0, y: 3 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 3 }}
-          transition={{ duration: 0.18, ease: 'easeOut' }}
-          style={{
-            position: 'absolute',
-            bottom: '100%',
-            marginBottom: '6px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            pointerEvents: 'none',
-            filter: 'drop-shadow(0 0 2px rgba(139,30,30,0.5))',
-          }}
-        >
-          <svg width="40" height="20" viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {/* House: triangle roof + rectangular base, stroke only */}
-            <path
-              d="M 0 10 L 20 0 L 40 10 L 40 20 L 0 20 Z"
-              stroke="#8B1E1E"
-              strokeWidth="1.5"
-              strokeLinejoin="miter"
-              fill="none"
-            />
-          </svg>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
 
 const navLinks = [
   { label: 'Services', href: '/services' },
@@ -109,8 +73,9 @@ export default function Navbar() {
             style={{
               display: 'flex',
               listStyle: 'none',
-              gap: '40px',
-              alignItems: 'center',
+              gap: '4px',
+              alignItems: 'stretch',
+              alignSelf: 'stretch',
               flex: 1,
               justifyContent: 'center',
             }}
@@ -119,31 +84,23 @@ export default function Navbar() {
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               const isHovered = hoveredItem === link.href;
-              const showBorder = hoveredItem !== null ? isHovered : isActive;
+
+              let linkClass = 'nav-link';
+              if (isHovered) {
+                linkClass += ' nav-link--hover';
+              } else if (isActive && hoveredItem === null) {
+                linkClass += ' nav-link--active-pulse';
+              } else if (isActive) {
+                linkClass += ' nav-link--active-static';
+              }
+
               return (
-                <li
-                  key={link.href}
-                  style={{ position: 'relative' }}
-                >
-                  <RooftopIndicator
-                    visible={hoveredItem !== null ? isHovered : isActive}
-                  />
+                <li key={link.href} style={{ display: 'flex', alignItems: 'stretch' }}>
                   <Link
                     href={link.href}
-                    className="nav-link"
+                    className={linkClass}
                     onMouseEnter={() => setHoveredItem(link.href)}
                     onMouseLeave={() => setHoveredItem(null)}
-                    style={{
-                      borderColor: showBorder
-                        ? isHovered ? 'rgba(179,32,32,0.6)' : 'rgba(179,32,32,0.4)'
-                        : 'transparent',
-                      backgroundImage: isHovered
-                        ? 'linear-gradient(105deg, transparent 40%, rgba(179,32,32,0.15) 50%, transparent 60%)'
-                        : 'none',
-                      backgroundColor: !isHovered && showBorder ? 'rgba(179,32,32,0.08)' : 'transparent',
-                      backgroundSize: '200% 100%',
-                      animation: isHovered ? 'shimmer 600ms ease-out forwards' : 'none',
-                    }}
                   >
                     {link.label}
                   </Link>
@@ -257,9 +214,9 @@ export default function Navbar() {
       </div>
 
       <style>{`
-        @keyframes shimmer {
-          from { background-position: 200% center; }
-          to   { background-position: -200% center; }
+        @keyframes borderPulse {
+          0%, 100% { border-color: rgba(139, 30, 30, 0.4); }
+          50%       { border-color: rgba(139, 30, 30, 1); }
         }
         .nav-link {
           color: #F9F7F2;
@@ -270,12 +227,24 @@ export default function Navbar() {
           letter-spacing: 0.3px;
           border: 1px solid transparent;
           border-radius: 6px;
-          padding: 6px 14px;
+          padding: 0 10px;
+          display: flex;
+          align-items: center;
           background-color: transparent;
-          background-image: none;
-          background-size: 200% 100%;
-          transition: border-color 200ms ease-out;
-          display: inline-block;
+          transition: background-color 200ms ease-out;
+          white-space: nowrap;
+        }
+        .nav-link--hover {
+          border-color: #8B1E1E;
+          background-color: rgba(139, 30, 30, 0.15);
+        }
+        .nav-link--active-static {
+          border-color: #8B1E1E;
+          background-color: rgba(139, 30, 30, 0.15);
+        }
+        .nav-link--active-pulse {
+          background-color: rgba(139, 30, 30, 0.15);
+          animation: borderPulse 3s ease-in-out infinite;
         }
         @media (max-width: 768px) {
           .desktop-nav { display: none !important; }
