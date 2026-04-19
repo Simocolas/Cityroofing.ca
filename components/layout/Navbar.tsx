@@ -6,38 +6,34 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
-function RooftopIndicator({ visible, spotX, id }: { visible: boolean; spotX: number; id: string }) {
-  const cx = Math.max(0, Math.min(60, spotX)) / 60;
+function RooftopIndicator({ visible }: { visible: boolean }) {
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{ opacity: 0, y: 2 }}
+          initial={{ opacity: 0, y: 3 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 2 }}
+          exit={{ opacity: 0, y: 3 }}
           transition={{ duration: 0.18, ease: 'easeOut' }}
           style={{
             position: 'absolute',
-            top: '-36px',
+            bottom: '100%',
+            marginBottom: '6px',
             left: '50%',
             transform: 'translateX(-50%)',
             pointerEvents: 'none',
-            filter: 'drop-shadow(0 0 3px rgba(139,30,30,0.55))',
+            filter: 'drop-shadow(0 0 2px rgba(139,30,30,0.5))',
           }}
         >
-          <svg width="60" height="28" viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id={`spot-${id}`} cx={cx} cy="0.3" r="0.65" gradientUnits="objectBoundingBox">
-                <stop offset="0%" stopColor="rgba(179,32,32,0.45)" />
-                <stop offset="100%" stopColor="rgba(139,30,30,0)" />
-              </radialGradient>
-            </defs>
-            {/* Base fill */}
-            <path d="M 0 14 L 30 0 L 60 14 L 60 28 L 0 28 Z" fill="rgba(139,30,30,0.08)" />
-            {/* Spotlight overlay */}
-            <path d="M 0 14 L 30 0 L 60 14 L 60 28 L 0 28 Z" fill={`url(#spot-${id})`} />
-            {/* Stroke */}
-            <path d="M 0 14 L 30 0 L 60 14 L 60 28 L 0 28 Z" stroke="#8B1E1E" strokeWidth="1.2" fill="none" />
+          <svg width="40" height="20" viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* House: triangle roof + rectangular base, stroke only */}
+            <path
+              d="M 0 10 L 20 0 L 40 10 L 40 20 L 0 20 Z"
+              stroke="#8B1E1E"
+              strokeWidth="1.5"
+              strokeLinejoin="miter"
+              fill="none"
+            />
           </svg>
         </motion.div>
       )}
@@ -57,7 +53,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-  const [hoveredSpotX, setHoveredSpotX] = useState(30);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -129,15 +124,9 @@ export default function Navbar() {
                 <li
                   key={link.href}
                   style={{ position: 'relative' }}
-                  onMouseMove={(e) => {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    setHoveredSpotX(e.clientX - rect.left - (rect.width - 60) / 2);
-                  }}
                 >
                   <RooftopIndicator
-                    visible={isHovered || isActive}
-                    spotX={isHovered ? hoveredSpotX : 30}
-                    id={link.href.replace('/', '')}
+                    visible={hoveredItem !== null ? isHovered : isActive}
                   />
                   <Link
                     href={link.href}
