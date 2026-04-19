@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Manrope, Work_Sans } from 'next/font/google';
+import Script from 'next/script';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import LoadingWrapper from '@/components/LoadingWrapper';
@@ -98,6 +99,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        {/* Google Ads conversion tracking */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-18002586824"
+          strategy="afterInteractive"
+        />
+        <Script
+          id="gtag-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-18002586824');
+            `,
+          }}
+        />
         <LoadingWrapper>
           <Navbar />
           <main>{children}</main>
