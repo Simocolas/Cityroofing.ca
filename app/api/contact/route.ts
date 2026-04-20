@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
 </html>`;
 
     const { error } = await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: 'info@mail.calgarycityroofing.com',
       to: 'info@calgarycityroofing.com',
       subject: `New Estimate Request — ${name}`,
       html,
