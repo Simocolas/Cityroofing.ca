@@ -6,7 +6,7 @@ import ServiceCTA from '@/components/shared/ServiceCTA';
 export const metadata: Metadata = {
   title: 'Roofing & Exterior Services Calgary | City Roofing',
   description:
-    'Roof replacement, repair, siding and commercial roofing in Calgary. SECOR certified, WCB insured, 158 Google reviews at 4.8★. Free estimates — call 403-608-9933.',
+    'Roof replacement, repair, siding and commercial roofing in Calgary. SECOR certified, WCB Alberta coverage, 158 Google reviews at 4.8★. Free estimates — call 403-608-9933.',
 };
 
 interface CardData {
@@ -31,8 +31,8 @@ const ROW1: CardData[] = [
     href: '/services/roof-repair',
     title: 'Roof Repair & Emergency',
     image: '/images/projects/Repair.jpeg',
-    tag: '24/7 RESPONSE',
-    bullets: ['Leaks, hail & storm damage', 'Same-day assessment available', 'Insurance claim assistance'],
+    tag: 'FAST LEAK HELP',
+    bullets: ['Leaks, hail & storm damage', 'Next available assessment', 'Insurance documentation support'],
     height: '400px',
   },
 ];
@@ -43,7 +43,7 @@ const ROW2: CardData[] = [
     title: 'Siding & Exteriors',
     image: '/images/projects/siding.jpg',
     tag: null,
-    bullets: ['Vinyl, Hardie board & metal siding', 'Premium brands: Kaycan, Royal, Gentek'],
+    bullets: ['Vinyl, Hardie board & metal siding', 'Established brands: Kaycan, Royal, Gentek'],
     height: '300px',
   },
   {
@@ -176,8 +176,8 @@ export default function ServicesPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '48px', textAlign: 'center' }}>
             {[
               { icon: '🏠', title: 'In-House Crew Only', sub: 'Every roofer is our full-time employee' },
-              { icon: '⭐', title: '158 Google Reviews · 4.8★', sub: "Calgary's most reviewed local roofer" },
-              { icon: '🛡️', title: 'SECOR · WCB · BBB', sub: 'Fully certified and insured on every job' },
+              { icon: '⭐', title: '158 Google Reviews · 4.8★', sub: 'A long local track record across Calgary' },
+              { icon: '🛡️', title: 'SECOR · WCB · BBB', sub: 'Safety, coverage and accountability on every job' },
             ].map((col) => (
               <div key={col.title}>
                 <div style={{ fontSize: '36px', marginBottom: '14px', lineHeight: 1 }}>{col.icon}</div>
@@ -254,7 +254,7 @@ export default function ServicesPage() {
               textTransform: 'uppercase',
               marginBottom: '16px',
             }}>
-              24/7 Emergency Response
+              Fast Leak & Storm Response
             </p>
             <h2 style={{
               fontFamily: 'var(--font-display)',

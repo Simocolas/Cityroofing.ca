@@ -9,7 +9,7 @@ import reviewsData from '@/data/reviews.json';
 export const metadata: Metadata = {
   title: 'Roof Repair Calgary | Emergency Roofing | City Roofing',
   description:
-    'Calgary roof repair and emergency roofing services. Hail damage, leaks, storm repair. SECOR certified, 4.8★ rated. Call 403-608-9933.',
+    'Calgary roof repair for leaks, hail damage and storm damage. Fast response, SECOR certified, 4.8★ rated. Call 403-608-9933.',
 };
 
 const serviceSchema = {
@@ -32,7 +32,7 @@ const faqItems: FAQItem[] = [
   },
   {
     q: 'Does insurance cover roof repair in Calgary?',
-    a: 'Insurance typically covers repair when damage results from an insured peril — hailstorm, windstorm, or falling debris. Gradual wear and tear is generally excluded. We help document damage thoroughly for your claim.',
+    a: 'Insurance may cover repair when damage results from an insured event such as hail, wind, or falling debris. Gradual wear and tear is generally excluded. We provide photos and documentation you can share with your insurer.',
   },
   {
     q: 'Can you repair hail damage without a full replacement?',
@@ -52,7 +52,7 @@ const keyPoints: KeyPoint[] = [
   {
     iconId: 'lightning',
     title: 'Fast Calgary Response',
-    text: 'We serve all Calgary quadrants — NE, NW, SE, SW. Call us and we\'ll assess your situation same day.',
+    text: 'We serve all Calgary quadrants — NE, NW, SE, SW. Call us and we\'ll assess your situation as quickly as scheduling allows.',
   },
   {
     iconId: 'search',
@@ -62,7 +62,7 @@ const keyPoints: KeyPoint[] = [
   {
     iconId: 'document',
     title: 'Insurance Claim Help',
-    text: 'Hail or storm damage? We document everything and work alongside your Alberta insurance adjuster.',
+    text: 'Hail or storm damage? We document the roof condition clearly for your insurer or adjuster.',
   },
 ];
 
@@ -73,7 +73,7 @@ const accordionItems: AccordionItem[] = [
       'Trace active leaks to their source — often flashing, valleys, or pipe boots',
       'Repair correctly rather than just patching symptoms',
       'Interior water damage assessment and documentation',
-      'Same-day emergency response available across Calgary',
+      'Fast leak response available across Calgary',
     ],
   },
   {
@@ -82,7 +82,7 @@ const accordionItems: AccordionItem[] = [
       'Thorough impact assessment — not every dent needs full replacement',
       'Detailed photo documentation for insurance claims',
       'Shingle matching to existing profile and colour where possible',
-      'Work with all major Alberta insurance providers',
+      'Documentation you can share with your insurance provider',
     ],
   },
   {
@@ -113,7 +113,7 @@ const accordionItems: AccordionItem[] = [
 
 const steps = [
   { num: 1, title: 'You Call Us', desc: 'Describe the issue — we\'ll assess urgency and schedule immediately.' },
-  { num: 2, title: 'Same-Day Assessment', desc: 'We inspect the damage on-site, at no charge.' },
+  { num: 2, title: 'Roof Assessment', desc: 'We inspect the damage on-site, at no charge.' },
   { num: 3, title: 'Written Quote', desc: 'Clear written scope of work before any repairs start.' },
   { num: 4, title: 'Repair Work', desc: 'SECOR-certified crew completes the repair to code.' },
   { num: 5, title: 'Final Inspection', desc: 'We confirm the repair is complete and weathertight.' },
@@ -144,7 +144,7 @@ export default function RoofRepairPage() {
             <p style={{ color: 'var(--color-text-dark)', fontSize: '16px', lineHeight: 1.7 }}>
               City Roofing &amp; Exteriors provides residential and commercial roof repair across Calgary, Alberta.
               Services include emergency leak repair, hail damage assessment, shingle replacement, flat roof patching,
-              and storm damage restoration. Call 403-608-9933 for a same-day assessment.
+              and storm damage restoration. Call 403-608-9933 for the next available assessment.
             </p>
           </div>
         </div>

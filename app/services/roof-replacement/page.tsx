@@ -9,7 +9,7 @@ import reviewsData from '@/data/reviews.json';
 export const metadata: Metadata = {
   title: 'Roof Replacement Calgary | City Roofing & Exteriors',
   description:
-    'Expert roof replacement in Calgary. Asphalt shingles, flat roof, metal roofing. 15+ years, 4.8★ Google rating, SECOR certified. Free estimate: 403-608-9933.',
+    'Roof replacement in Calgary for asphalt shingles, flat roofs and metal roofing. 15+ years, 4.8★ Google rating, SECOR certified. Free estimate: 403-608-9933.',
 };
 
 const serviceSchema = {
@@ -45,11 +45,11 @@ const faqItems: FAQItem[] = [
   },
   {
     q: 'What roofing material is best for Calgary weather?',
-    a: 'Class 4 impact-resistant asphalt shingles are the most popular in Calgary due to hail risk. Many insurers offer premium discounts for this rating.',
+    a: 'Class 4 impact-resistant asphalt shingles are a common choice in Calgary because of hail risk. Some insurers may offer discounts for this rating, depending on the policy.',
   },
   {
     q: 'Do you handle insurance claims for roof replacement?',
-    a: 'Yes. We document storm and hail damage thoroughly and work alongside your insurance adjuster throughout the process.',
+    a: 'Yes. We document storm and hail damage thoroughly and provide clear information you can share with your insurer or adjuster.',
   },
   {
     q: 'How do I know if I need replacement vs repair?',
@@ -64,7 +64,7 @@ const faqItems: FAQItem[] = [
     a: 'Yes — Airdrie, Cochrane, Chestermere, and Okotoks.',
   },
   {
-    q: 'Are you SECOR certified and WCB insured?',
+    q: 'Are you SECOR certified and covered by WCB Alberta?',
     a: 'Yes. City Roofing & Exteriors holds SECOR safety certification and is registered with WCB Alberta on every job.',
   },
 ];
@@ -73,7 +73,7 @@ const keyPoints: KeyPoint[] = [
   {
     iconId: 'shield',
     title: 'Transparent Pricing',
-    text: 'Written quote before we start. No surprises, no hidden fees. What we quote is what you pay.',
+    text: 'Written quote before we start, with clear scope, materials, and pricing.',
   },
   {
     iconId: 'team',
@@ -83,7 +83,7 @@ const keyPoints: KeyPoint[] = [
   {
     iconId: 'star',
     title: '15 Years, 3,000+ Projects',
-    text: "Calgary's most experienced local roofer. 158 Google reviews averaging 4.8 stars speaks for itself.",
+    text: '15+ years serving Calgary, with 158 Google reviews averaging 4.8 stars.',
   },
 ];
 
@@ -92,8 +92,8 @@ const accordionItems: AccordionItem[] = [
     title: 'Asphalt Shingles',
     bullets: [
       'Architectural (laminate) and 3-tab shingles from IKO, BP/BMCA, GAF, Owens Corning, CertainTeed, Malarkey',
-      'Class 4 impact-resistant options — reduce insurance premiums by 15–30%',
-      '30–50 year manufacturer warranties on premium products',
+      'Class 4 impact-resistant options that may qualify for insurer discounts',
+      'Manufacturer warranty options vary by product and system',
       'Widest range of colours and profiles to match any home style',
     ],
   },
@@ -119,7 +119,7 @@ const accordionItems: AccordionItem[] = [
     bullets: [
       'Highest hail-resistance rating — UL 2218 Class 4 certified',
       'Calgary averages 15–20 significant hail events per year',
-      'Many Alberta insurers offer 15–30% premium discounts for Class 4',
+      'Some Alberta insurers may offer discounts for Class 4 shingles',
     ],
   },
 ];
@@ -143,7 +143,7 @@ export default function RoofReplacementPage() {
       {/* Section 1 — Hero */}
       <ServiceHero
         title="Roof Replacement in Calgary"
-        subtitle="Complete re-roofing with premium materials — honest pricing, in-house crew."
+        subtitle="Complete re-roofing with clear pricing, careful installation, and an in-house crew."
         breadcrumb="Services / Roof Replacement"
         breadcrumbPath="/services/roof-replacement"
       />
@@ -156,7 +156,7 @@ export default function RoofReplacementPage() {
               Quick Answer
             </p>
             <p style={{ color: 'var(--color-text-dark)', fontSize: '16px', lineHeight: 1.7 }}>
-              City Roofing &amp; Exteriors provides complete roof replacement in Calgary, Alberta. With 15+ years of
+              City Roofing &amp; Exteriors provides roof replacement in Calgary, Alberta. With 15+ years of
               local experience and 158 Google reviews averaging 4.8 stars, we replace asphalt shingle roofs, flat roofs,
               and metal roofs for residential and commercial properties. SECOR certified, WCB Alberta registered.
               Call 403-608-9933 for a free on-site estimate.

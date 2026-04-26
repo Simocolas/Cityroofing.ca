@@ -80,7 +80,7 @@ export default function AboutSnippet() {
               textTransform: 'uppercase',
             }}
           >
-            Calgary-Based. Community-Trusted.
+            Calgary-Based. Since 2009.
           </p>
 
           <h2
@@ -96,15 +96,15 @@ export default function AboutSnippet() {
           </h2>
 
           <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '16px', lineHeight: 1.7 }}>
-            City Roofing &amp; Exteriors was built in Calgary, rooted in the community, and trusted
-            by homeowners across every quadrant of the city. What started through word of mouth has
-            grown into one of Calgary&apos;s most reviewed roofing contractors.
+            City Roofing &amp; Exteriors was built in Calgary and grew through referrals from
+            homeowners across every quadrant of the city. What started through word of mouth has
+            become a roofing company with a long local track record.
           </p>
 
           <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '16px', lineHeight: 1.7 }}>
-            Today we handle everything from residential shingle replacements to multi-million dollar
-            commercial projects — all with the same SECOR-certified crew, WCB coverage, and
-            BBB-backed accountability.
+            Today we handle everything from residential shingle replacements to larger commercial
+            flat roof projects — all with the same in-house crew, SECOR safety standards, WCB
+            coverage, and BBB-backed accountability.
           </p>
 
           {/* Stats */}

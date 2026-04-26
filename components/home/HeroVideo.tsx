@@ -119,7 +119,7 @@ export default function HeroVideo() {
             textShadow: '0 2px 20px rgba(0,0,0,0.5)',
           }}
         >
-          Calgary&rsquo;s Trusted<br />Roofing Experts
+          Calgary Roofing<br />Done Right
         </motion.h1>
 
         {/* Subtitle */}
@@ -137,7 +137,7 @@ export default function HeroVideo() {
           }}
         >
           Roof replacement, repairs, siding &amp; commercial projects.<br />
-          158 five-star reviews · In-house crew · Free estimates.
+          158 Google reviews · In-house crew · Free estimates.
         </motion.p>
 
         {/* CTA */}
@@ -161,7 +161,7 @@ export default function HeroVideo() {
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-accent)')}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary)')}
           >
-            Get Free Estimate
+            Request a Free Estimate
           </Link>
         </motion.div>
       </motion.div>

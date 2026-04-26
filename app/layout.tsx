@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     template: '%s | City Roofing Calgary',
   },
   description:
-    "Calgary's trusted roofing contractor with 15+ years of experience. Residential & commercial roofing, siding, and exteriors. 158 Google reviews, 4.8\u2605. Call 403-608-9933.",
+    'Calgary roofing and exterior work since 2009. Residential and commercial roofing, siding, and exteriors. 158 Google reviews, 4.8★. Call 403-608-9933.',
   metadataBase: new URL('https://www.calgarycityroofing.com'),
   openGraph: {
     siteName: 'City Roofing & Exteriors',

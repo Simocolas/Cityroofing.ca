@@ -6,7 +6,7 @@ import ServiceCTA from '@/components/shared/ServiceCTA';
 export const metadata: Metadata = {
   title: 'About City Roofing & Exteriors | Calgary Since 2009',
   description:
-    "Calgary's trusted roofing contractor since 2009. 15+ years, 158 Google reviews at 4.8\u2605, SECOR certified, WCB Alberta, BBB Accredited. Learn our story.",
+    'Calgary roofing and exterior company since 2009. 15+ years, 158 Google reviews at 4.8★, SECOR certified, WCB Alberta coverage, BBB Accredited. Learn our story.',
 };
 
 const faqItems: FAQItem[] = [
@@ -27,7 +27,7 @@ const faqItems: FAQItem[] = [
 const values = [
   {
     title: 'Quality',
-    desc: "We use materials we'd put on our own homes — and install them the way our own families would expect.",
+    desc: 'We recommend materials that make sense for Calgary weather and install them carefully, without shortcuts.',
     icon: (
       <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
@@ -36,7 +36,7 @@ const values = [
   },
   {
     title: 'Transparency',
-    desc: 'Written quotes with no hidden costs. We explain every line item before work begins and stick to the number.',
+    desc: 'Written quotes with clear scope, materials, and pricing before work begins.',
     icon: (
       <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
         <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
@@ -58,7 +58,7 @@ const values = [
   },
   {
     title: 'Safety',
-    desc: 'SECOR certified crew on every job. Safety is not a checkbox — it protects our team, your property, and your family.',
+    desc: 'SECOR safety standards help protect our crew, your property, and the people around the job site.',
     icon: (
       <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
@@ -71,7 +71,7 @@ const certs = [
   { name: 'SECOR Safety Certification', desc: 'Safety Certification for Employers, Alberta' },
   { name: 'WCB Alberta', desc: 'Workers Compensation Board Registered' },
   { name: 'BBB Accredited Business', desc: 'Better Business Bureau — Calgary' },
-  { name: 'Calgary Prime Contractor', desc: 'Coming 2026', pending: true },
+  { name: 'Commercial Safety Documentation', desc: 'Available for commercial and managed properties', pending: true },
 ];
 
 const stats = [
@@ -86,7 +86,7 @@ export default function AboutPage() {
     <div style={{ backgroundColor: 'var(--color-base)', minHeight: '100vh' }}>
       <ServiceHero
         title="About City Roofing & Exteriors"
-        subtitle="15 years of Calgary roofs. Built on community trust, one project at a time."
+        subtitle="Calgary roofing and exterior work since 2009."
         breadcrumb="About"
         breadcrumbPath="/about"
       />
@@ -114,16 +114,16 @@ export default function AboutPage() {
               Started in Calgary. Built on Community.
             </h2>
             <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '17px', lineHeight: 1.85, marginBottom: '20px' }}>
-              City Roofing &amp; Exteriors was founded in 2009 in Calgary — not as a franchise, not as a national
-              chain, but as a local crew doing honest work in their own community. Our first jobs came through
-              referrals from neighbours in NE Calgary. Those referrals turned into repeat clients, who sent their
-              friends, who sent theirs. Fifteen years later, that word-of-mouth foundation still shows up in our
-              158 Google reviews averaging 4.8 stars.
+              City Roofing &amp; Exteriors was founded in Calgary in 2009 — not as a franchise or national
+              chain, but as a local crew serving its own community. Our first jobs came through referrals
+              from neighbours in NE Calgary. Those referrals turned into repeat clients, then into homeowners
+              and property managers across the city. Fifteen years later, that word-of-mouth foundation still
+              shows up in our 158 Google reviews averaging 4.8 stars.
             </p>
             <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '17px', lineHeight: 1.85, marginBottom: '20px' }}>
               Today we serve residential and commercial clients across every Calgary quadrant and surrounding
-              communities. Our work ranges from single-shingle repairs to multi-million dollar commercial flat
-              roof installations — but the approach is the same: show up on time, do the work right, and stand
+              communities. Our work ranges from single-shingle repairs to larger commercial flat
+              roof projects — but the approach is the same: show up on time, do the work right, and stand
               behind it.
             </p>
             <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '17px', lineHeight: 1.85 }}>

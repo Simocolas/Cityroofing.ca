@@ -123,7 +123,7 @@ export default function Footer() {
             style={{ objectFit: 'contain', objectPosition: 'left', width: 'auto', height: '80px' }}
           />
           <p style={{ color: 'var(--color-text-muted)', fontSize: '14px', lineHeight: '1.6', maxWidth: '220px' }}>
-            Calgary's trusted roofing contractor since 2009.
+            Roofing and exterior work in Calgary since 2009.
           </p>
           <div style={{ display: 'flex', gap: '10px' }}>
             <SocialIcon label="Facebook">

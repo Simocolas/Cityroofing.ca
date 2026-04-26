@@ -11,10 +11,10 @@ import ContactCTA from '@/components/home/ContactCTA';
 export const metadata: Metadata = {
   title: 'City Roofing & Exteriors | Calgary Roofing Contractor',
   description:
-    "Calgary's #1 rated roofing contractor. Residential & commercial roofing, siding, and exteriors. 158 Google reviews at 4.8\u2605. SECOR certified, WCB insured. Free estimates — call 403-608-9933.",
+    'Calgary roofing, siding, and exterior work for homes and commercial properties. 158 Google reviews at 4.8★. SECOR certified, WCB Alberta coverage. Free estimates — call 403-608-9933.',
   openGraph: {
     title: 'City Roofing & Exteriors | Calgary Roofing Contractor',
-    description: "Calgary's trusted roofing contractor since 2009. Free estimates — call 403-608-9933.",
+    description: 'Calgary roofing and exterior work since 2009. Free estimates — call 403-608-9933.',
     url: 'https://www.calgarycityroofing.ca',
     siteName: 'City Roofing & Exteriors',
     locale: 'en_CA',

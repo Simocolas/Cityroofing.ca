@@ -34,7 +34,7 @@ export default function ReviewsSection() {
               <StarRating />
               <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '14px', marginTop: '8px', lineHeight: 1.4 }}>
                 Based on {companyData.googleReviewCount} verified Google reviews<br />
-                <span style={{ fontSize: '13px', opacity: 0.8 }}>Calgary's most reviewed local roofing contractor</span>
+                <span style={{ fontSize: '13px', opacity: 0.8 }}>A long local track record across Calgary</span>
               </p>
             </div>
           </div>

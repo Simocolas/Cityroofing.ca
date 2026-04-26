@@ -8,7 +8,7 @@ import QuickAnswerBox from '@/components/shared/QuickAnswerBox';
 export const metadata: Metadata = {
   title: 'Calgary Flat Roof Contractor | Commercial & TPO Roofing | City Roofing',
   description:
-    "Calgary's experienced flat roof contractors. TPO, EPDM & modified bitumen for commercial & residential. 15+ years, free estimates. Call 403-608-9933.",
+    'Calgary flat roof contractors for TPO, EPDM and modified bitumen systems on commercial and residential roofs. 15+ years, free estimates. Call 403-608-9933.',
 };
 
 const serviceSchema = {
@@ -41,10 +41,10 @@ const faqSchema = {
     },
     {
       '@type': 'Question',
-      name: 'What\'s the best flat roof material for Calgary winters?',
+      name: 'Which flat roof material works well for Calgary winters?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'SBS-modified bitumen (torch-on) is the most proven choice for Calgary winters due to its rubber-modified flexibility in extreme cold and strong resistance to freeze-thaw cycling. EPDM is also excellent in cold climates, remaining flexible well below -40°C.',
+        text: 'SBS-modified bitumen (torch-on) is a proven choice for Calgary winters because it stays flexible in cold weather and handles freeze-thaw cycling well. EPDM is also widely used in cold climates.',
       },
     },
     {
@@ -52,7 +52,7 @@ const faqSchema = {
       name: 'Do you handle commercial insurance roof claims?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. City Roofing is Xactimate-certified and has extensive experience documenting commercial flat roof damage for hail and storm insurance claims. We work directly with Alberta adjusters throughout the process.',
+        text: 'Yes. City Roofing documents commercial flat roof damage with photos, findings and repair or replacement recommendations you can share with your insurer or adjuster.',
       },
     },
     {
@@ -72,12 +72,12 @@ const faqItems: FAQItem[] = [
     a: "Quality flat roofing systems last 15–25 years in Calgary's climate with proper installation and maintenance. TPO and torch-on modified bitumen systems typically reach the higher end of that range.",
   },
   {
-    q: "What's the best flat roof material for Calgary winters?",
-    a: 'SBS-modified bitumen (torch-on) is the most proven choice for Calgary winters due to its rubber-modified flexibility in extreme cold and strong resistance to freeze-thaw cycling. EPDM is also excellent in cold climates, remaining flexible well below -40°C.',
+    q: 'Which flat roof material works well for Calgary winters?',
+    a: 'SBS-modified bitumen (torch-on) is a proven choice for Calgary winters because it stays flexible in cold weather and handles freeze-thaw cycling well. EPDM is also widely used in cold climates.',
   },
   {
     q: 'Do you handle commercial insurance roof claims?',
-    a: 'Yes. City Roofing is Xactimate-certified and has extensive experience documenting commercial flat roof damage for hail and storm insurance claims. We work directly with Alberta adjusters throughout the process.',
+    a: 'Yes. City Roofing documents commercial flat roof damage with photos, findings and repair or replacement recommendations you can share with your insurer or adjuster.',
   },
   {
     q: 'What areas of Calgary do you serve for flat roofing?',
@@ -110,19 +110,19 @@ const bodyStyle = {
 const systems = [
   {
     title: 'TPO Membrane Roofing',
-    body: 'TPO (Thermoplastic Polyolefin) is a single-ply white reflective membrane heat-welded at seams, creating watertight joints stronger than adhesive-set systems. Its UV-reflective surface reduces cooling costs and it is highly resistant to chemicals and puncture from rooftop HVAC equipment. Ideal for large commercial flat rooftops where energy efficiency and long-term durability are priorities. City Roofing installs fully adhered, mechanically fastened, and ballasted TPO systems to suit your building\'s structural requirements.',
+    body: 'TPO (Thermoplastic Polyolefin) is a single-ply white reflective membrane with heat-welded seams. It is commonly used on larger commercial flat roofs where energy performance, seam strength, and long-term maintenance matter. City Roofing can assess whether a fully adhered, mechanically fastened, or ballasted TPO system suits your building.',
   },
   {
     title: 'EPDM Rubber Roofing',
-    body: 'EPDM (ethylene propylene diene monomer) is a synthetic rubber membrane engineered to remain flexible at temperatures well below -40°C — making it one of the best flat roofing choices for Calgary winters. Unlike membranes that crack under thermal stress, EPDM accommodates building movement without stress fractures. It carries 20–30 year manufacturer warranties when installed by certified contractors and is one of the lowest lifecycle-cost flat roof options available.',
+    body: 'EPDM (ethylene propylene diene monomer) is a synthetic rubber membrane known for flexibility in cold weather. It can be a good fit for low-slope roofs where building movement, freeze-thaw cycles, and maintenance access need to be considered. Warranty terms depend on the system, manufacturer, and installation details.',
   },
   {
     title: 'SBS Modified Bitumen',
-    body: 'SBS-modified bitumen (torch-on) is the most widely specified flat roofing system in Calgary commercial and residential construction. Applied by heat-fusing the membrane directly to the roof deck with a propane torch, it creates a seamless, waterproof bond proven to withstand freeze-thaw cycling, chinook temperature swings, and hail impact. City Roofing installs both two-ply and three-ply torch-on systems depending on your exposure level and warranty requirements.',
+    body: 'SBS-modified bitumen (torch-on) is widely used on Calgary flat roofs because it performs well through freeze-thaw cycles and chinook temperature swings. City Roofing installs two-ply and three-ply torch-on systems depending on exposure, drainage, access, and warranty requirements.',
   },
   {
     title: 'Built-Up Roofing (BUR)',
-    body: 'Built-up roofing is the traditional multi-layer flat roof system — alternating reinforcing felts and bitumen topped with a granule cap or gravel ballast. BUR provides outstanding waterproofing redundancy and heavy foot-traffic resistance, and has protected buildings for over 100 years. While newer systems dominate new construction, BUR remains a proven choice for certain commercial applications and is still installed and repaired by City Roofing crews across Calgary.',
+    body: 'Built-up roofing is a traditional multi-layer flat roof system with reinforcing felts and bitumen, often finished with gravel ballast or a cap sheet. It can still make sense for certain commercial roofs, especially where durability and service traffic matter. City Roofing repairs and installs BUR systems where they are the right fit.',
   },
 ];
 
@@ -135,10 +135,10 @@ const commercialTypes = [
 
 const whyPoints = [
   { icon: '👷', title: 'In-House Crews Only', desc: 'We never subcontract our roofing work. Every installer is a trained City Roofing employee — consistent quality on every project.' },
-  { icon: '📋', title: 'Xactimate-Certified', desc: 'Our estimators use industry-standard Xactimate software to document damage and prepare reports accepted by all major Alberta insurers.' },
-  { icon: '🛡️', title: 'SECOR Certified Safety', desc: 'Certificate of Recognition (SECOR) from Alberta Construction Safety Association — required for many commercial contracts in Alberta.' },
-  { icon: '🏗️', title: '$3M+ Commercial Completed', desc: 'Over $3 million in commercial flat roofing projects across Calgary — warehouses, plazas, industrial, and multi-unit buildings.' },
-  { icon: '🔍', title: 'Free Commercial Roof Assessments', desc: 'We conduct full on-site assessments for commercial flat roofs at no cost. Detailed written scope and options within 48 hours.' },
+  { icon: '📋', title: 'Insurance Documentation Support', desc: 'Our estimators document damage with photos, findings and scopes you can share with your insurer or adjuster.' },
+  { icon: '🛡️', title: 'SECOR Certified Safety', desc: 'SECOR safety certification supports the documentation many commercial sites and property managers require before work begins.' },
+  { icon: '🏗️', title: 'Commercial Flat Roof Experience', desc: 'Experience with warehouses, plazas, industrial properties, multi-unit buildings and managed commercial sites across Calgary.' },
+  { icon: '🔍', title: 'Free Commercial Roof Assessments', desc: 'We assess commercial flat roofs, explain the findings and provide a practical written next step.' },
 ];
 
 const materialTable = [
@@ -190,11 +190,10 @@ export default function FlatRoofCalgaryPage() {
         <section style={{ marginBottom: '72px' }}>
           <h2 style={h2Style}>Commercial Roofing Services Calgary</h2>
           <p style={{ ...bodyStyle, marginBottom: '32px' }}>
-            City Roofing &amp; Exteriors has completed commercial flat roofing projects exceeding $3 million CAD across
-            Calgary and surrounding Alberta communities. We service warehouses, retail plazas, industrial facilities,
-            strata corporations, and multi-unit residential buildings. Our commercial project managers coordinate
-            scheduling around your operations to minimize disruption, and every project is delivered with full
-            manufacturer and workmanship documentation.
+            City Roofing &amp; Exteriors services commercial flat roofs across Calgary and surrounding Alberta
+            communities, including warehouses, retail plazas, industrial facilities, strata properties, and
+            multi-unit residential buildings. Our team coordinates access and scheduling around your operations
+            where possible, then provides clear workmanship and manufacturer documentation.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginBottom: '32px' }}>
             {commercialTypes.map((t) => (
@@ -310,7 +309,7 @@ export default function FlatRoofCalgaryPage() {
             Get a Free Commercial Roof Assessment
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '16px', marginBottom: '28px', lineHeight: 1.6 }}>
-            Our team provides free on-site assessments for commercial flat roofs across Calgary. Written scope and options within 48 hours.
+            Our team provides free on-site assessments for commercial flat roofs across Calgary, with a written scope and clear next steps.
           </p>
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link
@@ -337,7 +336,7 @@ export default function FlatRoofCalgaryPage() {
             <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '16px', color: 'var(--color-text-primary)', marginBottom: '6px' }}>
               Commercial Roofing Calgary →
             </div>
-            <div style={{ color: 'var(--color-text-muted)', fontSize: '14px' }}>Full-scope commercial roofing services, $3M+ completed</div>
+            <div style={{ color: 'var(--color-text-muted)', fontSize: '14px' }}>Full-scope commercial roofing services for Calgary buildings</div>
           </Link>
           <Link
             href="/insurance-claims"
@@ -346,7 +345,7 @@ export default function FlatRoofCalgaryPage() {
             <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '16px', color: 'var(--color-text-primary)', marginBottom: '6px' }}>
               Insurance Claim Roofing →
             </div>
-            <div style={{ color: 'var(--color-text-muted)', fontSize: '14px' }}>Xactimate-certified hail and storm damage claims</div>
+            <div style={{ color: 'var(--color-text-muted)', fontSize: '14px' }}>Photo documentation for hail and storm damage discussions</div>
           </Link>
           <Link
             href="/contact"

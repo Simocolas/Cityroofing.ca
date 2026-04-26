@@ -28,7 +28,7 @@ const faqItems: FAQItem[] = [
   },
   {
     q: 'What siding material is best for Calgary weather?',
-    a: 'Vinyl siding is the most popular choice in Calgary — it handles freeze-thaw cycles well and doesn\'t crack or rot. Hardie board (fibre cement) offers superior impact resistance and fire rating. Both are excellent choices depending on your budget and priorities.',
+    a: 'Vinyl siding is a common choice in Calgary because it handles moisture and temperature swings well. Hardie board (fibre cement) offers strong impact resistance and fire performance. The right choice depends on your budget, home style and priorities.',
   },
   {
     q: 'Can you match existing siding on my home?',
@@ -52,13 +52,13 @@ const keyPoints: KeyPoint[] = [
   },
   {
     iconId: 'badge',
-    title: 'Premium Brand Partners',
-    text: 'We install Kaycan, Royal Building Products, Gentek, Ply Gem, and MITTEN — materials we trust on our own homes.',
+    title: 'Established Product Lines',
+    text: 'We install Kaycan, Royal Building Products, Gentek, Ply Gem, and MITTEN — product lines with Canadian distribution and warranty support.',
   },
   {
     iconId: 'home',
     title: 'Roofing & Siding Together',
-    text: 'Need both? One crew handles everything. No coordinating between contractors — cleaner, faster, cheaper.',
+    text: 'Need both? One crew coordinates the roofing and exterior work, so scheduling and cleanup are simpler.',
   },
 ];
 
@@ -117,7 +117,7 @@ export default function SidingPage() {
       {/* Section 1 — Hero */}
       <ServiceHero
         title="Siding Installation in Calgary"
-        subtitle="Vinyl, Hardie board and metal siding — premium brands, in-house installation."
+        subtitle="Vinyl, Hardie board and metal siding — clear options, in-house installation."
         breadcrumb="Services / Siding"
         breadcrumbPath="/services/siding"
       />

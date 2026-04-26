@@ -12,7 +12,7 @@
     "id": "rev-002",
     "name": "M. Patel",
     "rating": 5,
-    "text": "Got quotes from three companies. City Roofing was not the cheapest but gave us the most confidence — they explained exactly what they were doing and why. Zero issues after the job. Worth every dollar.",
+    "text": "Got quotes from three companies. City Roofing was not the cheapest, but they gave us the clearest explanation of the work and materials. No issues after the job was done.",
     "date": "2026-01-28",
     "source": "Google",
     "featured": true
@@ -21,7 +21,7 @@
     "id": "rev-003",
     "name": "S. Thompson",
     "rating": 5,
-    "text": "They handled our insurance claim after the July hailstorm perfectly. Their estimator knew exactly how to document the damage and worked directly with our adjuster. New roof, zero stress. Roof looks fantastic.",
+    "text": "They helped document the roof damage after the July hailstorm and gave us clear photos and notes for the insurance process. The new roof looks great.",
     "date": "2026-01-10",
     "source": "Google",
     "featured": true
@@ -48,7 +48,7 @@
     "id": "rev-006",
     "name": "R. Kowalski",
     "rating": 5,
-    "text": "Hail took out our entire roof last August. City Roofing had a crew out within 48 hours for the assessment and handled everything with our insurance company from start to finish. New IKO shingles look great.",
+    "text": "Hail badly damaged our roof last August. City Roofing came out for the assessment, documented the damage clearly, and the new IKO shingles look great.",
     "date": "2025-09-04",
     "source": "Google",
     "featured": false
@@ -93,7 +93,7 @@
     "id": "rev-011",
     "name": "T. Nguyen",
     "rating": 5,
-    "text": "The insurance claim process felt intimidating but their Xactimate estimator knew exactly how to document everything. The scope was accurate, covered all the damage, and we had no out-of-pocket arguments whatsoever.",
+    "text": "The insurance process felt intimidating, but their estimator documented the damage clearly and walked us through the scope. It made the next steps much easier to understand.",
     "date": "2026-02-03",
     "source": "Google",
     "featured": false
@@ -111,7 +111,7 @@
     "id": "rev-013",
     "name": "A. Petrov",
     "rating": 5,
-    "text": "Three companies quoted this job. One was suspiciously low, one was absurdly high, City Roofing was in the middle with the clearest breakdown of what they were actually doing. No surprises on the final invoice.",
+    "text": "Three companies quoted this job. City Roofing was in the middle on price and gave us the clearest breakdown of what they were doing. No surprises on the final invoice.",
     "date": "2025-06-05",
     "source": "Google",
     "featured": false
@@ -138,7 +138,7 @@
     "id": "rev-016",
     "name": "G. Martínez",
     "rating": 5,
-    "text": "Replaced our roof in Riverbend after the spring hail season. The foreman explained each stage, the crew was respectful of the property, and the result looks like a show home. Worth every penny for the peace of mind.",
+    "text": "Replaced our roof in Riverbend after the spring hail season. The foreman explained each stage, the crew was respectful of the property, and the finished roof looks excellent.",
     "date": "2026-04-02",
     "source": "Google",
     "featured": false
@@ -147,7 +147,7 @@
     "id": "rev-017",
     "name": "Wei Zhang",
     "rating": 5,
-    "text": "Called City Roofing after the September hail storm damaged our roof in Sage Hill. Their estimator walked us through every item on the Xactimate report so we actually understood what was being claimed. The insurance process took about three weeks total, then the crew came out within days of approval. Brand new IKO shingles, full cleanup, and the foreman called the next morning to make sure everything looked right.",
+    "text": "Called City Roofing after the September hail storm damaged our roof in Sage Hill. Their estimator walked us through the damage report so we understood the scope. The crew came out after approval, installed new IKO shingles, cleaned up properly, and the foreman checked in the next morning.",
     "date": "2024-02-14",
     "source": "Google",
     "featured": false
@@ -156,7 +156,7 @@
     "id": "rev-018",
     "name": "Priya Sharma",
     "rating": 5,
-    "text": "We had our 18-year-old roof replaced in Cochrane last spring and City Roofing beat our expectations on every count — speed, cleanliness, and price. The crew finished in one day and you couldn't tell they'd been there except for the beautiful new roof.",
+    "text": "We had our 18-year-old roof replaced in Cochrane last spring. The crew finished in one day, kept the site clean, and the new roof looks great.",
     "date": "2024-04-05",
     "source": "Google",
     "featured": true
@@ -201,7 +201,7 @@
     "id": "rev-023",
     "name": "Brian Fletcher",
     "rating": 5,
-    "text": "After the August hail hit Chestermere hard, City Roofing was one of the few companies that could get us on the schedule within a reasonable time. Their adjuster liaison managed the claim directly with our insurer and we ended up with a full replacement covered. No fighting, no back-and-forth — just a new roof.",
+    "text": "After the August hail hit Chestermere hard, City Roofing was able to get us on the schedule within a reasonable time. They documented the damage clearly for our insurer and completed the replacement without a lot of back-and-forth.",
     "date": "2024-09-07",
     "source": "Google",
     "featured": false
@@ -255,7 +255,7 @@
     "id": "rev-029",
     "name": "Jason Xu",
     "rating": 5,
-    "text": "Our roof in Kincora took a beating in last summer's storm — obvious dimpling across most of the south face. City Roofing's estimator photographed every section, measured the impact density, and produced a report that left our adjuster with nothing to dispute. Full replacement approved within two weeks and the installation was done in a single day with a crew of six. Exactly what you want when you're dealing with insurance.",
+    "text": "Our roof in Kincora took a beating in last summer's storm, with obvious damage across the south face. City Roofing photographed the affected areas and gave us a clear report for the insurance process. The replacement was done in a day and the cleanup was thorough.",
     "date": "2025-02-20",
     "source": "Google",
     "featured": true
@@ -264,7 +264,7 @@
     "id": "rev-030",
     "name": "Mike Holden",
     "rating": 5,
-    "text": "I was skeptical about hiring a roofer to also manage the insurance claim — figured they'd inflate the scope or create issues. City Roofing's process proved me wrong. Their Xactimate report matched exactly what needed to be done, nothing extra, and our adjuster approved it on the first submission. Crew was on-site within a week of approval, finished our McKenzie Lake home in nine hours, and the cleanup was thorough. Changed my mind about contractor-managed claims.",
+    "text": "I was skeptical about getting a roofer involved in the insurance process, but City Roofing kept the scope clear and practical. The crew was on-site after approval, finished our McKenzie Lake home in one day, and the cleanup was thorough.",
     "date": "2025-03-14",
     "source": "Google",
     "featured": false
@@ -273,7 +273,7 @@
     "id": "rev-031",
     "name": "Anita Dhaliwal",
     "rating": 5,
-    "text": "We live in Cranston and had significant hail damage from the storm earlier this spring. City Roofing's estimator came out the day after I called, spent two hours on the roof photographing damage section by section, and walked me through every line item before submitting to our insurance company. The adjuster came shortly after and there were no disputes on the scope at all. Installation took one long day — crew of eight, working by 7am. Three neighbours have already asked for the contact number.",
+    "text": "We live in Cranston and had significant hail damage from the storm earlier this spring. City Roofing's estimator photographed the roof section by section and walked me through the scope before we sent anything to insurance. Installation took one long day and three neighbours have already asked for the contact number.",
     "date": "2025-04-28",
     "source": "Google",
     "featured": false
@@ -282,7 +282,7 @@
     "id": "rev-032",
     "name": "Terry Bourassa",
     "rating": 5,
-    "text": "Hired City Roofing for fascia, soffit, and eavestrough replacement on our Hawkwood home. While working on the soffit the crew noticed our attic venting was inadequate and flagged it before it became a moisture problem. Small catch, but exactly the kind of thing I expect from a company worth hiring.",
+    "text": "Hired City Roofing for fascia, soffit, and eavestrough replacement on our Hawkwood home. While working on the soffit, the crew noticed our attic venting needed attention and flagged it before it became a bigger issue.",
     "date": "2025-05-09",
     "source": "Google",
     "featured": false

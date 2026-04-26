@@ -30,14 +30,14 @@ const reviewSchema = {
 
 const faqItems: FAQItem[] = [
   { q: 'How can I leave a review for City Roofing?', a: 'You can leave a review on Google by searching "City Roofing & Exteriors Calgary" and clicking the "Write a review" button on our Google Business Profile.' },
-  { q: 'Are the Google reviews verified?', a: 'Google reviews are submitted by real Google account holders. Google has systems in place to detect and remove fake reviews. Our reviews reflect genuine customer experiences.' },
-  { q: 'Do you respond to negative reviews?', a: 'Yes. We take all feedback seriously and respond to every review — positive or critical. If there was an issue with your project, we want to make it right. Call us directly at 403-608-9933.' },
+  { q: 'Are the Google reviews verified?', a: 'Our reviews are collected through Google Business Profile, where customers post their own feedback using Google accounts.' },
+  { q: 'Do you respond to customer feedback?', a: 'Yes. We take feedback seriously. If there was an issue with your project, we want to hear about it directly at 403-608-9933.' },
 ];
 
 const trustStats = [
   { value: companyData.googleRating + '★', label: 'Average Rating' },
   { value: companyData.googleReviewCount + '+', label: 'Google Reviews' },
-  { value: '100%', label: 'Five-Star Reviews' },
+  { value: '3,000+', label: 'Projects' },
   { value: '15+', label: 'Years Serving Calgary' },
 ];
 
@@ -90,10 +90,10 @@ export default function ReviewsPage() {
               Verified Google Reviews
             </p>
             <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(26px, 3vw, 38px)', color: 'var(--color-text-dark)', marginBottom: '16px', lineHeight: 1.2 }}>
-              Every review is real. Every job is ours.
+              Calgary customers, in their own words.
             </h2>
             <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '16px', lineHeight: 1.6, maxWidth: '560px', margin: '0 auto 28px' }}>
-              We don&rsquo;t outsource work or broker subcontractors. When you hire City Roofing, the crew that shows up is our crew — and these are their results.
+              We don&rsquo;t broker jobs out. When you hire City Roofing, the crew that shows up is our crew — and the reviews speak to the work they did.
             </p>
             <a
               href="https://maps.app.goo.gl/ng64DnFy6FkH9NUV9"
@@ -155,7 +155,7 @@ export default function ReviewsPage() {
       </section>
 
       <FAQSection items={faqItems} title="Reviews — FAQ" />
-      <ServiceCTA headline="Ready to Become Our Next Happy Customer?" subtext="Free estimate — honest work — no pressure." />
+      <ServiceCTA headline="Ready to Talk About Your Roof?" subtext="Free estimate — clear scope — no pressure." />
 
       <style>{`
         @media (max-width: 768px) {

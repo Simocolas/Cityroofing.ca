@@ -45,7 +45,7 @@ export default function ContactCTA() {
               maxWidth: '480px',
             }}
           >
-            We come to you, assess the job, and give you a straight answer — no pushy sales, no surprise costs. Most estimates delivered same-day.
+            We come to you, assess the job, and give you a straight answer — no pushy sales, no surprise costs. Same-day estimates are available when scheduling allows.
           </p>
           <div className="cta-buttons" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', width: '100%' }}>
             <a

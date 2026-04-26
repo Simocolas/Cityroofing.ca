@@ -269,7 +269,7 @@ export default function ContactForm() {
                   </button>
 
                   <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '13px', textAlign: 'center' }}>
-                    We respond within 1 business day. No spam, ever.
+                    We respond within 1 business day and only use your information to follow up on your estimate request.
                   </p>
                 </form>
               )}

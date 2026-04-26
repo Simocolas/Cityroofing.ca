@@ -5,7 +5,7 @@ import BlogCard from '@/components/shared/BlogCard';
 export const metadata: Metadata = {
   title: 'Roofing Tips & Guides | City Roofing Calgary',
   description:
-    "Expert roofing advice, cost guides, and tips from City Roofing & Exteriors \u2014 Calgary's trusted roofing contractor.",
+    'Roofing advice, cost guides, and maintenance tips from City Roofing & Exteriors in Calgary.',
 };
 
 export default function BlogPage() {
@@ -47,7 +47,7 @@ export default function BlogPage() {
           Roofing Tips &amp; Guides
         </h1>
         <p style={{ color: 'var(--color-text-muted)', fontSize: '18px', maxWidth: '600px', margin: '0 auto' }}>
-          Expert advice from Calgary&apos;s trusted roofing contractors.
+          Practical roofing advice from a Calgary contractor.
         </p>
       </div>
 

@@ -8,7 +8,7 @@ const services = [
   {
     href: '/services/roof-replacement',
     title: 'Roof Replacement',
-    description: 'Complete re-roofing with premium materials — residential and commercial across all Calgary quadrants.',
+    description: 'Complete re-roofing with materials suited to Calgary weather — residential and commercial.',
     image: '/images/4/residential.webp',
     bgPosition: 'center 40%',
   },
