@@ -3,8 +3,11 @@
 ## Critical Rules (Read First)
 
 ### Domain
-Always use calgarycityroofing.ca — NEVER .com
-Check: next-sitemap.config.js, robots.txt, 
+Always use calgarycityroofing.com — NO www prefix
+Correct: https://calgarycityroofing.com
+Wrong: https://www.calgarycityroofing.com (www causes 404)
+Wrong: https://calgarycityroofing.ca (.ca is not in use)
+Check: next-sitemap.config.js, robots.txt,
 llms.txt, layout.tsx, all Schema JSON-LD urls
 
 ### Local Dev

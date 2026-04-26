@@ -46,7 +46,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     publisher: {
       '@type': 'Organization',
       name: 'City Roofing & Exteriors',
-      url: 'https://www.calgarycityroofing.com',
+      url: 'https://calgarycityroofing.com',
     },
   };
 
