@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   },
   description:
     'Calgary roofing and exterior work since 2009. Residential and commercial roofing, siding, and exteriors. 158 Google reviews, 4.8★. Call 403-608-9933.',
-  metadataBase: new URL('https://www.calgarycityroofing.com'),
+  metadataBase: new URL('https://www.calgarycityroofing.ca'),
   openGraph: {
     siteName: 'City Roofing & Exteriors',
     locale: 'en_CA',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
   },
   alternates: {
-    canonical: 'https://www.calgarycityroofing.com',
+    canonical: 'https://www.calgarycityroofing.ca',
   },
 };
 
@@ -47,7 +47,7 @@ const localBusinessSchema = {
   '@type': ['LocalBusiness', 'RoofingContractor'],
   name: 'City Roofing & Exteriors',
   alternateName: 'City Roofing Calgary',
-  url: 'https://www.calgarycityroofing.com',
+  url: 'https://www.calgarycityroofing.ca',
   telephone: '403-608-9933',
   address: {
     '@type': 'PostalAddress',

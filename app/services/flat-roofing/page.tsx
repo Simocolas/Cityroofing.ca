@@ -149,11 +149,6 @@ const replacementSigns = [
   'The roof is near end of life',
 ];
 
-const proofMetrics = [
-  { value: '15+', label: 'Years serving Calgary' },
-  { value: '158', label: 'Verified Google reviews' },
-  { value: '4.8', label: 'Google rating' },
-];
 
 const proofEvidence = [
   {
@@ -354,7 +349,7 @@ export default function CommercialFlatRoofingPage() {
 
       <section style={{ padding: '86px 24px', backgroundColor: '#FFFFFF' }}>
         <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
-          <SectionHeader label="Problems we solve" title="Commercial Roof Problems We Solve" text="Flat roof issues become expensive when they reach tenant spaces, inventory, equipment or daily operations. This section is built for the problems Calgary property owners actually call about." />
+          <SectionHeader label="Problems we solve" title="Commercial Roof Problems We Solve" text="Flat roof issues become expensive when they reach tenant spaces, inventory, equipment or daily operations." />
           <CommercialSwitchGrid items={problems} />
         </div>
       </section>
@@ -375,7 +370,7 @@ export default function CommercialFlatRoofingPage() {
 
       <section style={{ padding: '86px 24px', backgroundColor: '#FFFFFF' }}>
         <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
-          <SectionHeader label="Services" title="Commercial Flat Roofing Services" text="The page is focused on commercial flat roof outcomes: stop the leak, document the condition, choose the right repair, and protect the building long-term." />
+          <SectionHeader label="Services" title="Commercial Flat Roofing Services" text="Whether it is an active leak or you want to assess the condition before it becomes a problem, these are the services we handle." />
           <CommercialSwitchGrid items={services} numberStyle="label" />
         </div>
       </section>
@@ -428,17 +423,9 @@ export default function CommercialFlatRoofingPage() {
               <h2 style={{ color: '#F9F7F2', fontSize: 'clamp(30px, 4vw, 48px)', lineHeight: 1.05, marginBottom: '18px' }}>
                 Flat roof decisions need proof, not promises.
               </h2>
-              <p style={{ color: 'rgba(249,247,242,0.76)', fontSize: '16px', lineHeight: 1.75, marginBottom: '28px' }}>
-                Commercial owners need to know who is on the roof, what was found, what gets fixed first and what belongs in the budget. This is where City Roofing should feel different from a generic roofing page.
+              <p style={{ color: 'rgba(249,247,242,0.76)', fontSize: '16px', lineHeight: 1.75 }}>
+                Commercial owners need to know who is on the roof, what was found, what gets fixed first and what belongs in the budget. That is what we document on every job.
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
-                {proofMetrics.map((metric) => (
-                  <div key={metric.label} style={{ borderTop: '2px solid var(--color-accent)', paddingTop: '14px' }}>
-                    <div style={{ color: '#F9F7F2', fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(30px, 4vw, 44px)', lineHeight: 1 }}>{metric.value}</div>
-                    <div style={{ color: 'rgba(249,247,242,0.66)', fontSize: '12px', lineHeight: 1.4, marginTop: '8px' }}>{metric.label}</div>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
 
@@ -463,7 +450,7 @@ export default function CommercialFlatRoofingPage() {
           <SectionHeader
             label="Industries served"
             title="Different buildings. Different roof risks."
-            text="Instead of listing every property type the same way, group the work by what the customer is trying to protect: operations, tenants, or managed assets."
+            text="Different buildings have different stakes when a flat roof fails. We plan work around what matters most in each one."
           />
           <div className="commercial-industry-feature" style={{ display: 'grid', gridTemplateColumns: '1.25fr 0.75fr', gap: '22px' }}>
             <article style={{ backgroundColor: 'var(--color-cream)', border: '1px solid var(--color-border-light)', borderRadius: '6px', overflow: 'hidden' }}>
@@ -523,7 +510,7 @@ export default function CommercialFlatRoofingPage() {
 
       <section style={{ padding: '86px 24px', backgroundColor: 'var(--color-cream)' }}>
         <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
-          <SectionHeader label="Project proof" title="Commercial Flat Roof Work in Calgary" text="Use real project photos wherever possible. These cards stay conservative and avoid fake scope details when exact site information is not available." />
+          <SectionHeader label="Project proof" title="Commercial Flat Roof Work in Calgary" />
           <div className="commercial-project-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '22px' }}>
             {commercialProjects.map((project) => (
               <article key={project.id} className="commercial-interactive-card commercial-image-card" style={{ backgroundColor: '#FFFFFF', border: '1px solid var(--color-border-light)', borderRadius: '6px', overflow: 'hidden' }}>
@@ -582,9 +569,6 @@ export default function CommercialFlatRoofingPage() {
 
       <section style={{ backgroundColor: 'var(--color-base)', padding: '82px 24px 104px', textAlign: 'center' }}>
         <div style={{ maxWidth: '820px', margin: '0 auto' }}>
-          <p style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '11px', letterSpacing: '2.5px', textTransform: 'uppercase', marginBottom: '14px' }}>
-            Calgary-based. In-house crew. SECOR Certified. WCB Alberta. BBB Accredited.
-          </p>
           <h2 style={{ color: '#F9F7F2', fontSize: 'clamp(32px, 5vw, 54px)', lineHeight: 1.05, marginBottom: '16px' }}>
             Need a Commercial Flat Roof Checked?
           </h2>
@@ -669,55 +653,37 @@ export default function CommercialFlatRoofingPage() {
           color: var(--color-text-dark-muted);
           transition: color 220ms ease, opacity 220ms ease;
         }
-        .commercial-switch-card.is-active,
-        .commercial-switch-card:hover,
-        .commercial-switch-card:focus-visible {
+        .commercial-switch-card.is-active {
           background:
             radial-gradient(circle at 92% 92%, rgba(192, 57, 43, 0.22) 0 70px, transparent 72px),
             linear-gradient(135deg, var(--color-primary) 0%, #6f1717 52%, var(--color-base) 100%) !important;
           border-color: rgba(139, 30, 30, 0.7) !important;
           box-shadow: 0 20px 46px rgba(26,26,26,0.18), 0 0 0 1px rgba(192,57,43,0.16) inset !important;
         }
-        .commercial-switch-card.is-active::before,
-        .commercial-switch-card:hover::before,
-        .commercial-switch-card:focus-visible::before {
+        .commercial-switch-card.is-active::before {
           height: 6px;
           opacity: 1;
         }
-        .commercial-switch-card.is-active::after,
-        .commercial-switch-card:hover::after,
-        .commercial-switch-card:focus-visible::after {
+        .commercial-switch-card.is-active::after {
           transform: scale(1.22);
           opacity: 1;
           background: rgba(192, 57, 43, 0.16);
         }
-        .commercial-switch-card.is-active .commercial-card-number,
-        .commercial-switch-card:hover .commercial-card-number,
-        .commercial-switch-card:focus-visible .commercial-card-number {
+        .commercial-switch-card.is-active .commercial-card-number {
           background-color: var(--color-accent);
           color: #FFFFFF;
           box-shadow: 0 10px 24px rgba(192,57,43,0.32);
           transform: translateY(-2px);
         }
-        .commercial-switch-card.is-active .commercial-card-index,
-        .commercial-switch-card:hover .commercial-card-index,
-        .commercial-switch-card:focus-visible .commercial-card-index {
+        .commercial-switch-card.is-active .commercial-card-index {
           color: rgba(249,247,242,0.66);
         }
-        .commercial-switch-card.is-active .commercial-card-title,
-        .commercial-switch-card:hover .commercial-card-title,
-        .commercial-switch-card:focus-visible .commercial-card-title {
+        .commercial-switch-card.is-active .commercial-card-title {
           color: #F9F7F2;
           transform: translateY(-2px);
         }
-        .commercial-switch-card.is-active .commercial-card-copy,
-        .commercial-switch-card:hover .commercial-card-copy,
-        .commercial-switch-card:focus-visible .commercial-card-copy {
+        .commercial-switch-card.is-active .commercial-card-copy {
           color: rgba(249,247,242,0.78);
-        }
-        .commercial-switch-grid:hover .commercial-switch-card:not(:hover) {
-          opacity: 0.82;
-          transform: scale(0.985);
         }
         .commercial-accent-card::before {
           content: "";

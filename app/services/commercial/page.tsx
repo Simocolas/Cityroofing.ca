@@ -259,7 +259,7 @@ export default function CommercialRoofingPage() {
         <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
           <SectionHeader
             label="Built for commercial decisions"
-            title="A Commercial Roof Page Should Answer Business Questions"
+            title="Commercial Roofing Decisions Start With Clear Answers"
             text="A business owner or property manager is not just buying shingles or membrane. They need to know what is leaking, how urgent it is, what it will cost, how work affects tenants, and whether repair, maintenance or replacement is the right financial decision."
           />
           <div className="commercial-service-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '18px' }}>
@@ -279,7 +279,7 @@ export default function CommercialRoofingPage() {
 
       <section style={{ padding: '86px 24px', backgroundColor: 'var(--color-cream)' }}>
         <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
-          <SectionHeader label="Services" title="Commercial Roofing Services" text="This page covers the full commercial roofing relationship. For a dedicated flat roof leak, inspection and replacement landing page, use the flat roofing page." />
+          <SectionHeader label="Services" title="Commercial Roofing Services" text="From emergency leak repairs to multi-year maintenance planning, City Roofing handles the full scope of commercial roof work in Calgary." />
           <div className="commercial-service-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '18px' }}>
             {serviceCards.map((service) => (
               <article key={service.title} style={{ backgroundColor: '#FFFFFF', border: '1px solid var(--color-border-light)', borderRadius: '6px', padding: '24px', minHeight: '178px', boxShadow: '0 2px 8px rgba(0,0,0,0.045)' }}>
@@ -301,7 +301,7 @@ export default function CommercialRoofingPage() {
               From Emergency Repairs to Roof Asset Planning
             </h2>
             <p style={{ color: 'rgba(249,247,242,0.74)', fontSize: '17px', lineHeight: 1.75, marginBottom: '24px' }}>
-              The strongest commercial roofing companies do more than install roofs. They help owners manage risk: inspections, maintenance, documentation, repair history and replacement planning. That is the direction this page takes.
+              The strongest commercial roofing companies do more than install roofs. They help owners manage risk: inspections, maintenance, documentation, repair history and replacement planning.
             </p>
             <PrimaryButton href="#commercial-form">Request Roof Assessment</PrimaryButton>
           </div>
@@ -422,9 +422,6 @@ export default function CommercialRoofingPage() {
 
       <section style={{ backgroundColor: 'var(--color-base)', padding: '82px 24px 104px', textAlign: 'center' }}>
         <div style={{ maxWidth: '820px', margin: '0 auto' }}>
-          <p style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '11px', letterSpacing: '2.5px', textTransform: 'uppercase', marginBottom: '14px' }}>
-            Calgary-based. In-house crew. SECOR Certified. WCB Alberta. BBB Accredited.
-          </p>
           <h2 style={{ color: '#F9F7F2', fontSize: 'clamp(32px, 5vw, 54px)', lineHeight: 1.05, marginBottom: '16px' }}>
             Need a Commercial Roof Assessed?
           </h2>
