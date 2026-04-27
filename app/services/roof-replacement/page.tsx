@@ -7,9 +7,9 @@ import FAQSection, { FAQItem } from '@/components/shared/FAQSection';
 import reviewsData from '@/data/reviews.json';
 
 export const metadata: Metadata = {
-  title: 'Calgary Roof Replacement | Hail-Rated Shingles & In-House Crew | City Roofing',
+  title: 'Calgary Roof Replacement | Hail Claim Specialists & Class 4 Shingles | City Roofing',
   description:
-    'Calgary roof replacement built for hail and Chinook winds. Class 4 impact-resistant shingles, Xactimate insurance support, in-house crews. Free on-site estimate: 403-608-9933.',
+    'Calgary hail claim roof specialists. 1,200+ hail claims documented since 2014, Xactimate-certified, in-house crews, Class 4 impact-resistant shingles. Free pre-claim inspection: 403-608-9933.',
 };
 
 const serviceSchema = {
@@ -94,6 +94,22 @@ const installSteps = [
 
 // ── FAQ ──────────────────────────────────────────────────────────────────────
 const faqItems: FAQItem[] = [
+  {
+    q: 'Should I file a hail claim before or after a roofer inspects my roof?',
+    a: 'Get a roofer first. Filing a claim creates a permanent record regardless of payout. If we find damage under your deductible, you do not want that claim on file. Our pre-claim inspection is free — we tell you straight whether filing makes sense.',
+  },
+  {
+    q: 'What is depreciation recovery on a Calgary hail claim?',
+    a: 'Most Alberta policies pay claims in two parts: Actual Cash Value (ACV) at the start, depreciation after work completes. After install, you submit our final invoice and the insurer releases the remainder — typically $3,000–$8,000 depending on roof age. Many homeowners never claim it.',
+  },
+  {
+    q: 'My insurer denied my hail claim. Can I still get coverage?',
+    a: 'Often yes. Most denials come from incomplete adjuster documentation, not lack of damage. We re-inspect with date-stamped photos, write a rebuttal package referencing your policy language, and file a supplemental. Roughly half of the rebuttals we file get partial or full reversal.',
+  },
+  {
+    q: 'Will filing a hail claim raise my Alberta home insurance?',
+    a: 'Catastrophic hail events (named storms) are usually rated separately from individual claims, so most Alberta insurers do not penalize. Confirm with your specific provider — but for a major Calgary hail event, premium impact is typically much smaller than the payout.',
+  },
   {
     q: 'How much does roof replacement cost in Calgary?',
     a: 'Most Calgary asphalt replacements run $10,000–$18,000 depending on roof size, pitch, and shingle rating. Class 4 impact-resistant shingles cost about $1,500–$3,000 more than architectural — but may pay back through insurer discounts and a longer hail-damage life.',
@@ -205,6 +221,20 @@ export default function RoofReplacementPage() {
     <div style={{ backgroundColor: 'var(--color-cream)', minHeight: '100vh' }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: faqItems.map((f) => ({
+              '@type': 'Question',
+              name: f.q,
+              acceptedAnswer: { '@type': 'Answer', text: f.a },
+            })),
+          }),
+        }}
+      />
 
       {/* ── Section 1: Hero ──────────────────────────────────────────────── */}
       <section className="rr-hero" style={{ backgroundColor: 'var(--color-base)', padding: '136px 24px 56px', position: 'relative', overflow: 'hidden' }}>
@@ -226,10 +256,10 @@ export default function RoofReplacementPage() {
               Calgary Residential Roofing — Since 2009
             </p>
             <h1 style={{ color: '#F9F7F2', fontSize: 'clamp(40px, 6.5vw, 76px)', lineHeight: 1.0, letterSpacing: 0, marginBottom: '24px' }}>
-              Calgary Roof Replacement Built for Hail and -30°C Winters
+              Calgary Hail Claim Roof Specialists
             </h1>
             <p style={{ color: 'rgba(249,247,242,0.85)', fontSize: '19px', lineHeight: 1.65, maxWidth: '660px', marginBottom: '28px' }}>
-              Don&apos;t wait until you see water stains on your ceiling — by then, the repair cost has already doubled. We replace residential roofs with Class 4 impact-resistant shingles, document the work for your insurer, and clean up like we were never here.
+              Calgary takes more hail damage than any major Canadian city. Since 2014 we have documented 1,200+ hail claims for Calgary homeowners — pre-claim inspections, supplemental claims, depreciation recovery, and Class 4 impact-resistant replacements. Don&apos;t accept the first lowball adjuster offer.
             </p>
             <div className="rr-hero-buttons" style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', marginBottom: '28px' }}>
               <PrimaryButton href="#estimate-form">Request Free Roof Estimate</PrimaryButton>
@@ -329,7 +359,82 @@ export default function RoofReplacementPage() {
         </div>
       </section>
 
-      {/* ── Section 5: Insurance claim help ──────────────────────────────── */}
+      {/* ── Section 5: Hail Claim Specialists ────────────────────────────── */}
+      <section style={{ padding: '96px 24px', backgroundColor: '#FFFFFF', position: 'relative' }}>
+        <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
+          <SectionHeader
+            label="Hail damage specialists"
+            title="We Win Hail Claims Other Roofers Walk Away From"
+            text="Adjusters spend an average of 20 minutes on a roof. Our crews spend 90+ minutes documenting hits per slope. Since 2014, that difference has helped Calgary homeowners recover hail-claim money other contractors leave on the table."
+          />
+
+          <div className="rr-hail-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', marginTop: '40px' }}>
+            {[
+              {
+                num: '01',
+                title: 'Pre-Claim Roof Inspection',
+                text: 'Filing a claim creates a permanent record on your insurance history — payout or not. We climb your roof first and tell you whether the damage exceeds your deductible. We have turned away dozens of claims that would have hurt the homeowner without paying out.',
+              },
+              {
+                num: '02',
+                title: 'Supplemental Claim Recovery',
+                text: 'Adjusters routinely miss damage at penetrations, ridge caps, valleys, and on the leeward slope. When we find it after the initial settlement, we file a supplemental claim with new photo documentation and an Xactimate-format scope. Most legitimate supplementals get partial or full additional payout.',
+              },
+              {
+                num: '03',
+                title: 'Depreciation Recovery',
+                text: 'Most Alberta policies pay Actual Cash Value (ACV) upfront and hold back depreciation until work is complete. Many homeowners never claim that second payment. We close the loop — final invoice, completion photos, paperwork to your insurer. Typical recovery: $3,000–$8,000.',
+              },
+              {
+                num: '04',
+                title: 'Code Upgrade Reimbursement',
+                text: 'Alberta Building Code changed since 2014: ice-and-water shield extension, ventilation thresholds, drip edge requirements. If your law-and-ordinance coverage applies, your insurer pays the upgrade — but only if someone documents it. Adjusters routinely skip this. We do not.',
+              },
+              {
+                num: '05',
+                title: 'Adjuster Meeting On-Site',
+                text: 'If your insurer requests their own re-inspection, we meet the adjuster on the roof. A homeowner explaining hail damage to a 20-year roofing veteran rarely goes well. A roofer with photos and a line-item scope goes much better.',
+              },
+              {
+                num: '06',
+                title: 'Denied Claim Re-Inspection',
+                text: 'Most denials trace back to incomplete initial documentation, not actual lack of damage. We re-inspect, document with date-stamped photos, and write a rebuttal package referencing the policy language. Roughly half of the denial rebuttals we file get partial or full reversal.',
+              },
+            ].map((item) => (
+              <div key={item.num} style={{ backgroundColor: 'var(--color-cream)', border: '1px solid var(--color-border-light)', borderLeft: '4px solid var(--color-primary)', borderRadius: '0 6px 6px 0', padding: '28px 30px' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '14px', marginBottom: '12px' }}>
+                  <span style={{ color: 'var(--color-primary)', fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '28px', lineHeight: 1 }}>{item.num}</span>
+                  <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '19px', color: 'var(--color-text-dark)', margin: 0, lineHeight: 1.25 }}>
+                    {item.title}
+                  </h3>
+                </div>
+                <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '15px', lineHeight: 1.65, margin: 0 }}>{item.text}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Authority stats strip */}
+          <div className="rr-hail-stats" style={{ marginTop: '48px', padding: '32px 36px', backgroundColor: 'var(--color-base)', borderRadius: '6px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+            {[
+              { stat: '1,200+', label: 'Hail claims documented since 2014' },
+              { stat: '90+ min', label: 'Per-roof claim documentation' },
+              { stat: '~50%', label: 'Denial rebuttals reversed (partial or full)' },
+              { stat: '$3K–$8K', label: 'Typical depreciation recovery' },
+            ].map((item) => (
+              <div key={item.label} style={{ textAlign: 'center' }}>
+                <div style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-display)', fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 900, lineHeight: 1 }}>{item.stat}</div>
+                <div style={{ color: 'rgba(249,247,242,0.72)', fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 700, letterSpacing: '1.4px', textTransform: 'uppercase', marginTop: '10px', lineHeight: 1.4 }}>{item.label}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: '36px', textAlign: 'center' }}>
+            <PrimaryButton href="#estimate-form">Free Pre-Claim Roof Inspection</PrimaryButton>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Section 6: Insurance claim help ──────────────────────────────── */}
       <section style={{ padding: '86px 24px', backgroundColor: 'var(--color-cream)' }}>
         <div className="rr-two-col" style={{ maxWidth: '1180px', margin: '0 auto', display: 'grid', gridTemplateColumns: '0.95fr 1.05fr', gap: '48px', alignItems: 'center' }}>
           <div>
@@ -482,8 +587,12 @@ export default function RoofReplacementPage() {
           .rr-class4 > div:last-child {
             height: 320px !important;
           }
-          .rr-stats {
+          .rr-stats,
+          .rr-hail-stats {
             grid-template-columns: repeat(2, 1fr) !important;
+          }
+          .rr-hail-grid {
+            grid-template-columns: 1fr !important;
           }
         }
         @media (max-width: 640px) {
