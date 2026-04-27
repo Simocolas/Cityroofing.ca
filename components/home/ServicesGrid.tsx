@@ -25,8 +25,8 @@ const services = [
     bgPosition: 'center center',
   },
   {
-    href: '/services/commercial',
-    title: 'Commercial Roofing',
+    href: '/services/flat-roofing',
+    title: 'Flat Roofing',
     image: '/images/4/Commerical.webp',
     bgPosition: 'center 40%',
   },

@@ -6,8 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const navLinks = [
-  { label: 'Services', href: '/services' },
-  { label: 'Projects', href: '/projects' },
+  { label: 'Residential', href: '/services/roof-replacement' },
+  { label: 'Commercial', href: '/services/flat-roofing' },
   { label: 'About', href: '/about' },
   { label: 'Reviews', href: '/reviews' },
   { label: 'News', href: '/news' },

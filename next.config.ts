@@ -30,6 +30,11 @@ const nextConfig: NextConfig = {
         destination: '/news/:slug*',
         permanent: true,
       },
+      {
+        source: '/services/commercial',
+        destination: '/services/flat-roofing',
+        permanent: true,
+      },
     ];
   },
 

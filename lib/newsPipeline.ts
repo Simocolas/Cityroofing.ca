@@ -35,7 +35,6 @@ If the answer is specific and interesting, the story passes. If it's generic, ke
 APPROVED INTERNAL LINKS (use ONLY these exact paths — no others):
 /services/roof-replacement
 /services/roof-repair
-/services/commercial
 /services/flat-roofing
 /services/siding
 /contact
@@ -96,7 +95,6 @@ Surface these where they solve a homeowner fear, never as a generic credential d
 APPROVED INTERNAL LINKS (use ONLY these exact paths — no others):
 /services/roof-replacement
 /services/roof-repair
-/services/commercial
 /services/flat-roofing
 /services/siding
 /contact
@@ -156,7 +154,7 @@ COMPANY FACTS — use naturally, never force:
 - In-house crews only — zero subcontracting | Xactimate-certified insurance estimates
 - Approved suppliers: IKO, GAF, Owens Corning, CertainTeed, Malarkey, BP/BMCA
 - Service pages (use ONLY these exact paths):
-  /services/roof-replacement | /services/roof-repair | /services/commercial | /services/flat-roofing | /services/siding | /contact
+  /services/roof-replacement | /services/roof-repair | /services/flat-roofing | /services/siding | /contact
 
 ━━━ NEWSJACK ARTICLE STRUCTURE — always apply when article_type is "newsjack" ━━━
 
