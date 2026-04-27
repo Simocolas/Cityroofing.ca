@@ -362,36 +362,37 @@ async function callGemini(
     .join('');
 }
 
-// ── Imagen 3 image generation ─────────────────────────────────────────────────
-async function callImagen3(prompt: string): Promise<string | null> {
+// ── Image generation (Nano Banana Pro / Gemini multimodal) ──────────────────
+async function callImageGen(prompt: string): Promise<string | null> {
   const key = process.env.GEMINI_API_KEY;
   if (!key) return null;
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${key}`;
+  const model = process.env.IMAGE_MODEL ?? 'nano-banana-pro-preview';
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
 
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      instances: [{ prompt }],
-      parameters: {
-        sampleCount: 1,
-        aspectRatio: '16:9',
-        safetyFilterLevel: 'block_some',
-        personGeneration: 'dont_allow',
-      },
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: { responseModalities: ['IMAGE', 'TEXT'] },
     }),
   });
 
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`Imagen3 ${res.status}: ${err.slice(0, 300)}`);
+    throw new Error(`ImageGen ${res.status}: ${err.slice(0, 300)}`);
   }
 
   const data = await res.json() as {
-    predictions?: { bytesBase64Encoded?: string; mimeType?: string }[];
+    candidates?: { content?: { parts?: { inlineData?: { mimeType?: string; data?: string } }[] } }[];
   };
-  return data.predictions?.[0]?.bytesBase64Encoded ?? null;
+
+  const parts = data.candidates?.[0]?.content?.parts ?? [];
+  for (const part of parts) {
+    if (part.inlineData?.data) return part.inlineData.data;
+  }
+  return null;
 }
 
 // ── Public stage functions ────────────────────────────────────────────────────
@@ -523,14 +524,14 @@ Return ONLY valid JSON in the exact structure defined.`;
 
   if (featuredPrompt && slug) {
     try {
-      const base64 = await callImagen3(featuredPrompt);
+      const base64 = await callImageGen(featuredPrompt);
       if (base64) {
         const ghPath = `public/images/news/${slug}.png`;
         await githubWriteBase64File(ghPath, base64, `Add image: ${slug}`);
         featuredImagePath = `/images/news/${slug}.png`;
       }
     } catch (imgErr) {
-      console.error('[imagen3]', imgErr instanceof Error ? imgErr.message : imgErr);
+      console.error('[image-gen]', imgErr instanceof Error ? imgErr.message : imgErr);
     }
   }
 
