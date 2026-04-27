@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { githubWriteFile } from '@/lib/github';
+import { runResearch, runBlueprint, runGenerate, runImage } from '@/lib/newsPipeline';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300;
@@ -16,7 +17,7 @@ const CATEGORIES = [
 const GITHUB_REPO = process.env.GITHUB_REPO ?? 'Simocolas/Cityroofing.ca';
 
 async function pickCategory(): Promise<string> {
-  // Count existing articles → mod 6 → sequential rotation across all categories
+  // Sequential rotation: count existing articles → mod 6 → next category
   try {
     const token = process.env.GITHUB_TOKEN;
     const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/content/news`, {
@@ -38,15 +39,8 @@ async function pickCategory(): Promise<string> {
   return CATEGORIES[(wd - 1 + CATEGORIES.length) % CATEGORIES.length];
 }
 
-function getBaseUrl(req: NextRequest): string {
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  const host = req.headers.get('host');
-  if (host) return `http://${host}`;
-  return 'http://localhost:3001';
-}
-
 export async function GET(req: NextRequest) {
-  // Vercel cron auth — Vercel automatically sends `Authorization: Bearer ${CRON_SECRET}`
+  // Vercel cron auth — Vercel sends `Authorization: Bearer ${CRON_SECRET}` automatically
   const cronSecret = process.env.CRON_SECRET;
   if (cronSecret) {
     const auth = req.headers.get('authorization');
@@ -55,61 +49,24 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  const baseUrl = getBaseUrl(req);
   const category = await pickCategory();
   const startedAt = new Date().toISOString();
 
   try {
-    // Stage 1: Research
-    const r1 = await fetch(`${baseUrl}/api/news-generator`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mode: 'research', notes: `Category target: ${category}` }),
+    const research = await runResearch({ notes: `Category target: ${category}` });
+    const blueprint = await runBlueprint({ researchContext: research, contentType: category });
+    let mdx = await runGenerate({
+      contentType: category,
+      researchContext: research,
+      blueprintContext: blueprint,
     });
-    const d1 = await r1.json();
-    if (d1.error) throw new Error(`research: ${d1.error}`);
-    const research = d1.research;
-
-    // Stage 2: Blueprint
-    const r2 = await fetch(`${baseUrl}/api/news-generator`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mode: 'blueprint', researchContext: research, contentType: category }),
+    const { featuredImagePath } = await runImage({
+      blueprintContext: blueprint,
+      researchContext: research,
+      category,
     });
-    const d2 = await r2.json();
-    if (d2.error) throw new Error(`blueprint: ${d2.error}`);
-    const blueprint = d2.blueprint;
+    mdx = mdx.replace('STAGE4_PLACEHOLDER', featuredImagePath ?? '');
 
-    // Stage 3: Generate article
-    const r3 = await fetch(`${baseUrl}/api/news-generator`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mode: 'generate',
-        contentType: category,
-        researchContext: research,
-        blueprintContext: blueprint,
-      }),
-    });
-    const d3 = await r3.json();
-    if (d3.error) throw new Error(`generate: ${d3.error}`);
-    let mdx = d3.content as string;
-
-    // Stage 4: Image (Imagen 3 + GitHub upload happens inside)
-    const r4 = await fetch(`${baseUrl}/api/news-generator`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mode: 'image',
-        blueprintContext: blueprint,
-        researchContext: research,
-        category,
-      }),
-    });
-    const d4 = await r4.json();
-    mdx = mdx.replace('STAGE4_PLACEHOLDER', d4.featuredImagePath ?? '');
-
-    // Extract slug from frontmatter
     const slugMatch = mdx.match(/^slug:\s*"?([a-z0-9-]+)"?/m);
     const rawSlug = slugMatch?.[1] ?? `auto-${Date.now()}`;
     const slug = rawSlug
@@ -118,7 +75,6 @@ export async function GET(req: NextRequest) {
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
 
-    // Publish to GitHub
     await githubWriteFile(
       `content/news/${slug}.mdx`,
       mdx,
@@ -129,7 +85,7 @@ export async function GET(req: NextRequest) {
       success: true,
       slug,
       category,
-      featuredImage: d4.featuredImagePath,
+      featuredImage: featuredImagePath,
       startedAt,
       finishedAt: new Date().toISOString(),
     });
