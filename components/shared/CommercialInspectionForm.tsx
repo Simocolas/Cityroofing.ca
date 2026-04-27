@@ -73,6 +73,13 @@ export default function CommercialInspectionForm() {
       }
 
       setStatus('success');
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'conversion', {
+          send_to: 'AW-18002586824/x7DeCPrIoKMcEMjZpohD',
+          value: 1.0,
+          currency: 'CAD',
+        });
+      }
     } catch {
       setError('Network error. Please call 403-608-9933.');
       setStatus('error');

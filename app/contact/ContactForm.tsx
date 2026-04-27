@@ -67,6 +67,13 @@ export default function ContactForm() {
         setError(data.error ?? 'Something went wrong. Please call us at 403-608-9933.');
       } else {
         setSubmitted(true);
+        if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+          (window as any).gtag('event', 'conversion', {
+            send_to: 'AW-18002586824/x7DeCPrIoKMcEMjZpohD',
+            value: 1.0,
+            currency: 'CAD',
+          });
+        }
       }
     } catch {
       setError('Network error. Please call us at 403-608-9933.');
