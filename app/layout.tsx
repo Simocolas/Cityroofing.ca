@@ -113,6 +113,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
               gtag('config', 'AW-18002586824');
+
+              document.addEventListener('click', function(e) {
+                var el = e.target.closest('a[href^="tel:"]');
+                if (!el) return;
+                gtag('event', 'conversion', {
+                  send_to: 'AW-18002586824/ESvxCKfkoKMcEMjZpohD',
+                  value: 1.0,
+                  currency: 'CAD'
+                });
+              });
             `,
           }}
         />
