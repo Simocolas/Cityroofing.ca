@@ -26,22 +26,54 @@ export async function githubWriteFile(
   content: string,
   commitMessage: string,
 ): Promise<void> {
-  const sha = await getFileSha(filePath);
-  const body: Record<string, string> = {
-    message: commitMessage,
-    content: Buffer.from(content, 'utf-8').toString('base64'),
-  };
-  if (sha) body.sha = sha;
+  const encoded = Buffer.from(content, 'utf-8').toString('base64');
 
-  const res = await fetch(`${API_BASE}/${filePath}`, {
-    method: 'PUT',
-    headers: githubHeaders(),
-    body: JSON.stringify(body),
-  });
+  async function attempt(): Promise<Response> {
+    const sha = await getFileSha(filePath);
+    const body: Record<string, string> = { message: commitMessage, content: encoded };
+    if (sha) body.sha = sha;
+    return fetch(`${API_BASE}/${filePath}`, {
+      method: 'PUT',
+      headers: githubHeaders(),
+      body: JSON.stringify(body),
+    });
+  }
+
+  let res = await attempt();
+
+  // Retry once on sha conflict (409 = conflict, 422 = stale sha after concurrent deploy)
+  if (res.status === 409 || res.status === 422) {
+    res = await attempt();
+  }
 
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`GitHub write failed (${res.status}): ${text}`);
+  }
+}
+
+export async function githubWriteBase64File(
+  filePath: string,
+  base64Content: string,
+  commitMessage: string,
+): Promise<void> {
+  async function attempt(): Promise<Response> {
+    const sha = await getFileSha(filePath);
+    const body: Record<string, string> = { message: commitMessage, content: base64Content };
+    if (sha) body.sha = sha;
+    return fetch(`${API_BASE}/${filePath}`, {
+      method: 'PUT',
+      headers: githubHeaders(),
+      body: JSON.stringify(body),
+    });
+  }
+
+  let res = await attempt();
+  if (res.status === 409 || res.status === 422) res = await attempt();
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`GitHub image write failed (${res.status}): ${text}`);
   }
 }
 

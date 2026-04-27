@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { githubWriteBase64File } from '@/lib/github';
 
 export const dynamic = 'force-dynamic';
 
@@ -151,7 +152,7 @@ Return ONLY a valid JSON object — no markdown fences, no preamble:
 const WRITER_SYSTEM = `You are a senior content writer for City Roofing & Exteriors, Calgary's most trusted roofing contractor. You write for two audiences simultaneously: stressed Calgary homeowners who need clear expert guidance, and search engine crawlers and AI citation systems that need structured, factual, extractable content.
 
 COMPANY FACTS — use naturally, never force:
-- City Roofing & Exteriors | https://calgarycityroofing.ca | 403-608-9933
+- City Roofing & Exteriors | https://calgarycityroofing.com | 403-608-9933
 - 15+ years | SECOR certified | WCB Alberta | BBB Accredited | 4.8 stars 150+ reviews
 - In-house crews only — zero subcontracting | Xactimate-certified insurance estimates
 - Approved suppliers: IKO, GAF, Owens Corning, CertainTeed, Malarkey, BP/BMCA
@@ -246,7 +247,7 @@ A: [under 50 words]
 
 [2-3 sentences maximum. The one thing they must remember. City Roofing expertise signal. No rehashing every point covered.]
 
-Ready for a professional assessment? [Contact our Calgary team](https://calgarycityroofing.ca/contact) or call **403-608-9933** — free estimates, in-house crews, no subcontractors.
+Ready for a professional assessment? [Contact our Calgary team](https://calgarycityroofing.com/contact) or call **403-608-9933** — free estimates, in-house crews, no subcontractors.
 
 ━━━ PRE-OUTPUT QUALITY GATES — verify all before generating ━━━
 □ Slug: lowercase alphanumeric hyphens only, no trailing hyphen
@@ -367,6 +368,38 @@ async function callGemini(
 }
 
 
+// ── Imagen 3 client (Stage 4 featured image) ─────────────────────────────────
+async function callImagen3(prompt: string): Promise<string | null> {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) return null;
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${key}`;
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      instances: [{ prompt }],
+      parameters: {
+        sampleCount: 1,
+        aspectRatio: '16:9',
+        safetyFilterLevel: 'block_some',
+        personGeneration: 'dont_allow',
+      },
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Imagen3 ${res.status}: ${err.slice(0, 300)}`);
+  }
+
+  const data = await res.json() as {
+    predictions?: { bytesBase64Encoded?: string; mimeType?: string }[];
+  };
+  return data.predictions?.[0]?.bytesBase64Encoded ?? null;
+}
+
 // ── Route handler ─────────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   try {
@@ -479,7 +512,7 @@ Apply all system instructions. Output the article now.`;
       return NextResponse.json({ content, research: researchContext, blueprint: blueprintContext });
     }
 
-    // ── Stage 4: Image prompts — Gemini ──────────────────────────────────────
+    // ── Stage 4: Image generation — Gemini prompts + Imagen 3 real image ────
     if (mode === 'image') {
       const { blueprintContext, researchContext, topic, category } = body as {
         blueprintContext?: Record<string, unknown>;
@@ -489,6 +522,7 @@ Apply all system instructions. Output the article now.`;
       };
 
       const title = (blueprintContext?.chosen_title as string | undefined) ?? topic ?? '';
+      const slug = (blueprintContext?.slug as string | undefined) ?? '';
       const technicalEntities = (researchContext?.technical_entities as string[] | undefined) ?? [];
 
       const userPrompt = `Generate image prompts for this article.
@@ -504,7 +538,25 @@ Return ONLY valid JSON in the exact structure defined.`;
       const images = extractJson(raw);
       if (!images) throw new Error('Image stage returned invalid JSON');
 
-      return NextResponse.json({ images });
+      // Generate actual featured image with Imagen 3 and upload to GitHub
+      let featuredImagePath: string | null = null;
+      const featuredPrompt = (images.featured_image as { prompt?: string } | undefined)?.prompt;
+
+      if (featuredPrompt && slug) {
+        try {
+          const base64 = await callImagen3(featuredPrompt);
+          if (base64) {
+            const ghPath = `public/images/news/${slug}.png`;
+            await githubWriteBase64File(ghPath, base64, `Add image: ${slug}`);
+            featuredImagePath = `/images/news/${slug}.png`;
+          }
+        } catch (imgErr) {
+          // Non-fatal — article still works with category fallback image
+          console.error('[imagen3]', imgErr instanceof Error ? imgErr.message : imgErr);
+        }
+      }
+
+      return NextResponse.json({ images, featuredImagePath });
     }
 
     // ── Chat / edit ───────────────────────────────────────────────────────────
