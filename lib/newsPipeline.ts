@@ -6,8 +6,20 @@ import { githubWriteBase64File } from '@/lib/github';
 // ── Stage 1: News Intelligence System Prompt ─────────────────────────────────
 const RESEARCH_SYSTEM = `You are a news intelligence researcher and content strategist for City Roofing & Exteriors, a Calgary roofing contractor. Your job is NOT to find roofing articles. Your job is to find high-traffic, high-relevance Canadian news and identify how a Calgary roofing professional would uniquely comment on it.
 
+TRENDING FIRST — ALWAYS DO THIS BEFORE ANYTHING ELSE:
+Search for what is trending in Canada RIGHT NOW. Check CBC News homepage, CTV News top stories, Google News Canada, and r/canada for today's top stories. The selected story MUST be something Canadians are actively reading and searching today — not an evergreen topic dressed up as news. Confirm today's date via web search before selecting any story.
+
+HOW TO FIND ROOFING ANGLES IN NON-ROOFING TRENDING NEWS:
+- El Niño / La Niña strengthens → hail season severity → impact-resistant shingles
+- Mortgage rate cut → homeowners refinancing → deferred roof repairs now affordable
+- Wildfire smoke event → ventilation/soffit blockage → air quality inside homes
+- Insurance company profits → premium hikes → claim documentation and Xactimate
+- Tariffs on lumber/steel → construction costs → roofing material pricing outlook
+- Extreme cold snap → ice dams → attic insulation and ventilation failures
+- New federal housing policy → new builds surge → roofing demand and labour shortage
+
 SEARCH PHILOSOPHY:
-Think like a local expert watching the national news and saying "this is exactly why Calgary homeowners need to pay attention to their roofs right now."
+Think like a local expert watching today's national news and saying "this is exactly why Calgary homeowners need to pay attention to their roofs right now."
 
 SCOPE — search across ALL of these categories, not just roofing:
 - Canadian housing market (prices, mortgage rates, CMHC data, rental crisis, new builds)
@@ -85,13 +97,6 @@ You must resolve three tensions in every blueprint:
 2. Keywords must appear frequently enough to rank — but naturally enough to pass Helpful Content Update filters
 3. The article must genuinely inform — and move the reader toward contacting City Roofing
 
-CITY ROOFING DIFFERENTIATION TO PROTECT:
-- In-house crews = accountability and quality control (competitors use subcontractors)
-- Xactimate software = insurance claim precision (most roofers estimate by eye)
-- SECOR certification = documented safety standards
-- 15+ years = pattern recognition competitors lack
-Surface these where they solve a homeowner fear, never as a generic credential dump.
-
 APPROVED INTERNAL LINKS (use ONLY these exact paths — no others):
 /services/roof-replacement
 /services/roof-repair
@@ -147,14 +152,6 @@ Return ONLY a valid JSON object — no markdown fences, no preamble:
 
 // ── Stage 3: Article Writing System Prompt ───────────────────────────────────
 const WRITER_SYSTEM = `You are a senior content writer for City Roofing & Exteriors, Calgary's most trusted roofing contractor. You write for two audiences simultaneously: stressed Calgary homeowners who need clear expert guidance, and search engine crawlers and AI citation systems that need structured, factual, extractable content.
-
-COMPANY FACTS — use naturally, never force:
-- City Roofing & Exteriors | https://calgarycityroofing.com | 403-608-9933
-- 15+ years | SECOR certified | WCB Alberta | BBB Accredited | 4.8 stars 150+ reviews
-- In-house crews only — zero subcontracting | Xactimate-certified insurance estimates
-- Approved suppliers: IKO, GAF, Owens Corning, CertainTeed, Malarkey, BP/BMCA
-- Service pages (use ONLY these exact paths):
-  /services/roof-replacement | /services/roof-repair | /services/flat-roofing | /services/siding | /contact
 
 ━━━ NEWSJACK ARTICLE STRUCTURE — always apply when article_type is "newsjack" ━━━
 
@@ -403,12 +400,19 @@ export type ResearchInput = { topic?: string | null; notes?: string | null };
 export type ResearchResult = Record<string, unknown>;
 
 export async function runResearch(input: ResearchInput): Promise<ResearchResult> {
-  const userPrompt = `Find high-traffic Canadian news and identify the roofing professional angle.
+  const today = getToday();
+  const userPrompt = `TODAY'S DATE: ${today}. First confirm this date via web search, then find today's trending Canadian news.
 
-TOPIC DIRECTION: ${input.topic?.trim() || 'find the most relevant trending story right now'}
+Find the most trending, high-traffic Canadian news story from the last 7 days and identify the roofing professional angle.
+
+STEP 1: Search what is trending in Canada today (${today}) — CBC News, CTV News, Google News Canada top stories.
+STEP 2: From those trending topics, pick the one with the strongest roofing / exterior / home protection connection.
+STEP 3: Return the research JSON.
+
+TOPIC DIRECTION: ${input.topic?.trim() || 'find the most relevant trending story today — prioritize what Canadians are searching right now'}
 EDITOR NOTES: ${input.notes?.trim() || 'none'}
 
-Prioritize stories published within the last 30 days. Return ONLY valid JSON in the exact structure defined.`;
+Stories must be from the last 7 days. Never present events from more than 30 days ago as current news. Return ONLY valid JSON in the exact structure defined.`;
 
   const raw = await callGemini(userPrompt, RESEARCH_SYSTEM, true);
   const research = extractJson(raw);
