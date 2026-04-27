@@ -995,12 +995,9 @@ function AINewsWriterSection() {
       const d4 = await r4.json();
       if (!d4.error && d4.images?.featured_image?.prompt) {
         setImageResult(d4.images as ImageResult);
-        // Splice image prompt into article frontmatter
-        finalContent = finalContent.replace(
-          'STAGE4_PLACEHOLDER',
-          d4.images.featured_image.prompt,
-        );
       }
+      // Use real Imagen 3 path if generated, otherwise clear placeholder
+      finalContent = finalContent.replace('STAGE4_PLACEHOLDER', d4.featuredImagePath ?? '');
 
       setDoneSteps([0, 1, 2, 3, 4]);
       setActiveStep(-1);

@@ -215,7 +215,7 @@ export default function FlatRoofCalgaryPage() {
             ))}
           </div>
           <Link
-            href="/services/commercial"
+            href="/services/flat-roofing"
             style={{ color: 'var(--color-accent)', textDecoration: 'none', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '15px' }}
           >
             View all Commercial Roofing Services →
@@ -330,7 +330,7 @@ export default function FlatRoofCalgaryPage() {
         {/* Internal links */}
         <section style={{ marginBottom: '72px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
           <Link
-            href="/services/commercial"
+            href="/services/flat-roofing"
             style={{ flex: 1, minWidth: '220px', backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '6px', padding: '24px', textDecoration: 'none', display: 'block' }}
           >
             <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '16px', color: 'var(--color-text-primary)', marginBottom: '6px' }}>

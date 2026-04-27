@@ -8,7 +8,7 @@ const serviceLinks = [
   { label: 'Roof Replacement', href: '/services/roof-replacement' },
   { label: 'Roof Repair', href: '/services/roof-repair' },
   { label: 'Siding', href: '/services/siding' },
-  { label: 'Commercial Roofing', href: '/services/commercial' },
+  { label: 'Flat Roofing', href: '/services/flat-roofing' },
 ];
 
 const companyLinks = [

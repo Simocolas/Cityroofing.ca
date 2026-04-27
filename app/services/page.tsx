@@ -6,7 +6,7 @@ import ServiceCTA from '@/components/shared/ServiceCTA';
 export const metadata: Metadata = {
   title: 'Roofing & Exterior Services Calgary | City Roofing',
   description:
-    'Roof replacement, repair, siding and commercial roofing in Calgary. SECOR certified, WCB Alberta coverage, 158 Google reviews at 4.8★. Free estimates — call 403-608-9933.',
+    'Roof replacement, repair, siding and flat-roofing in Calgary. SECOR certified, WCB Alberta coverage, 158 Google reviews at 4.8★. Free estimates — call 403-608-9933.',
 };
 
 interface CardData {
@@ -47,19 +47,11 @@ const ROW2: CardData[] = [
     height: '300px',
   },
   {
-    href: '/services/commercial',
-    title: 'Commercial Roofing',
+    href: '/services/flat-roofing',
+    title: 'Flat Roofing & Commercial',
     image: '/images/projects/Commercial.jpeg',
     tag: '$3M+ EXPERIENCE',
-    bullets: ['Flat roof systems & large-scale projects', 'SECOR certified, WCB registered'],
-    height: '300px',
-  },
-  {
-    href: '/services/flat-roofing',
-    title: 'Flat Roofing Systems',
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
-    tag: null,
-    bullets: ['Torch-on, TPO & EPDM systems', 'Residential & commercial'],
+    bullets: ['Torch-on, TPO & EPDM systems', 'SECOR certified, WCB registered'],
     height: '300px',
   },
 ];

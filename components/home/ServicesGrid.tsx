@@ -4,14 +4,26 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 
-const services = [
+const featured = [
   {
     href: '/services/roof-replacement',
+    eyebrow: 'Residential',
     title: 'Roof Replacement',
-    description: 'Complete re-roofing with materials suited to Calgary weather — residential and commercial.',
+    description: 'Asphalt, metal & Class 4 impact-resistant shingles. Built for Calgary hail and -30°C winters.',
     image: '/images/4/residential.webp',
     bgPosition: 'center 40%',
   },
+  {
+    href: '/services/flat-roofing',
+    eyebrow: 'Commercial',
+    title: 'Flat Roofing',
+    description: 'Torch-on, TPO and EPDM systems. Repair, replacement and inspections for warehouses, retail and multi-family.',
+    image: '/images/4/Commerical.webp',
+    bgPosition: 'center 40%',
+  },
+];
+
+const supporting = [
   {
     href: '/services/roof-repair',
     title: 'Roof Repair & Emergency',
@@ -24,32 +36,27 @@ const services = [
     image: '/images/4/siding.webp',
     bgPosition: 'center center',
   },
-  {
-    href: '/services/commercial',
-    title: 'Commercial Roofing',
-    image: '/images/4/Commerical.webp',
-    bgPosition: 'center 40%',
-  },
 ];
 
-type Service = typeof services[number];
+type Featured = typeof featured[number];
+type Supporting = typeof supporting[number];
 
 const OVERLAY_DEFAULT = 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.0) 100%)';
 const OVERLAY_HOVER   = 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.05) 100%)';
 
 const MotionLink = motion(Link);
 
-function LargeCard({ service }: { service: Service }) {
+function FeaturedCard({ service, index }: { service: Featured; index: number }) {
   const [hovered, setHovered] = useState(false);
 
   return (
     <MotionLink
       href={service.href}
-      className="service-card-large"
-      initial={{ opacity: 0, x: -30 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-      whileHover={{ scale: 1.02 }}
+      className="svc-featured"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: 'easeOut' }}
+      whileHover={{ scale: 1.015 }}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
       style={{
@@ -62,9 +69,9 @@ function LargeCard({ service }: { service: Service }) {
         backgroundPosition: service.bgPosition,
         textDecoration: 'none',
         display: 'block',
+        height: '420px',
       }}
     >
-      {/* Gradient overlay */}
       <div
         style={{
           position: 'absolute',
@@ -74,16 +81,17 @@ function LargeCard({ service }: { service: Service }) {
           zIndex: 1,
         }}
       />
-
-      {/* Text */}
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '32px', zIndex: 2 }}>
-        <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '22px', color: '#fff', marginBottom: '10px', lineHeight: 1.2 }}>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '36px', zIndex: 2 }}>
+        <p style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '12px' }}>
+          {service.eyebrow}
+        </p>
+        <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '32px', color: '#fff', marginBottom: '14px', lineHeight: 1.1 }}>
           {service.title}
         </h3>
-        <p style={{ fontSize: '14px', lineHeight: 1.6, color: 'rgba(255,255,255,0.8)', marginBottom: '16px' }}>
+        <p style={{ fontSize: '15px', lineHeight: 1.6, color: 'rgba(255,255,255,0.85)', marginBottom: '20px', maxWidth: '480px' }}>
           {service.description}
         </p>
-        <span style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '14px', display: 'inline-block', transform: hovered ? 'translateX(4px)' : 'translateX(0)', transition: 'transform 200ms ease' }}>
+        <span style={{ color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '14px', letterSpacing: '1px', textTransform: 'uppercase', display: 'inline-block', transform: hovered ? 'translateX(6px)' : 'translateX(0)', transition: 'transform 200ms ease', borderBottom: '2px solid var(--color-accent)', paddingBottom: '4px' }}>
           Explore →
         </span>
       </div>
@@ -91,17 +99,17 @@ function LargeCard({ service }: { service: Service }) {
   );
 }
 
-function SmallCard({ service, index }: { service: Service; index: number }) {
+function SupportingCard({ service, index }: { service: Supporting; index: number }) {
   const [hovered, setHovered] = useState(false);
 
   return (
     <MotionLink
       href={service.href}
-      className="service-card-small"
-      initial={{ opacity: 0, x: 30 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6, delay: (index + 1) * 0.1, ease: 'easeOut' }}
-      whileHover={{ scale: 1.02 }}
+      className="svc-supporting"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.2 + index * 0.1, ease: 'easeOut' }}
+      whileHover={{ scale: 1.015 }}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
       style={{
@@ -114,9 +122,9 @@ function SmallCard({ service, index }: { service: Service; index: number }) {
         backgroundPosition: service.bgPosition,
         textDecoration: 'none',
         display: 'block',
+        height: '240px',
       }}
     >
-      {/* Gradient overlay */}
       <div
         style={{
           position: 'absolute',
@@ -126,13 +134,11 @@ function SmallCard({ service, index }: { service: Service; index: number }) {
           zIndex: 1,
         }}
       />
-
-      {/* Text */}
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px 24px', zIndex: 2 }}>
-        <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '18px', color: '#fff', marginBottom: '8px', lineHeight: 1.2 }}>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '24px 28px', zIndex: 2 }}>
+        <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '22px', color: '#fff', marginBottom: '10px', lineHeight: 1.2 }}>
           {service.title}
         </h3>
-        <span style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '14px', display: 'inline-block', transform: hovered ? 'translateX(4px)' : 'translateX(0)', transition: 'transform 200ms ease' }}>
+        <span style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '13px', letterSpacing: '1px', textTransform: 'uppercase', display: 'inline-block', transform: hovered ? 'translateX(6px)' : 'translateX(0)', transition: 'transform 200ms ease' }}>
           Explore →
         </span>
       </div>
@@ -144,8 +150,6 @@ export default function ServicesGrid() {
   return (
     <section style={{ backgroundColor: 'var(--color-cream)', padding: '96px 24px' }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-
-        {/* Section header */}
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
           <p style={{ fontSize: '11px', letterSpacing: '3px', color: 'var(--color-primary)', fontFamily: 'var(--font-display)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '16px' }}>
             What We Do
@@ -155,58 +159,29 @@ export default function ServicesGrid() {
           </h2>
         </div>
 
-        {/* Card layout */}
-        <div
-          className="services-layout"
-          style={{
-            display: 'flex',
-            gap: '4px',
-            height: '520px',
-            borderRadius: '12px',
-            overflow: 'hidden',
-          }}
-        >
-          {/* Large card — left, 50% */}
-          <LargeCard service={services[0]} />
+        {/* Top row — two big featured cards */}
+        <div className="svc-row svc-row-featured" style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
+          {featured.map((service, i) => (
+            <FeaturedCard key={service.href} service={service} index={i} />
+          ))}
+        </div>
 
-          {/* Three stacked cards — right, 50% */}
-          <div
-            className="services-right"
-            style={{
-              flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '4px',
-            }}
-          >
-            {services.slice(1).map((service, i) => (
-              <SmallCard key={service.href} service={service} index={i} />
-            ))}
-          </div>
+        {/* Bottom row — two smaller supporting cards */}
+        <div className="svc-row svc-row-supporting" style={{ display: 'flex', gap: '12px' }}>
+          {supporting.map((service, i) => (
+            <SupportingCard key={service.href} service={service} index={i} />
+          ))}
         </div>
       </div>
 
       <style>{`
         @media (max-width: 768px) {
-          .services-layout {
+          .svc-row-featured,
+          .svc-row-supporting {
             flex-direction: column !important;
-            height: auto !important;
-            gap: 12px !important;
           }
-          .services-right {
-            flex: none !important;
-            gap: 12px !important;
-          }
-          .service-card-large,
-          .service-card-small {
-            height: 260px !important;
-            flex: none !important;
-            width: 100% !important;
-          }
-          .service-card-large h3 { font-size: 20px !important; }
-          .service-card-small h3 { font-size: 20px !important; }
-          .service-card-large p,
-          .service-card-small p { font-size: 13px !important; }
+          .svc-featured { height: 320px !important; }
+          .svc-supporting { height: 200px !important; }
         }
       `}</style>
     </section>
