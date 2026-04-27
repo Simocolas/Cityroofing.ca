@@ -19,7 +19,8 @@ export interface PostFrontmatter {
   subcategory?: string;
   scheduledDate?: string;
   status: 'draft' | 'scheduled' | 'published';
-  excerpt: string;
+  excerpt?: string;
+  description?: string;
   featuredImage?: string;
   imageAlt?: string;
   sourceUrl?: string;
