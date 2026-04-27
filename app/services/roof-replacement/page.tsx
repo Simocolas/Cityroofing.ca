@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import ContactForm from '@/app/contact/ContactForm';
-import CommercialSwitchGrid from '@/components/shared/CommercialSwitchGrid';
 import FAQSection, { FAQItem } from '@/components/shared/FAQSection';
 import reviewsData from '@/data/reviews.json';
 
@@ -73,14 +71,6 @@ const calgaryProblems = [
     title: 'Improper Attic Ventilation',
     text: 'Most Calgary roofs we tear off have undersized intake or exhaust ventilation. That is why the previous roof failed early — and why we fix it during replacement, not after.',
   },
-];
-
-// ── Section 7: Material comparison ───────────────────────────────────────────
-const materialRows = [
-  ['Standard Asphalt (3-tab)', '15–20 yrs', '$8,000–$12,000', 'Class 1', 'Replace tabs lost to hail every storm'],
-  ['Architectural Asphalt', '20–25 yrs', '$10,000–$16,000', 'Class 3', 'Better wind & hail than 3-tab, most common Calgary choice'],
-  ['Class 4 Impact-Resistant', '25–30 yrs', '$12,000–$18,000', 'Class 4 (UL 2218)', 'May qualify for insurer discount in Alberta'],
-  ['Standing Seam Metal', '40–70 yrs', '$22,000–$38,000', 'Class 4 with proper gauge', 'Almost zero maintenance, premium curb appeal'],
 ];
 
 // ── Section 6: Installation day ──────────────────────────────────────────────
@@ -262,7 +252,7 @@ export default function RoofReplacementPage() {
               Calgary takes more hail damage than any major Canadian city. Since 2014 we have documented 1,200+ hail claims for Calgary homeowners — pre-claim inspections, supplemental claims, depreciation recovery, and Class 4 impact-resistant replacements. Don&apos;t accept the first lowball adjuster offer.
             </p>
             <div className="rr-hero-buttons" style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', marginBottom: '28px' }}>
-              <PrimaryButton href="#estimate-form">Request Free Roof Estimate</PrimaryButton>
+              <PrimaryButton href="/contact">Request Free Estimate</PrimaryButton>
               <SecondaryButton href="tel:403-608-9933">Call 403-608-9933</SecondaryButton>
             </div>
             <div className="rr-hero-trust" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
@@ -273,17 +263,51 @@ export default function RoofReplacementPage() {
               ))}
             </div>
           </div>
-          <div id="estimate-form" style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '28px 26px', boxShadow: '0 8px 28px rgba(0,0,0,0.25)' }}>
-            <p style={{ color: 'var(--color-primary)', fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '6px' }}>
-              Free Estimate
+          <div style={{ backgroundColor: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.14)', borderRadius: '8px', padding: '32px 30px' }}>
+            <p style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '8px' }}>
+              What you get
             </p>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '22px', color: 'var(--color-text-dark)', marginBottom: '6px', lineHeight: 1.2 }}>
-              Get Your Roof Estimate
+            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '24px', color: '#F9F7F2', marginBottom: '20px', lineHeight: 1.2 }}>
+              Free On-Site Estimate
             </h2>
-            <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '13px', lineHeight: 1.5, marginBottom: '18px' }}>
-              On-site inspection. Written quote you can hand to your insurer. No pressure.
+            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'grid', gap: '12px' }}>
+              {[
+                'Pre-claim hail damage assessment',
+                'Xactimate-format written estimate',
+                'Class 4 vs architectural shingle samples',
+                'Insurance documentation package',
+                'No-obligation quote in 24 hours',
+              ].map((item) => (
+                <li key={item} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <span style={{ flexShrink: 0, width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'var(--color-primary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '11px', marginTop: '2px' }}>✓</span>
+                  <span style={{ color: 'rgba(249,247,242,0.92)', fontSize: '15px', lineHeight: 1.5 }}>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/contact"
+              style={{
+                display: 'block',
+                width: '100%',
+                textAlign: 'center',
+                backgroundColor: 'var(--color-primary)',
+                color: '#fff',
+                padding: '14px 20px',
+                borderRadius: '4px',
+                fontFamily: 'var(--font-display)',
+                fontWeight: 800,
+                fontSize: '14px',
+                letterSpacing: '0.6px',
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+                marginBottom: '12px',
+              }}
+            >
+              Get My Free Estimate →
+            </Link>
+            <p style={{ color: 'rgba(249,247,242,0.55)', fontSize: '12px', lineHeight: 1.5, textAlign: 'center', margin: 0 }}>
+              Calgary · Airdrie · Cochrane · Chestermere · Okotoks
             </p>
-            <ContactForm />
           </div>
         </div>
       </section>
@@ -313,7 +337,59 @@ export default function RoofReplacementPage() {
             title="Six Things That Kill Roofs in Calgary"
             text="A 25-year shingle is really a 17-year shingle once you live through Calgary weather. Here is what we see on the roofs we tear off."
           />
-          <CommercialSwitchGrid items={calgaryProblems} />
+          <div className="rr-problems-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginTop: '40px' }}>
+            {calgaryProblems.map((p, i) => (
+              <div
+                key={p.title}
+                style={{
+                  backgroundColor: 'var(--color-cream)',
+                  border: '1px solid var(--color-border-light)',
+                  borderRadius: '6px',
+                  padding: '28px 26px',
+                  position: 'relative',
+                }}
+              >
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: '20px',
+                    right: '24px',
+                    color: 'var(--color-primary)',
+                    fontFamily: 'var(--font-display)',
+                    fontWeight: 900,
+                    fontSize: '14px',
+                    letterSpacing: '1px',
+                    opacity: 0.4,
+                  }}
+                >
+                  0{i + 1}
+                </span>
+                <h3
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontWeight: 800,
+                    fontSize: '18px',
+                    color: 'var(--color-text-dark)',
+                    marginBottom: '12px',
+                    paddingRight: '32px',
+                    lineHeight: 1.25,
+                  }}
+                >
+                  {p.title}
+                </h3>
+                <p
+                  style={{
+                    color: 'var(--color-text-dark-muted)',
+                    fontSize: '14.5px',
+                    lineHeight: 1.65,
+                    margin: 0,
+                  }}
+                >
+                  {p.text}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -429,7 +505,7 @@ export default function RoofReplacementPage() {
           </div>
 
           <div style={{ marginTop: '36px', textAlign: 'center' }}>
-            <PrimaryButton href="#estimate-form">Free Pre-Claim Roof Inspection</PrimaryButton>
+            <PrimaryButton href="/contact">Free Pre-Claim Roof Inspection</PrimaryButton>
           </div>
         </div>
       </section>
@@ -443,7 +519,7 @@ export default function RoofReplacementPage() {
               title="The Bridge Between You and Your Adjuster"
               text="If hail damaged your roof, your insurance company writes the cheque — but you still have to prove the damage. We give you the documentation adjusters take seriously."
             />
-            <PrimaryButton href="#estimate-form">Get Insurance-Ready Estimate</PrimaryButton>
+            <PrimaryButton href="/contact">Get Insurance-Ready Estimate</PrimaryButton>
           </div>
           <div style={{ background: 'linear-gradient(135deg, #FFFFFF 0%, var(--color-cream) 100%)', border: '1px solid var(--color-border-light)', borderRadius: '6px', padding: '36px' }}>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: '16px' }}>
@@ -492,44 +568,6 @@ export default function RoofReplacementPage() {
         </div>
       </section>
 
-      {/* ── Section 7: Material comparison ───────────────────────────────── */}
-      <section style={{ padding: '86px 24px', backgroundColor: 'var(--color-cream-dark)' }}>
-        <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
-          <SectionHeader
-            label="Material comparison"
-            title="Calgary Roofing Materials at a Glance"
-            text="Same Calgary climate, four different price-and-life trade-offs. We bring physical samples to the estimate so you can see them on your home before you decide."
-          />
-          <div className="rr-table-wrap" style={{ overflowX: 'auto', backgroundColor: '#FFFFFF', borderRadius: '6px', border: '1px solid var(--color-border-light)' }}>
-            <table style={{ width: '100%', minWidth: '720px', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ backgroundColor: 'var(--color-base)' }}>
-                  {['Material', 'Calgary Lifespan', 'Typical Cost', 'Hail Rating', 'Real-World Note'].map((h) => (
-                    <th key={h} style={{ color: '#F9F7F2', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '12px', letterSpacing: '1.2px', textTransform: 'uppercase', textAlign: 'left', padding: '16px 20px' }}>
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {materialRows.map((row, i) => (
-                  <tr key={row[0]} style={{ borderTop: i === 0 ? 'none' : '1px solid var(--color-border-light)' }}>
-                    {row.map((cell, j) => (
-                      <td key={j} style={{ padding: '16px 20px', fontSize: '14px', color: j === 0 ? 'var(--color-text-dark)' : 'var(--color-text-dark-muted)', fontWeight: j === 0 ? 700 : 400, lineHeight: 1.5 }}>
-                        {cell}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p style={{ color: 'var(--color-text-dark-muted)', fontSize: '13px', textAlign: 'center', marginTop: '20px', fontStyle: 'italic' }}>
-            Pricing is for typical 1,800–2,400 sq ft Calgary residential roofs. Actual quote depends on pitch, complexity, and decking condition.
-          </p>
-        </div>
-      </section>
-
       {/* ── Section 8: Reviews ───────────────────────────────────────────── */}
       <section style={{ padding: '86px 24px', backgroundColor: '#FFFFFF' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
@@ -569,13 +607,18 @@ export default function RoofReplacementPage() {
             Calgary, Airdrie, Cochrane, Chestermere, Okotoks. Same crew, same warranty. No pressure, no high-pitch sales call afterward.
           </p>
           <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <PrimaryButton href="#estimate-form">Request Free Estimate</PrimaryButton>
+            <PrimaryButton href="/contact">Request Free Estimate</PrimaryButton>
             <SecondaryButton href="tel:403-608-9933">Call 403-608-9933</SecondaryButton>
           </div>
         </div>
       </section>
 
       <style>{`
+        @media (max-width: 1100px) {
+          .rr-problems-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
         @media (max-width: 968px) {
           .rr-hero-grid {
             grid-template-columns: 1fr !important;
@@ -591,7 +634,8 @@ export default function RoofReplacementPage() {
           .rr-hail-stats {
             grid-template-columns: repeat(2, 1fr) !important;
           }
-          .rr-hail-grid {
+          .rr-hail-grid,
+          .rr-problems-grid {
             grid-template-columns: 1fr !important;
           }
         }
