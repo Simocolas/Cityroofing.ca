@@ -43,10 +43,10 @@ function getCardImage(post: PostMeta): string {
 }
 
 function NewsCard({ post }: { post: PostMeta }) {
+  const rawExcerpt =
+    post.frontmatter.excerpt ?? post.frontmatter.description ?? '';
   const excerpt =
-    post.frontmatter.excerpt.length > 120
-      ? post.frontmatter.excerpt.slice(0, 120) + '…'
-      : post.frontmatter.excerpt;
+    rawExcerpt.length > 120 ? rawExcerpt.slice(0, 120) + '…' : rawExcerpt;
 
   return (
     <article

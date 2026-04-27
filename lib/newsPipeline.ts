@@ -220,7 +220,9 @@ FAQ RULES:
 title: "[from blueprint]"
 slug: "[from blueprint]"
 date: "{{DATE}}"
+status: "published"
 category: "[category]"
+excerpt: "[same as description — 140-155 chars, used as card preview on the news listing]"
 keywords:
   - "[keyword]"
 featuredImage: "STAGE4_PLACEHOLDER"
@@ -263,6 +265,8 @@ Ready for a professional assessment? [Contact our Calgary team](https://calgaryc
 □ Phone 403-608-9933 in CTA
 □ Body word count between 900-1,400
 □ featuredImage field is exactly "STAGE4_PLACEHOLDER" — do not replace it
+□ status field is exactly "published" — required for the article to appear in the listing
+□ excerpt field is present (can match description) — required by the news card renderer
 
 Output ONLY the MDX file. No preamble, no commentary.`;
 
