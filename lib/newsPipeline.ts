@@ -220,6 +220,7 @@ FAQ RULES:
 title: "[from blueprint]"
 slug: "[from blueprint]"
 date: "{{DATE}}"
+status: "published"
 category: "[category]"
 keywords:
   - "[keyword]"
@@ -263,6 +264,7 @@ Ready for a professional assessment? [Contact our Calgary team](https://calgaryc
 □ Phone 403-608-9933 in CTA
 □ Body word count between 900-1,400
 □ featuredImage field is exactly "STAGE4_PLACEHOLDER" — do not replace it
+□ status field is exactly "published" — required for the article to appear on the site
 
 Output ONLY the MDX file. No preamble, no commentary.`;
 
