@@ -4,6 +4,7 @@ import matter from 'gray-matter';
 import readingTime from 'reading-time';
 
 const NEWS_DIR = path.join(process.cwd(), 'content/news');
+const GITHUB_REPO = process.env.GITHUB_REPO ?? 'Simocolas/Cityroofing.ca';
 
 export interface FaqItem {
   q: string;
@@ -87,6 +88,49 @@ export function getPostsByCategory(category: string): PostMeta[] {
 
 export function getRecentPosts(n: number): PostMeta[] {
   return getPublishedPosts().slice(0, n);
+}
+
+// Fetch published posts directly from GitHub API — no Vercel rebuild needed
+export async function getPublishedPostsLive(): Promise<PostMeta[]> {
+  const token = process.env.GITHUB_TOKEN;
+  const headers: Record<string, string> = { Accept: 'application/vnd.github.v3+json' };
+  if (token) headers.Authorization = `token ${token}`;
+
+  try {
+    const listRes = await fetch(
+      `https://api.github.com/repos/${GITHUB_REPO}/contents/content/news`,
+      { headers, cache: 'no-store' },
+    );
+    if (!listRes.ok) return getPublishedPosts();
+
+    const files = (await listRes.json()) as Array<{ name: string; download_url: string }>;
+    const mdxFiles = files.filter((f) => f.name.endsWith('.mdx') && f.name !== 'template.mdx');
+
+    const posts = await Promise.all(
+      mdxFiles.map(async (file) => {
+        try {
+          const res = await fetch(file.download_url, { cache: 'no-store' });
+          if (!res.ok) return null;
+          const raw = await res.text();
+          const { data, content } = matter(raw);
+          const slug = file.name.replace('.mdx', '');
+          const stats = readingTime(content);
+          return { slug, frontmatter: data as PostFrontmatter, readingTime: stats.text };
+        } catch {
+          return null;
+        }
+      }),
+    );
+
+    return posts
+      .filter((p): p is PostMeta => p !== null && p.frontmatter.status === 'published')
+      .sort(
+        (a, b) =>
+          new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime(),
+      );
+  } catch {
+    return getPublishedPosts();
+  }
 }
 
 export function getPostBySlug(slug: string): Post | null {
