@@ -53,13 +53,13 @@ export async function POST(req: NextRequest) {
     }
 
     if (mode === 'image') {
-      const { images, featuredImagePath } = await runImage({
+      const { images, featuredImagePath, inlinePaths } = await runImage({
         blueprintContext: body.blueprintContext,
         researchContext: body.researchContext,
         topic: body.topic,
         category: body.category,
       });
-      return NextResponse.json({ images, featuredImagePath });
+      return NextResponse.json({ images, featuredImagePath, inlinePaths });
     }
 
     if (mode === 'chat') {

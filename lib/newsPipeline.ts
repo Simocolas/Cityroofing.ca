@@ -267,45 +267,6 @@ Ready for a professional assessment? [Contact our Calgary team](https://calgaryc
 
 Output ONLY the MDX file. No preamble, no commentary.`;
 
-// ── Stage 4: Image Prompt System ─────────────────────────────────────────────
-const IMAGE_SYSTEM = `You are a creative director generating image prompts for a Calgary roofing contractor's premium content. All images must look like high-end architectural photography — not stock photos, not AI illustration, not 3D renders.
-
-BRAND IMAGE STANDARDS:
-- Realistic DSLR photography aesthetic — Canon or Sony full-frame look
-- Calgary suburban or commercial setting: two-story homes, prairie sky, Rockies in far background where natural
-- Roofing materials: dark charcoal, slate grey, or weathered cedar — never bright colors
-- Exterior materials: warm brick, light stucco, hardie board — common Calgary housing stock
-- No people, no pets, no vehicles, no logos, no text in frame
-- Natural lighting: golden hour or bright overcast — avoid harsh midday shadows
-- No dramatic storms or catastrophic damage for standard articles — reserve for Emergency Repair category only
-
-PROMPT STRUCTURE — follow this formula exactly:
-[Primary subject with material detail], [location/setting with Calgary context], [weather and light condition], [camera angle and lens feel], [style qualifiers]
-
-Example: "Close-up of dark charcoal asphalt shingles with visible granule texture and ridge cap detail on a Calgary suburban home, overcast Alberta sky, shallow depth of field, Canon 5D Mark IV look, photorealistic architectural photography, ultra-detailed"
-
-Return ONLY a valid JSON object — no markdown fences, no preamble:
-
-{
-  "featured_image": {
-    "prompt": "50-80 word Midjourney/DALL-E 3 prompt following the brand formula exactly. Wide establishing shot — full roof or exterior visible. This is the hero image.",
-    "negative_prompt": "people, person, human, pets, cars, vehicles, text, logos, cartoon, illustration, 3D render, stock photo look, bright colors, green roof, blue shingles",
-    "alt_text": "Describe literally what is in the image. Under 120 characters. Include Calgary.",
-    "use_case": "Featured/hero image — appears at top of article and in social sharing"
-  },
-  "inline_1": {
-    "prompt": "50-70 word prompt. Close-up or detail shot illustrating a specific section of the article. Reference the specific roofing component or condition covered in the article.",
-    "negative_prompt": "people, text, logos, cartoon, illustration, 3D render",
-    "alt_text": "Literal description under 120 chars with Calgary reference",
-    "use_case": "Placed after [specific H2 section heading] to illustrate [what specifically]"
-  },
-  "inline_2": {
-    "prompt": "50-70 word prompt. Different angle or subject than inline_1. Could show damage detail, material comparison, inspection result, or seasonal condition relevant to the article topic.",
-    "negative_prompt": "people, text, logos, cartoon, illustration, 3D render",
-    "alt_text": "Literal description under 120 chars",
-    "use_case": "Placed after [specific H2 section heading] to illustrate [what specifically]"
-  }
-}`;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function getToday(): string {
@@ -504,44 +465,65 @@ export type ImageInput = {
 export type ImageResult = {
   images: Record<string, unknown>;
   featuredImagePath: string | null;
+  inlinePaths: (string | null)[];
 };
+
+function buildImagePrompt(title: string, variant: 'featured' | 'inline1' | 'inline2'): string {
+  const base = `${title}, Calgary roofing, photorealistic DSLR photography, suburban home, Alberta prairie sky, no people, no text`;
+  if (variant === 'featured') return `${base}, wide establishing shot of full roof and exterior, golden hour lighting, ultra-detailed`;
+  if (variant === 'inline1') return `${base}, close-up of roofing materials and shingle detail, overcast natural light`;
+  return `${base}, exterior side view of house roof, bright overcast sky, sharp detail`;
+}
+
+// Inject inline images into MDX body after the 1st and 3rd H2 sections
+export function injectInlineImages(mdx: string, paths: (string | null)[]): string {
+  if (!paths[0] && !paths[1]) return mdx;
+
+  const fmEnd = mdx.indexOf('\n---\n', 3) + 5;
+  const frontmatter = mdx.slice(0, fmEnd);
+  const body = mdx.slice(fmEnd);
+
+  const sections = body.split(/(?=^## )/m);
+
+  if (paths[0] && sections.length > 1) {
+    sections[1] += `\n![](${paths[0]})\n`;
+  }
+  if (paths[1] && sections.length > 3) {
+    sections[3] += `\n![](${paths[1]})\n`;
+  }
+
+  return frontmatter + sections.join('');
+}
 
 export async function runImage(input: ImageInput): Promise<ImageResult> {
   const title = (input.blueprintContext?.chosen_title as string | undefined) ?? input.topic ?? '';
   const slug = (input.blueprintContext?.slug as string | undefined) ?? '';
-  const technicalEntities = (input.researchContext?.technical_entities as string[] | undefined) ?? [];
 
-  const userPrompt = `Generate image prompts for this article.
+  const [featuredB64, inline1B64, inline2B64] = await Promise.allSettled([
+    callImageGen(buildImagePrompt(title, 'featured')),
+    callImageGen(buildImagePrompt(title, 'inline1')),
+    callImageGen(buildImagePrompt(title, 'inline2')),
+  ]);
 
-TITLE: ${title}
-TOPIC: ${input.topic ?? title}
-CATEGORY: ${input.category ?? ''}
-KEY TECHNICAL ENTITIES: ${technicalEntities.join(', ')}
-
-Return ONLY valid JSON in the exact structure defined.`;
-
-  const raw = await callGemini(userPrompt, IMAGE_SYSTEM, false);
-  const images = extractJson(raw);
-  if (!images) throw new Error('Image stage returned invalid JSON');
-
-  // Generate actual featured image with Imagen 3 and upload to GitHub
-  let featuredImagePath: string | null = null;
-  const featuredPrompt = (images.featured_image as { prompt?: string } | undefined)?.prompt;
-
-  if (featuredPrompt && slug) {
+  async function upload(b64Result: PromiseSettledResult<string | null>, suffix: string): Promise<string | null> {
+    if (b64Result.status !== 'fulfilled' || !b64Result.value || !slug) return null;
+    const ghPath = `public/images/news/${slug}${suffix}.png`;
     try {
-      const base64 = await callImageGen(featuredPrompt);
-      if (base64) {
-        const ghPath = `public/images/news/${slug}.png`;
-        await githubWriteBase64File(ghPath, base64, `Add image: ${slug}`);
-        featuredImagePath = `/images/news/${slug}.png`;
-      }
-    } catch (imgErr) {
-      console.error('[image-gen]', imgErr instanceof Error ? imgErr.message : imgErr);
+      await githubWriteBase64File(ghPath, b64Result.value, `Add image: ${slug}${suffix}`);
+      return `/images/news/${slug}${suffix}.png`;
+    } catch (e) {
+      console.error('[image-upload]', e instanceof Error ? e.message : e);
+      return null;
     }
   }
 
-  return { images, featuredImagePath };
+  const [featuredImagePath, inline1Path, inline2Path] = await Promise.all([
+    upload(featuredB64, ''),
+    upload(inline1B64, '-1'),
+    upload(inline2B64, '-2'),
+  ]);
+
+  return { images: {}, featuredImagePath, inlinePaths: [inline1Path, inline2Path] };
 }
 
 export async function runChat(
