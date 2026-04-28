@@ -468,32 +468,35 @@ export type ImageResult = {
   inlinePaths: (string | null)[];
 };
 
-function buildImagePrompt(
-  title: string,
-  variant: 'featured' | 'inline1' | 'inline2',
-  keywords: string[],
-  category: string,
-): string {
+function buildFeaturedPrompt(title: string, keywords: string[]): string {
   const context = keywords.slice(0, 3).join(', ') || title;
-  const base = `${context}, Calgary roofing, photorealistic DSLR photography, suburban home, Alberta prairie sky, no people, no text`;
+  return `${context}, Calgary roofing, photorealistic DSLR photography, suburban home, Alberta prairie sky, wide establishing shot of full roof and exterior, golden hour lighting, no people, no text, ultra-detailed`;
+}
 
-  if (variant === 'featured') {
-    return `${base}, wide establishing shot of full roof and exterior, golden hour lighting, ultra-detailed`;
-  }
+async function buildInlinePrompts(title: string, keywords: string[], category: string): Promise<[string, string]> {
+  const prompt = `Article title: "${title}"
+Category: ${category}
+Key topics: ${keywords.slice(0, 5).join(', ')}
 
-  // Inline prompts vary by category so they're visually relevant to the article topic
-  const categoryAngles: Record<string, { inline1: string; inline2: string }> = {
-    'Emergency Repair':   { inline1: 'damaged shingles and storm debris on roof surface, close-up', inline2: 'emergency tarp covering damaged roof section, overcast sky' },
-    'Insurance Claims':   { inline1: 'roof inspector examining shingles with clipboard, detail shot', inline2: 'hail damage dents on asphalt shingles close-up, natural light' },
-    'Local Weather Tips': { inline1: 'ice dam and icicles forming at roof eave, winter light', inline2: 'snow load on steep Calgary residential roof, overcast' },
-    'Roofing Maintenance':{ inline1: 'clean gutters and sealed flashing detail on roof edge', inline2: 'attic vent and soffit close-up on suburban home exterior' },
-    'Material Guide':     { inline1: 'comparison of asphalt shingle textures and colors, close-up', inline2: 'metal roofing panel detail with standing seam, natural light' },
-    'Cost & Financing':   { inline1: 'roofer measuring roof pitch with tape, detail shot', inline2: 'new asphalt shingles being installed on Calgary home' },
-  };
+Generate exactly 2 short image prompts (under 20 words each) for inline photos that visually illustrate this specific article.
+Each prompt must describe a concrete, photorealistic roofing or home exterior scene directly related to the article topic.
+No people, no text, no logos. Calgary suburban setting.
 
-  const angles = categoryAngles[category] ?? { inline1: 'roofing material detail close-up, natural light', inline2: 'exterior side view of house roof, overcast sky' };
-  if (variant === 'inline1') return `${angles.inline1}, ${base}`;
-  return `${angles.inline2}, ${base}`;
+Return ONLY valid JSON: {"inline1": "...", "inline2": "..."}`;
+
+  try {
+    const raw = await callGemini(prompt, 'You generate concise image prompts. Return only valid JSON, no markdown.', false);
+    const parsed = extractJson(raw) as { inline1?: string; inline2?: string } | null;
+    if (parsed?.inline1 && parsed?.inline2) {
+      const base = ', Calgary roofing, photorealistic DSLR photography, no people, no text, natural light';
+      return [parsed.inline1 + base, parsed.inline2 + base];
+    }
+  } catch { /* fall through to defaults */ }
+
+  return [
+    `${title}, roofing detail close-up, Calgary home, photorealistic, natural light, no people`,
+    `${title}, roof exterior view, Calgary suburban home, photorealistic, overcast sky, no people`,
+  ];
 }
 
 // Inject inline images into MDX body after the 1st and 3rd H2 sections
@@ -522,10 +525,12 @@ export async function runImage(input: ImageInput): Promise<ImageResult> {
   const category = input.category ?? (input.blueprintContext?.category as string | undefined) ?? '';
   const keywords = (input.researchContext?.technical_entities as string[] | undefined) ?? [];
 
+  const [inlinePrompt1, inlinePrompt2] = await buildInlinePrompts(title, keywords, category);
+
   const [featuredB64, inline1B64, inline2B64] = await Promise.allSettled([
-    callImageGen(buildImagePrompt(title, 'featured', keywords, category)),
-    callImageGen(buildImagePrompt(title, 'inline1', keywords, category)),
-    callImageGen(buildImagePrompt(title, 'inline2', keywords, category)),
+    callImageGen(buildFeaturedPrompt(title, keywords)),
+    callImageGen(inlinePrompt1),
+    callImageGen(inlinePrompt2),
   ]);
 
   async function upload(b64Result: PromiseSettledResult<string | null>, suffix: string): Promise<string | null> {
