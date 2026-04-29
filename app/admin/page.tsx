@@ -854,17 +854,20 @@ interface BlueprintResult {
   target_word_count?: number;
 }
 
-interface ImagePromptItem {
-  prompt?: string;
-  negative_prompt?: string;
-  alt_text?: string;
-  use_case?: string;
+interface ImageResult {
+  featuredImagePath?: string | null;
+  inlinePaths?: (string | null)[];
 }
 
-interface ImageResult {
-  featured_image?: ImagePromptItem;
-  inline_1?: ImagePromptItem;
-  inline_2?: ImagePromptItem;
+function injectInlineImages(mdx: string, paths: (string | null)[]): string {
+  if (!paths[0] && !paths[1]) return mdx;
+  const fmEnd = mdx.indexOf('\n---\n', 3) + 5;
+  const frontmatter = mdx.slice(0, fmEnd);
+  const body = mdx.slice(fmEnd);
+  const sections = body.split(/(?=^## )/m);
+  if (paths[0] && sections.length > 1) sections[1] += `\n![](${paths[0]})\n`;
+  if (paths[1] && sections.length > 3) sections[3] += `\n![](${paths[1]})\n`;
+  return frontmatter + sections.join('');
 }
 
 function AINewsWriterSection() {
@@ -993,11 +996,11 @@ function AINewsWriterSection() {
         }),
       });
       const d4 = await r4.json();
-      if (!d4.error && d4.images?.featured_image?.prompt) {
-        setImageResult(d4.images as ImageResult);
+      if (!d4.error) {
+        setImageResult({ featuredImagePath: d4.featuredImagePath, inlinePaths: d4.inlinePaths });
       }
-      // Use real Imagen 3 path if generated, otherwise clear placeholder
       finalContent = finalContent.replace('STAGE4_PLACEHOLDER', d4.featuredImagePath ?? '');
+      finalContent = injectInlineImages(finalContent, d4.inlinePaths ?? [null, null]);
 
       setDoneSteps([0, 1, 2, 3, 4]);
       setActiveStep(-1);
@@ -1249,41 +1252,22 @@ function AINewsWriterSection() {
           </div>
         )}
 
-        {/* Image prompts card */}
+        {/* Images generated card */}
         {imageResult && (
           <div style={{ backgroundColor: '#1a0d0d', border: '1px solid #3d1a1a', borderRadius: '6px', padding: '16px 18px' }}>
-            <p style={{ ...S.label, color: '#fca5a5', marginBottom: '14px', letterSpacing: '1.5px' }}>🖼️ Image Prompts</p>
-
-            {([
-              { key: 'featured_image' as const, label: 'Featured / Hero', color: '#fca5a5' },
-              { key: 'inline_1' as const, label: 'Inline 1', color: '#fcd34d' },
-              { key: 'inline_2' as const, label: 'Inline 2', color: '#fcd34d' },
-            ] as const).map(({ key, label, color }) => {
-              const img = imageResult[key];
-              if (!img) return null;
-              return (
-                <div key={key} style={{ marginBottom: '14px', paddingBottom: '14px', borderBottom: key !== 'inline_2' ? '1px solid #3d1a1a' : 'none' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                    <p style={{ color, fontSize: '11px', fontFamily: 'var(--font-display)', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', margin: 0 }}>{label}</p>
-                    <button
-                      onClick={() => img.prompt && navigator.clipboard.writeText(img.prompt)}
-                      style={{ ...S.btn('ghost'), padding: '3px 10px', fontSize: '11px' }}
-                    >
-                      Copy
-                    </button>
-                  </div>
-                  {img.use_case && (
-                    <p style={{ color: '#6b7280', fontSize: '11px', marginBottom: '6px', fontStyle: 'italic' }}>{img.use_case}</p>
-                  )}
-                  <p style={{ color: '#f5f5f5', fontSize: '12px', lineHeight: 1.55, fontFamily: 'monospace', backgroundColor: '#110707', padding: '8px 10px', borderRadius: '3px', margin: 0 }}>
-                    {img.prompt}
-                  </p>
-                  {img.alt_text && (
-                    <p style={{ color: '#9ca3af', fontSize: '11px', marginTop: '5px' }}>Alt: {img.alt_text}</p>
-                  )}
-                </div>
-              );
-            })}
+            <p style={{ ...S.label, color: '#fca5a5', marginBottom: '14px', letterSpacing: '1.5px' }}>🖼️ Images Generated</p>
+            {[
+              { label: 'Featured', path: imageResult.featuredImagePath },
+              { label: 'Inline 1', path: imageResult.inlinePaths?.[0] },
+              { label: 'Inline 2', path: imageResult.inlinePaths?.[1] },
+            ].map(({ label, path }) => (
+              <div key={label} style={{ marginBottom: '8px', display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <span style={{ color: '#fca5a5', fontSize: '11px', fontFamily: 'var(--font-display)', fontWeight: 700, width: '60px' }}>{label}</span>
+                <span style={{ color: path ? '#86efac' : '#6b7280', fontSize: '11px', fontFamily: 'monospace' }}>
+                  {path ?? 'not generated'}
+                </span>
+              </div>
+            ))}
           </div>
         )}
 

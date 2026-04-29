@@ -82,7 +82,7 @@ export async function githubDeleteFile(
   commitMessage: string,
 ): Promise<void> {
   const sha = await getFileSha(filePath);
-  if (!sha) throw new Error(`File not found on GitHub: ${filePath}`);
+  if (!sha) return; // Already deleted — treat as success, redeploy will clean up
 
   const res = await fetch(`${API_BASE}/${filePath}`, {
     method: 'DELETE',

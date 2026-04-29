@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getPublishedPosts } from '@/lib/mdx';
+import { getPublishedPostsLive } from '@/lib/mdx';
 import NewsGrid from './NewsGrid';
 
 export const dynamic = 'force-dynamic';
@@ -10,8 +10,8 @@ export const metadata: Metadata = {
     'Local roofing insights, maintenance tips, and Calgary construction updates from City Roofing & Exteriors.',
 };
 
-export default function NewsPage() {
-  const posts = getPublishedPosts();
+export default async function NewsPage() {
+  const posts = await getPublishedPostsLive();
 
   return (
     <div style={{ backgroundColor: 'var(--color-base)', minHeight: '100vh', paddingTop: '90px' }}>

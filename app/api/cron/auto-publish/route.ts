@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { githubWriteFile } from '@/lib/github';
-import { runResearch, runBlueprint, runGenerate, runImage } from '@/lib/newsPipeline';
+import { runResearch, runBlueprint, runGenerate, runImage, injectInlineImages } from '@/lib/newsPipeline';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300;
@@ -60,12 +60,13 @@ export async function GET(req: NextRequest) {
       researchContext: research,
       blueprintContext: blueprint,
     });
-    const { featuredImagePath } = await runImage({
+    const { featuredImagePath, inlinePaths } = await runImage({
       blueprintContext: blueprint,
       researchContext: research,
       category,
     });
     mdx = mdx.replace('STAGE4_PLACEHOLDER', featuredImagePath ?? '');
+    mdx = injectInlineImages(mdx, inlinePaths);
 
     const slugMatch = mdx.match(/^slug:\s*"?([a-z0-9-]+)"?/m);
     const rawSlug = slugMatch?.[1] ?? `auto-${Date.now()}`;

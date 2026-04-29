@@ -6,8 +6,20 @@ import { githubWriteBase64File } from '@/lib/github';
 // ── Stage 1: News Intelligence System Prompt ─────────────────────────────────
 const RESEARCH_SYSTEM = `You are a news intelligence researcher and content strategist for City Roofing & Exteriors, a Calgary roofing contractor. Your job is NOT to find roofing articles. Your job is to find high-traffic, high-relevance Canadian news and identify how a Calgary roofing professional would uniquely comment on it.
 
+TRENDING FIRST — ALWAYS DO THIS BEFORE ANYTHING ELSE:
+Search for what is trending in Canada RIGHT NOW. Check CBC News homepage, CTV News top stories, Google News Canada, and r/canada for today's top stories. The selected story MUST be something Canadians are actively reading and searching today — not an evergreen topic dressed up as news. Confirm today's date via web search before selecting any story.
+
+HOW TO FIND ROOFING ANGLES IN NON-ROOFING TRENDING NEWS:
+- El Niño / La Niña strengthens → hail season severity → impact-resistant shingles
+- Mortgage rate cut → homeowners refinancing → deferred roof repairs now affordable
+- Wildfire smoke event → ventilation/soffit blockage → air quality inside homes
+- Insurance company profits → premium hikes → claim documentation and Xactimate
+- Tariffs on lumber/steel → construction costs → roofing material pricing outlook
+- Extreme cold snap → ice dams → attic insulation and ventilation failures
+- New federal housing policy → new builds surge → roofing demand and labour shortage
+
 SEARCH PHILOSOPHY:
-Think like a local expert watching the national news and saying "this is exactly why Calgary homeowners need to pay attention to their roofs right now."
+Think like a local expert watching today's national news and saying "this is exactly why Calgary homeowners need to pay attention to their roofs right now."
 
 SCOPE — search across ALL of these categories, not just roofing:
 - Canadian housing market (prices, mortgage rates, CMHC data, rental crisis, new builds)
@@ -85,13 +97,6 @@ You must resolve three tensions in every blueprint:
 2. Keywords must appear frequently enough to rank — but naturally enough to pass Helpful Content Update filters
 3. The article must genuinely inform — and move the reader toward contacting City Roofing
 
-CITY ROOFING DIFFERENTIATION TO PROTECT:
-- In-house crews = accountability and quality control (competitors use subcontractors)
-- Xactimate software = insurance claim precision (most roofers estimate by eye)
-- SECOR certification = documented safety standards
-- 15+ years = pattern recognition competitors lack
-Surface these where they solve a homeowner fear, never as a generic credential dump.
-
 APPROVED INTERNAL LINKS (use ONLY these exact paths — no others):
 /services/roof-replacement
 /services/roof-repair
@@ -147,14 +152,6 @@ Return ONLY a valid JSON object — no markdown fences, no preamble:
 
 // ── Stage 3: Article Writing System Prompt ───────────────────────────────────
 const WRITER_SYSTEM = `You are a senior content writer for City Roofing & Exteriors, Calgary's most trusted roofing contractor. You write for two audiences simultaneously: stressed Calgary homeowners who need clear expert guidance, and search engine crawlers and AI citation systems that need structured, factual, extractable content.
-
-COMPANY FACTS — use naturally, never force:
-- City Roofing & Exteriors | https://calgarycityroofing.com | 403-608-9933
-- 15+ years | SECOR certified | WCB Alberta | BBB Accredited | 4.8 stars 150+ reviews
-- In-house crews only — zero subcontracting | Xactimate-certified insurance estimates
-- Approved suppliers: IKO, GAF, Owens Corning, CertainTeed, Malarkey, BP/BMCA
-- Service pages (use ONLY these exact paths):
-  /services/roof-replacement | /services/roof-repair | /services/flat-roofing | /services/siding | /contact
 
 ━━━ NEWSJACK ARTICLE STRUCTURE — always apply when article_type is "newsjack" ━━━
 
@@ -270,45 +267,6 @@ Ready for a professional assessment? [Contact our Calgary team](https://calgaryc
 
 Output ONLY the MDX file. No preamble, no commentary.`;
 
-// ── Stage 4: Image Prompt System ─────────────────────────────────────────────
-const IMAGE_SYSTEM = `You are a creative director generating image prompts for a Calgary roofing contractor's premium content. All images must look like high-end architectural photography — not stock photos, not AI illustration, not 3D renders.
-
-BRAND IMAGE STANDARDS:
-- Realistic DSLR photography aesthetic — Canon or Sony full-frame look
-- Calgary suburban or commercial setting: two-story homes, prairie sky, Rockies in far background where natural
-- Roofing materials: dark charcoal, slate grey, or weathered cedar — never bright colors
-- Exterior materials: warm brick, light stucco, hardie board — common Calgary housing stock
-- No people, no pets, no vehicles, no logos, no text in frame
-- Natural lighting: golden hour or bright overcast — avoid harsh midday shadows
-- No dramatic storms or catastrophic damage for standard articles — reserve for Emergency Repair category only
-
-PROMPT STRUCTURE — follow this formula exactly:
-[Primary subject with material detail], [location/setting with Calgary context], [weather and light condition], [camera angle and lens feel], [style qualifiers]
-
-Example: "Close-up of dark charcoal asphalt shingles with visible granule texture and ridge cap detail on a Calgary suburban home, overcast Alberta sky, shallow depth of field, Canon 5D Mark IV look, photorealistic architectural photography, ultra-detailed"
-
-Return ONLY a valid JSON object — no markdown fences, no preamble:
-
-{
-  "featured_image": {
-    "prompt": "50-80 word Midjourney/DALL-E 3 prompt following the brand formula exactly. Wide establishing shot — full roof or exterior visible. This is the hero image.",
-    "negative_prompt": "people, person, human, pets, cars, vehicles, text, logos, cartoon, illustration, 3D render, stock photo look, bright colors, green roof, blue shingles",
-    "alt_text": "Describe literally what is in the image. Under 120 characters. Include Calgary.",
-    "use_case": "Featured/hero image — appears at top of article and in social sharing"
-  },
-  "inline_1": {
-    "prompt": "50-70 word prompt. Close-up or detail shot illustrating a specific section of the article. Reference the specific roofing component or condition covered in the article.",
-    "negative_prompt": "people, text, logos, cartoon, illustration, 3D render",
-    "alt_text": "Literal description under 120 chars with Calgary reference",
-    "use_case": "Placed after [specific H2 section heading] to illustrate [what specifically]"
-  },
-  "inline_2": {
-    "prompt": "50-70 word prompt. Different angle or subject than inline_1. Could show damage detail, material comparison, inspection result, or seasonal condition relevant to the article topic.",
-    "negative_prompt": "people, text, logos, cartoon, illustration, 3D render",
-    "alt_text": "Literal description under 120 chars",
-    "use_case": "Placed after [specific H2 section heading] to illustrate [what specifically]"
-  }
-}`;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function getToday(): string {
@@ -403,12 +361,19 @@ export type ResearchInput = { topic?: string | null; notes?: string | null };
 export type ResearchResult = Record<string, unknown>;
 
 export async function runResearch(input: ResearchInput): Promise<ResearchResult> {
-  const userPrompt = `Find high-traffic Canadian news and identify the roofing professional angle.
+  const today = getToday();
+  const userPrompt = `TODAY'S DATE: ${today}. First confirm this date via web search, then find today's trending Canadian news.
 
-TOPIC DIRECTION: ${input.topic?.trim() || 'find the most relevant trending story right now'}
+Find the most trending, high-traffic Canadian news story from the last 7 days and identify the roofing professional angle.
+
+STEP 1: Search what is trending in Canada today (${today}) — CBC News, CTV News, Google News Canada top stories.
+STEP 2: From those trending topics, pick the one with the strongest roofing / exterior / home protection connection.
+STEP 3: Return the research JSON.
+
+TOPIC DIRECTION: ${input.topic?.trim() || 'find the most relevant trending story today — prioritize what Canadians are searching right now'}
 EDITOR NOTES: ${input.notes?.trim() || 'none'}
 
-Prioritize stories published within the last 30 days. Return ONLY valid JSON in the exact structure defined.`;
+Stories must be from the last 7 days. Never present events from more than 30 days ago as current news. Return ONLY valid JSON in the exact structure defined.`;
 
   const raw = await callGemini(userPrompt, RESEARCH_SYSTEM, true);
   const research = extractJson(raw);
@@ -500,44 +465,93 @@ export type ImageInput = {
 export type ImageResult = {
   images: Record<string, unknown>;
   featuredImagePath: string | null;
+  inlinePaths: (string | null)[];
 };
+
+function buildFeaturedPrompt(title: string, keywords: string[]): string {
+  const context = keywords.slice(0, 3).join(', ') || title;
+  return `${context}, Calgary roofing, photorealistic DSLR photography, suburban home, Alberta prairie sky, wide establishing shot of full roof and exterior, golden hour lighting, no people, no text, ultra-detailed`;
+}
+
+async function buildInlinePrompts(title: string, keywords: string[], category: string): Promise<[string, string]> {
+  const prompt = `Article title: "${title}"
+Category: ${category}
+Key topics: ${keywords.slice(0, 5).join(', ')}
+
+Generate exactly 2 short image prompts (under 20 words each) for inline photos that visually illustrate this specific article.
+Each prompt must describe a concrete, photorealistic roofing or home exterior scene directly related to the article topic.
+No people, no text, no logos. Calgary suburban setting.
+
+Return ONLY valid JSON: {"inline1": "...", "inline2": "..."}`;
+
+  try {
+    const raw = await callGemini(prompt, 'You generate concise image prompts. Return only valid JSON, no markdown.', false);
+    const parsed = extractJson(raw) as { inline1?: string; inline2?: string } | null;
+    if (parsed?.inline1 && parsed?.inline2) {
+      const base = ', Calgary roofing, photorealistic DSLR photography, no people, no text, natural light';
+      return [parsed.inline1 + base, parsed.inline2 + base];
+    }
+  } catch { /* fall through to defaults */ }
+
+  return [
+    `${title}, roofing detail close-up, Calgary home, photorealistic, natural light, no people`,
+    `${title}, roof exterior view, Calgary suburban home, photorealistic, overcast sky, no people`,
+  ];
+}
+
+// Inject inline images into MDX body after the 1st and 3rd H2 sections
+export function injectInlineImages(mdx: string, paths: (string | null)[]): string {
+  if (!paths[0] && !paths[1]) return mdx;
+
+  const fmEnd = mdx.indexOf('\n---\n', 3) + 5;
+  const frontmatter = mdx.slice(0, fmEnd);
+  const body = mdx.slice(fmEnd);
+
+  const sections = body.split(/(?=^## )/m);
+
+  if (paths[0] && sections.length > 1) {
+    sections[1] += `\n![](${paths[0]})\n`;
+  }
+  if (paths[1] && sections.length > 3) {
+    sections[3] += `\n![](${paths[1]})\n`;
+  }
+
+  return frontmatter + sections.join('');
+}
 
 export async function runImage(input: ImageInput): Promise<ImageResult> {
   const title = (input.blueprintContext?.chosen_title as string | undefined) ?? input.topic ?? '';
   const slug = (input.blueprintContext?.slug as string | undefined) ?? '';
-  const technicalEntities = (input.researchContext?.technical_entities as string[] | undefined) ?? [];
+  const category = input.category ?? (input.blueprintContext?.category as string | undefined) ?? '';
+  const keywords = (input.researchContext?.technical_entities as string[] | undefined) ?? [];
 
-  const userPrompt = `Generate image prompts for this article.
+  const [inlinePrompt1, inlinePrompt2] = await buildInlinePrompts(title, keywords, category);
 
-TITLE: ${title}
-TOPIC: ${input.topic ?? title}
-CATEGORY: ${input.category ?? ''}
-KEY TECHNICAL ENTITIES: ${technicalEntities.join(', ')}
+  const [featuredB64, inline1B64, inline2B64] = await Promise.allSettled([
+    callImageGen(buildFeaturedPrompt(title, keywords)),
+    callImageGen(inlinePrompt1),
+    callImageGen(inlinePrompt2),
+  ]);
 
-Return ONLY valid JSON in the exact structure defined.`;
-
-  const raw = await callGemini(userPrompt, IMAGE_SYSTEM, false);
-  const images = extractJson(raw);
-  if (!images) throw new Error('Image stage returned invalid JSON');
-
-  // Generate actual featured image with Imagen 3 and upload to GitHub
-  let featuredImagePath: string | null = null;
-  const featuredPrompt = (images.featured_image as { prompt?: string } | undefined)?.prompt;
-
-  if (featuredPrompt && slug) {
+  async function upload(b64Result: PromiseSettledResult<string | null>, suffix: string): Promise<string | null> {
+    if (b64Result.status !== 'fulfilled' || !b64Result.value || !slug) return null;
+    const ghPath = `public/images/news/${slug}${suffix}.png`;
     try {
-      const base64 = await callImageGen(featuredPrompt);
-      if (base64) {
-        const ghPath = `public/images/news/${slug}.png`;
-        await githubWriteBase64File(ghPath, base64, `Add image: ${slug}`);
-        featuredImagePath = `/images/news/${slug}.png`;
-      }
-    } catch (imgErr) {
-      console.error('[image-gen]', imgErr instanceof Error ? imgErr.message : imgErr);
+      await githubWriteBase64File(ghPath, b64Result.value, `Add image: ${slug}${suffix}`);
+      return `/images/news/${slug}${suffix}.png`;
+    } catch (e) {
+      console.error('[image-upload]', e instanceof Error ? e.message : e);
+      return null;
     }
   }
 
-  return { images, featuredImagePath };
+  const [featuredImagePath, inline1Path, inline2Path] = await Promise.all([
+    upload(featuredB64, ''),
+    upload(inline1B64, '-1'),
+    upload(inline2B64, '-2'),
+  ]);
+
+  return { images: {}, featuredImagePath, inlinePaths: [inline1Path, inline2Path] };
 }
 
 export async function runChat(
