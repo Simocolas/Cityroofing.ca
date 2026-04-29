@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import { getPublishedPosts, getPostBySlug, getPostsByCategory } from '@/lib/mdx';
+import { getPublishedPosts, getPostBySlug, getPostsByCategory, resolveDates } from '@/lib/mdx';
 import { getArticleImage } from '@/lib/articleImage';
 import Link from 'next/link';
 
@@ -123,16 +123,22 @@ export default async function NewsPostPage({ params }: PageProps) {
             >
               {frontmatter.category}
             </span>
-            <span style={{ color: 'var(--color-text-muted)', fontSize: '13px' }}>
-              Last Updated:{' '}
-              <strong style={{ color: 'var(--color-text-primary)' }}>
-                {new Date(frontmatter.lastUpdated).toLocaleDateString('en-CA', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </strong>
-            </span>
+            {(() => {
+              const { modified } = resolveDates(frontmatter);
+              if (!modified) return null;
+              return (
+                <span style={{ color: 'var(--color-text-muted)', fontSize: '13px' }}>
+                  Last Updated:{' '}
+                  <strong style={{ color: 'var(--color-text-primary)' }}>
+                    {new Date(modified).toLocaleDateString('en-CA', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </strong>
+                </span>
+              );
+            })()}
             <span style={{ color: 'var(--color-text-muted)', fontSize: '13px' }}>· {readingTime}</span>
           </div>
 
@@ -200,7 +206,7 @@ export default async function NewsPostPage({ params }: PageProps) {
         )}
 
         {/* FAQ Section */}
-        {frontmatter.faqItems?.length > 0 && (
+        {frontmatter.faqItems && frontmatter.faqItems.length > 0 && (
           <section style={{ marginTop: '64px', borderTop: '1px solid var(--color-border-light)', paddingTop: '48px' }}>
             <h2
               style={{

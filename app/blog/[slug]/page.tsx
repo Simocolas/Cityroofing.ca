@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import { getAllPosts, getPostBySlug } from '@/lib/mdx';
+import { getAllPosts, getPostBySlug, resolveDates } from '@/lib/mdx';
 import Link from 'next/link';
 
 interface PageProps {
@@ -104,14 +104,20 @@ export default async function BlogPostPage({ params }: PageProps) {
             >
               {frontmatter.category}
             </span>
-            <span style={{ color: 'var(--color-text-muted)', fontSize: '13px' }}>
-              Last Updated:{' '}
-              {new Date(frontmatter.lastUpdated).toLocaleDateString('en-CA', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </span>
+            {(() => {
+              const { modified } = resolveDates(frontmatter);
+              if (!modified) return null;
+              return (
+                <span style={{ color: 'var(--color-text-muted)', fontSize: '13px' }}>
+                  Last Updated:{' '}
+                  {new Date(modified).toLocaleDateString('en-CA', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </span>
+              );
+            })()}
             <span style={{ color: 'var(--color-text-muted)', fontSize: '13px' }}>· {readingTime}</span>
           </div>
 
@@ -147,7 +153,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         </div>
 
         {/* FAQ Section */}
-        {frontmatter.faqItems?.length > 0 && (
+        {frontmatter.faqItems && frontmatter.faqItems.length > 0 && (
           <section style={{ marginTop: '64px', borderTop: '1px solid var(--color-border)', paddingTop: '48px' }}>
             <h2
               style={{
