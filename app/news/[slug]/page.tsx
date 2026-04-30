@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import { getPublishedPosts, getPostBySlug, getPostsByCategory } from '@/lib/mdx';
+import { getPublishedPosts, getPostBySlug, getPostsByCategory, resolveDates } from '@/lib/mdx';
 import { getArticleImage } from '@/lib/articleImage';
 import Link from 'next/link';
 
@@ -49,24 +49,58 @@ export default async function NewsPostPage({ params }: PageProps) {
 
   const badgeStyle = categoryBadgeStyles[frontmatter.category] ?? { bg: '#2a2a2a', color: '#9a9a9a' };
 
-  // Article Schema
-  const articleSchema = {
+  // Article Schema — BlogPosting because this is news-informed expert
+  // commentary, not original news reporting (per project positioning).
+  // Dates are run through resolveDates so a missing dateModified or invalid
+  // date never produces "Invalid Date" in Google's rich-results test.
+  const { published: schemaPublished, modified: schemaModified } = resolveDates(frontmatter);
+  const sourcesForSchema = (frontmatter.sources ?? []).filter((s) => s?.url);
+  const articleSchema: Record<string, unknown> = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: frontmatter.title,
-    description: frontmatter.excerpt,
-    datePublished: frontmatter.date,
-    dateModified: frontmatter.lastUpdated,
+    description: frontmatter.excerpt ?? frontmatter.description,
+    image: frontmatter.featuredImage && /^https?:\/\/|^\//.test(frontmatter.featuredImage)
+      ? frontmatter.featuredImage
+      : undefined,
+    datePublished: schemaPublished ?? undefined,
+    dateModified: schemaModified ?? schemaPublished ?? undefined,
     author: {
       '@type': 'Organization',
-      name: frontmatter.author,
+      name: frontmatter.author ?? 'City Roofing & Exteriors',
+      url: 'https://calgarycityroofing.com',
     },
     publisher: {
       '@type': 'Organization',
       name: 'City Roofing & Exteriors',
       url: 'https://calgarycityroofing.com',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://calgarycityroofing.com/images/logo-transparent.png',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://calgarycityroofing.com/news/${slug}`,
     },
   };
+  if (sourcesForSchema.length > 0) {
+    articleSchema.citation = sourcesForSchema.map((s) => ({
+      '@type': 'CreativeWork',
+      name: s.title || s.name,
+      url: s.url,
+      ...(s.publishedDate ? { datePublished: s.publishedDate } : {}),
+      ...(s.name ? { publisher: { '@type': 'Organization', name: s.name } } : {}),
+    }));
+  }
+  if (frontmatter.coreQuestion) {
+    // Surface the core question as a mainEntity Question so AI engines
+    // pick this article up for that specific homeowner query.
+    articleSchema.about = {
+      '@type': 'Question',
+      name: frontmatter.coreQuestion,
+    };
+  }
 
   // FAQPage Schema
   const faqSchema = frontmatter.faqItems?.length
@@ -123,16 +157,22 @@ export default async function NewsPostPage({ params }: PageProps) {
             >
               {frontmatter.category}
             </span>
-            <span style={{ color: 'var(--color-text-muted)', fontSize: '13px' }}>
-              Last Updated:{' '}
-              <strong style={{ color: 'var(--color-text-primary)' }}>
-                {new Date(frontmatter.lastUpdated).toLocaleDateString('en-CA', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </strong>
-            </span>
+            {(() => {
+              const { modified } = resolveDates(frontmatter);
+              if (!modified) return null;
+              return (
+                <span style={{ color: 'var(--color-text-muted)', fontSize: '13px' }}>
+                  Last Updated:{' '}
+                  <strong style={{ color: 'var(--color-text-primary)' }}>
+                    {new Date(modified).toLocaleDateString('en-CA', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </strong>
+                </span>
+              );
+            })()}
             <span style={{ color: 'var(--color-text-muted)', fontSize: '13px' }}>· {readingTime}</span>
           </div>
 
@@ -200,7 +240,7 @@ export default async function NewsPostPage({ params }: PageProps) {
         )}
 
         {/* FAQ Section */}
-        {frontmatter.faqItems?.length > 0 && (
+        {frontmatter.faqItems && frontmatter.faqItems.length > 0 && (
           <section style={{ marginTop: '64px', borderTop: '1px solid var(--color-border-light)', paddingTop: '48px' }}>
             <h2
               style={{

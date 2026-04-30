@@ -5,6 +5,8 @@ import {
   runGenerate,
   runImage,
   runChat,
+  finalizeArticle,
+  injectInlineImages,
 } from '@/lib/newsPipeline';
 
 export const dynamic = 'force-dynamic';
@@ -65,6 +67,22 @@ export async function POST(req: NextRequest) {
     if (mode === 'chat') {
       const content = await runChat(body.messages, body.currentArticle);
       return NextResponse.json({ content });
+    }
+
+    if (mode === 'finalize') {
+      // Inject inline images first if the caller passed paths from a separate
+      // image stage; the writer template renders without them otherwise.
+      let working = body.mdx as string;
+      if (Array.isArray(body.inlinePaths)) {
+        working = injectInlineImages(working, body.inlinePaths);
+      }
+      const result = finalizeArticle({
+        mdx: working,
+        research: body.researchContext ?? {},
+        blueprint: body.blueprintContext ?? {},
+        featuredImagePath: body.featuredImagePath ?? null,
+      });
+      return NextResponse.json(result);
     }
 
     return NextResponse.json({ error: 'Unknown mode' }, { status: 400 });

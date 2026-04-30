@@ -859,6 +859,36 @@ interface ImageResult {
   inlinePaths?: (string | null)[];
 }
 
+interface FinalizeResult {
+  mdx: string;
+  slug: string;
+  status: 'published' | 'draft' | 'rejected';
+  rejectReason: string | null;
+  qualityScore: {
+    overall?: number;
+    sourceStrength?: number;
+    geoExtractability?: number;
+    newsRelevance?: number;
+    calgarySpecificity?: number;
+    roofingExpertValue?: number;
+    seoPotential?: number;
+    conversionRelevance?: number;
+  };
+  reviewFlags: string[];
+  validation: {
+    errors: string[];
+    warnings: string[];
+    externalSources: number;
+    internalLinks: number;
+    wordCount: number;
+    hasQuickAnswer: boolean;
+    hasKeyTakeaways: boolean;
+    hasFAQ: boolean;
+    hasSourcesBlock: boolean;
+    hasChecklistOrTable: boolean;
+  };
+}
+
 function injectInlineImages(mdx: string, paths: (string | null)[]): string {
   if (!paths[0] && !paths[1]) return mdx;
   const fmEnd = mdx.indexOf('\n---\n', 3) + 5;
@@ -882,6 +912,8 @@ function AINewsWriterSection() {
   const [blueprintResult, setBlueprintResult] = useState<BlueprintResult | null>(null);
   const [imageResult, setImageResult] = useState<ImageResult | null>(null);
   const [article, setArticle] = useState('');
+  const [finalizeResult, setFinalizeResult] = useState<FinalizeResult | null>(null);
+  const [finalizing, setFinalizing] = useState(false);
   const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([]);
   const [chatInput, setChatInput] = useState('');
   const [chatting, setChatting] = useState(false);
@@ -913,7 +945,7 @@ function AINewsWriterSection() {
   async function generate() {
     if (topicMode === 'custom' && !customTopic.trim()) { setError('Please enter a topic.'); return; }
     setError(''); setGenerating(true); setActiveStep(0); setDoneSteps([]); setPublishMsg('');
-    setResearchResult(null); setBlueprintResult(null); setImageResult(null); setArticle('');
+    setResearchResult(null); setBlueprintResult(null); setImageResult(null); setArticle(''); setFinalizeResult(null);
 
     try {
       let research: ResearchResult | null = null;
@@ -1006,6 +1038,28 @@ function AINewsWriterSection() {
       setActiveStep(-1);
       setArticle(finalContent);
       setChatMessages([{ role: 'assistant', content: '✅ Article generated! Ask me to modify it — e.g. "Make it shorter", "Add more Calgary context", "Change tone to urgent", "Add insurance section".' }]);
+
+      // Run finalizer to compute status / quality score / review flags
+      setFinalizing(true);
+      try {
+        const fr = await fetch('/api/news-generator', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mode: 'finalize',
+            mdx: finalContent,
+            researchContext: research,
+            blueprintContext: blueprint,
+            featuredImagePath: d4.featuredImagePath ?? null,
+          }),
+        });
+        const fd = await fr.json();
+        if (!fd.error && fd.status) {
+          setFinalizeResult(fd as FinalizeResult);
+          if (fd.mdx) setArticle(fd.mdx);
+        }
+      } catch { /* finalize is best-effort; preview still works */ }
+      finally { setFinalizing(false); }
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Generation failed');
       setActiveStep(-1);
@@ -1049,9 +1103,21 @@ function AINewsWriterSection() {
     return match?.[1]?.trim() ?? '';
   }
 
-  async function handlePublish(draft: boolean) {
-    const slug = extractFrontmatter('slug') || `article-${Date.now()}`;
-    const title = extractFrontmatter('title') || 'Untitled';
+  async function handlePublish(forceDraft: boolean) {
+    // Gate logic:
+    //   - rejected by validator → never commit, regardless of which button
+    //   - 'Save as Draft' button → forceDraft = true, always saves to drafts/
+    //   - 'Publish (gated)' button → forceDraft = false; if validator says
+    //     'draft' it still saves to drafts/, only 'published' commits live
+    if (finalizeResult?.status === 'rejected') {
+      setPublishMsg(
+        `🚫 Rejected by validator — not committed.\nReason: ${finalizeResult.rejectReason ?? 'unspecified'}\n\nReview the MDX and chat-edit, or copy it manually.`,
+      );
+      return;
+    }
+
+    const draft = forceDraft || finalizeResult?.status === 'draft';
+    const slug = finalizeResult?.slug || extractFrontmatter('slug') || `article-${Date.now()}`;
     setPublishing(true);
     try {
       const res = await fetch('/api/publish-article', {
@@ -1118,16 +1184,20 @@ function AINewsWriterSection() {
           )}
         </div>
 
-        {/* Step 2: Content Type */}
+        {/* Step 2: Category — auto-detected, no longer user-selected */}
         <div style={S.card}>
-          <p style={{ ...S.label, marginBottom: '12px' }}>Step 2 — Content Type</p>
-          <p style={{ color: '#555', fontSize: '11px', marginBottom: '10px', lineHeight: 1.4 }}>Auto-detected from research in auto mode.</p>
-          {CONTENT_TYPES.map((ct) => (
-            <label key={ct} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: contentType === ct ? '#f5f5f5' : '#666', fontSize: '13px', fontFamily: 'var(--font-display)', marginBottom: '8px' }}>
-              <input type="radio" name="contentType" value={ct} checked={contentType === ct} onChange={() => setContentType(ct)} style={{ accentColor: '#C0392B' }} />
-              {ct}
-            </label>
-          ))}
+          <p style={{ ...S.label, marginBottom: '8px' }}>Step 2 — Category</p>
+          <p style={{ color: '#555', fontSize: '11px', marginBottom: '12px', lineHeight: 1.4 }}>
+            AI will choose the category based on the news story it picks. No manual override.
+          </p>
+          <div style={{ backgroundColor: '#0f0f0f', border: '1px solid #2a2a2a', borderRadius: '4px', padding: '10px 12px' }}>
+            <p style={{ fontSize: '11px', color: '#666', letterSpacing: '1.2px', textTransform: 'uppercase', fontFamily: 'var(--font-display)', fontWeight: 700, marginBottom: '4px' }}>
+              Detected
+            </p>
+            <p style={{ color: contentType === 'Roofing Maintenance' && researchResult === null ? '#666' : '#86efac', fontSize: '13px', fontFamily: 'monospace', margin: 0 }}>
+              {researchResult === null ? '— (run research first)' : contentType}
+            </p>
+          </div>
         </div>
 
         {/* Step progress */}
@@ -1252,6 +1322,78 @@ function AINewsWriterSection() {
           </div>
         )}
 
+        {/* Quality Gate card */}
+        {(finalizing || finalizeResult) && (
+          <div style={{ backgroundColor: '#0f1410', border: `1px solid ${finalizeResult?.status === 'published' ? '#14532d' : finalizeResult?.status === 'draft' ? '#92400e' : finalizeResult?.status === 'rejected' ? '#7f1d1d' : '#2a2a2a'}`, borderRadius: '6px', padding: '16px 18px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+              <p style={{ ...S.label, color: '#bbf7d0', margin: 0, letterSpacing: '1.5px' }}>🛡️ Quality Gate</p>
+              {finalizing && <span style={{ color: '#fcd34d', fontSize: '11px' }}>computing…</span>}
+              {finalizeResult && (
+                <span style={{ ...S.statusBadge(finalizeResult.status === 'rejected' ? 'draft' : finalizeResult.status), backgroundColor: finalizeResult.status === 'published' ? '#14532d' : finalizeResult.status === 'draft' ? '#78350f' : '#7f1d1d', color: finalizeResult.status === 'published' ? '#86efac' : finalizeResult.status === 'draft' ? '#fcd34d' : '#fca5a5' }}>
+                  {finalizeResult.status}
+                </span>
+              )}
+            </div>
+
+            {finalizeResult?.rejectReason && (
+              <div style={{ backgroundColor: '#1f0a0a', border: '1px solid #7f1d1d', borderRadius: '4px', padding: '10px 12px', marginBottom: '12px' }}>
+                <p style={{ color: '#fca5a5', fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '4px' }}>Reject reason</p>
+                <p style={{ color: '#fecaca', fontSize: '13px', margin: 0, lineHeight: 1.5 }}>{finalizeResult.rejectReason}</p>
+              </div>
+            )}
+
+            {finalizeResult && (
+              <>
+                {/* Score grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px 18px', marginBottom: '12px' }}>
+                  {([
+                    ['Overall', finalizeResult.qualityScore.overall],
+                    ['Source strength', finalizeResult.qualityScore.sourceStrength],
+                    ['News relevance', finalizeResult.qualityScore.newsRelevance],
+                    ['Calgary specificity', finalizeResult.qualityScore.calgarySpecificity],
+                    ['GEO extractability', finalizeResult.qualityScore.geoExtractability],
+                    ['Roofing expert value', finalizeResult.qualityScore.roofingExpertValue],
+                    ['SEO potential', finalizeResult.qualityScore.seoPotential],
+                    ['Conversion relevance', finalizeResult.qualityScore.conversionRelevance],
+                  ] as const).map(([label, val]) => (
+                    <div key={label} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #1f2a1f', paddingBottom: '4px' }}>
+                      <span style={{ color: '#6b7280', fontSize: '11px' }}>{label}</span>
+                      <span style={{ color: typeof val === 'number' && val >= 7 ? '#86efac' : typeof val === 'number' && val >= 5 ? '#fcd34d' : '#9ca3af', fontWeight: 700, fontSize: '12px', fontFamily: 'monospace' }}>{val ?? '—'}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Counts */}
+                <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', fontSize: '11px', color: '#9ca3af', marginBottom: '12px', borderTop: '1px solid #1f2a1f', paddingTop: '10px' }}>
+                  <span>Sources: <span style={{ color: finalizeResult.validation.externalSources >= 2 ? '#86efac' : '#fca5a5' }}>{finalizeResult.validation.externalSources}</span></span>
+                  <span>Internal links: {finalizeResult.validation.internalLinks}</span>
+                  <span>Words: {finalizeResult.validation.wordCount}</span>
+                </div>
+
+                {/* Errors */}
+                {finalizeResult.validation.errors.length > 0 && (
+                  <div style={{ marginBottom: '10px' }}>
+                    <p style={{ color: '#fca5a5', fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '4px' }}>Errors ({finalizeResult.validation.errors.length})</p>
+                    <ul style={{ margin: 0, paddingLeft: '16px', color: '#fecaca', fontSize: '12px', lineHeight: 1.55 }}>
+                      {finalizeResult.validation.errors.map((e, i) => (<li key={i}>{e}</li>))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Review flags */}
+                {finalizeResult.reviewFlags.length > 0 && (
+                  <div>
+                    <p style={{ color: '#fcd34d', fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '4px' }}>Review flags ({finalizeResult.reviewFlags.length})</p>
+                    <ul style={{ margin: 0, paddingLeft: '16px', color: '#fde68a', fontSize: '12px', lineHeight: 1.55 }}>
+                      {finalizeResult.reviewFlags.map((f, i) => (<li key={i}>{f}</li>))}
+                    </ul>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
         {/* Images generated card */}
         {imageResult && (
           <div style={{ backgroundColor: '#1a0d0d', border: '1px solid #3d1a1a', borderRadius: '6px', padding: '16px 18px' }}>
@@ -1335,11 +1477,37 @@ function AINewsWriterSection() {
               <button onClick={() => { navigator.clipboard.writeText(article).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); }); }} style={S.btn('secondary')}>
                 {copied ? '✅ Copied!' : '📋 Copy MDX'}
               </button>
-              <button onClick={() => handlePublish(true)} disabled={publishing} style={{ ...S.btn('ghost'), opacity: publishing ? 0.6 : 1 }}>
-                💾 Save Draft
+              <button
+                onClick={() => handlePublish(true)}
+                disabled={publishing || finalizeResult?.status === 'rejected'}
+                style={{ ...S.btn('ghost'), opacity: publishing || finalizeResult?.status === 'rejected' ? 0.4 : 1, cursor: finalizeResult?.status === 'rejected' ? 'not-allowed' : 'pointer' }}
+                title={finalizeResult?.status === 'rejected' ? `Rejected: ${finalizeResult.rejectReason}` : 'Save to content/news/drafts/ — bypasses quality gate'}
+              >
+                💾 Save as Draft
               </button>
-              <button onClick={() => handlePublish(false)} disabled={publishing} style={{ ...S.btn('primary'), opacity: publishing ? 0.6 : 1 }}>
-                {publishing ? 'Publishing...' : '🚀 Publish'}
+              <button
+                onClick={() => handlePublish(false)}
+                disabled={publishing || finalizeResult?.status === 'rejected'}
+                style={{ ...S.btn('primary'), opacity: publishing || finalizeResult?.status === 'rejected' ? 0.4 : 1, cursor: finalizeResult?.status === 'rejected' ? 'not-allowed' : 'pointer' }}
+                title={
+                  finalizeResult?.status === 'rejected'
+                    ? `Rejected: ${finalizeResult.rejectReason}`
+                    : finalizeResult?.status === 'draft'
+                    ? 'Quality gate failed — will save to drafts/ instead of publishing live'
+                    : finalizeResult?.status === 'published'
+                    ? 'Quality gate passed — commits to content/news/'
+                    : 'Run finalize first'
+                }
+              >
+                {publishing
+                  ? 'Publishing...'
+                  : finalizeResult?.status === 'rejected'
+                  ? '🚫 Rejected'
+                  : finalizeResult?.status === 'draft'
+                  ? '🟡 Save Draft (gated)'
+                  : finalizeResult?.status === 'published'
+                  ? '🚀 Publish (passed)'
+                  : '🚀 Publish'}
               </button>
             </div>
           )}

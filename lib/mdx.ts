@@ -11,30 +11,74 @@ export interface FaqItem {
   a: string;
 }
 
+export interface ArticleSource {
+  name: string;
+  title?: string;
+  url: string;
+  publishedDate?: string;
+  supports?: string;
+}
+
+export interface QualityScore {
+  overall?: number;
+  sourceStrength?: number;
+  geoExtractability?: number;
+  newsRelevance?: number;
+  calgarySpecificity?: number;
+  roofingExpertValue?: number;
+  seoPotential?: number;
+  conversionRelevance?: number;
+}
+
 export interface PostFrontmatter {
+  // Identity
   title: string;
   slug: string;
+
+  // Dates. `date` is always present (legacy + new). New pipeline also writes
+  // `datePublished` / `dateModified` as ISO strings; old articles fall back
+  // to `date` when these are absent.
   date: string;
-  lastUpdated: string;
+  datePublished?: string;
+  dateModified?: string;
+  lastUpdated?: string; // legacy field on older hand-written articles
+
+  // Classification
   category: string;
   subcategory?: string;
   scheduledDate?: string;
   status: 'draft' | 'scheduled' | 'published';
+
+  // Display copy
   excerpt?: string;
   description?: string;
   featuredImage?: string;
   imageAlt?: string;
+
+  // Legacy single-source fields (older articles only)
   sourceUrl?: string;
   sourceNote?: string;
-  keywords: string[];
-  faqItems: FaqItem[];
+
+  // New pipeline: structured source list, mirrors the visible Sources block
+  sources?: ArticleSource[];
+
+  // SEO + content
+  keywords?: string[];
+  faqItems?: FaqItem[];
   readingTime?: string;
-  author: string;
-  geo: {
+  author?: string;
+  reviewedBy?: string;
+  geo?: {
     city: string;
     province: string;
     country: string;
   };
+
+  // New pipeline: governance metadata, surfaced in admin UI
+  coreQuestion?: string;
+  searchIntent?: string;
+  reviewFlags?: string[];
+  qualityScore?: QualityScore;
 }
 
 export interface PostMeta {
@@ -47,6 +91,16 @@ export interface Post {
   frontmatter: PostFrontmatter;
   content: string;
   readingTime: string;
+}
+
+// Safe date sort key — returns 0 (epoch) for missing or invalid dates so we
+// never end up with NaN in comparisons (which produces unstable ordering and
+// is the root cause of "Last Updated: Invalid Date" leaking into the UI).
+function sortKey(fm: PostFrontmatter): number {
+  const candidate = fm.datePublished ?? fm.date;
+  if (!candidate) return 0;
+  const t = new Date(candidate).getTime();
+  return Number.isFinite(t) ? t : 0;
 }
 
 export function getAllPosts(): PostMeta[] {
@@ -67,7 +121,7 @@ export function getAllPosts(): PostMeta[] {
         readingTime: stats.text,
       };
     })
-    .sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime());
+    .sort((a, b) => sortKey(b.frontmatter) - sortKey(a.frontmatter));
 }
 
 export function getPublishedPosts(): PostMeta[] {
@@ -124,13 +178,21 @@ export async function getPublishedPostsLive(): Promise<PostMeta[]> {
 
     return posts
       .filter((p): p is PostMeta => p !== null && p.frontmatter.status === 'published')
-      .sort(
-        (a, b) =>
-          new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime(),
-      );
+      .sort((a, b) => sortKey(b.frontmatter) - sortKey(a.frontmatter));
   } catch {
     return getPublishedPosts();
   }
+}
+
+// Resolve canonical published / modified ISO timestamps for an article,
+// falling back across legacy fields and the MDX file's own `date`. Returns
+// strings the caller can hand to `new Date()` without producing Invalid Date
+// (returns null only when there is genuinely no date anywhere).
+export function resolveDates(fm: PostFrontmatter): { published: string | null; modified: string | null } {
+  const isValid = (s?: string): s is string => !!s && Number.isFinite(new Date(s).getTime());
+  const published = [fm.datePublished, fm.date].find(isValid) ?? null;
+  const modified = [fm.dateModified, fm.lastUpdated, fm.datePublished, fm.date].find(isValid) ?? null;
+  return { published, modified };
 }
 
 export function getPostBySlug(slug: string): Post | null {
