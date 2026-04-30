@@ -1,7 +1,10 @@
 // AI news generation pipeline — shared between /api/news-generator and /api/cron/auto-publish.
-// All four stages exposed as importable functions so internal callers don't need HTTP self-fetch.
+// All five stages exposed as importable functions so internal callers don't need HTTP self-fetch.
 
+import matter from 'gray-matter';
 import { githubWriteBase64File } from '@/lib/github';
+import type { PostFrontmatter, QualityScore, ArticleSource } from '@/lib/mdx';
+import { validateArticle, type ValidationResult } from '@/lib/newsValidation';
 
 // ── Stage 1: News Intelligence System Prompt ─────────────────────────────────
 const RESEARCH_SYSTEM = `You are a news intelligence researcher for City Roofing & Exteriors, a Calgary roofing contractor. City Roofing is NOT a news publisher; the article that will be built from your output is expert commentary on public news. Your job is to find the homeowner question worth answering this week — supported by current Canadian news and verifiable sources — that City Roofing can answer better than a newspaper or generic blog.
@@ -788,10 +791,204 @@ export async function runChat(
 ): Promise<string> {
   const systemWithContext = `${WRITER_SYSTEM}
 
-The user wants to modify the article below. Apply their request and return the complete updated MDX file (frontmatter + content). Keep featuredImage as "STAGE4_PLACEHOLDER" — do not replace it. Return ONLY the MDX — no explanations.
+The user wants to modify the article below. Apply their request and return the complete updated MDX file (frontmatter + content). Keep these placeholders intact: STATUS_PLACEHOLDER, DATE_PLACEHOLDER, STAGE4_PLACEHOLDER. Preserve sources, reviewFlags, and qualityScore in the frontmatter — never strip claims down to remove a constraint. If the user asks for an unsourced insurance / pricing / legal claim, hedge the language and add it to reviewFlags rather than stating it as fact. Return ONLY the MDX — no explanations.
 
 CURRENT ARTICLE:
 ${currentArticle}`;
 
   return callGemini(messages[messages.length - 1].content, systemWithContext, false);
+}
+
+// ── Stage 5: Pipeline finalizer ──────────────────────────────────────────────
+// The finalizer is the only place that decides published / draft / rejected.
+// LLMs never write a final status; they emit STATUS_PLACEHOLDER and the
+// validator + research quality score together compute the answer here.
+
+export interface FinalizeInput {
+  /** Raw MDX from runGenerate, with placeholders still in place. */
+  mdx: string;
+  /** Research stage output — used for upstream qualityScore + reviewFlags. */
+  research: Record<string, unknown>;
+  /** Blueprint stage output — currently informational only. */
+  blueprint: Record<string, unknown>;
+  /** Hero image path from runImage, or null if image gen failed. */
+  featuredImagePath: string | null;
+}
+
+export interface FinalizeOutput {
+  /** Finalized MDX — placeholders replaced, sources/qualityScore/reviewFlags
+   *  written into the frontmatter. Safe to commit when status !== 'rejected'. */
+  mdx: string;
+  /** Slug from frontmatter, defensively defaulted. */
+  slug: string;
+  /** Computed status — drives commit destination. Note: 'rejected' articles
+   *  must NOT be committed (per project decision); admin only previews them. */
+  status: 'published' | 'draft' | 'rejected';
+  /** Populated when status === 'rejected'. */
+  rejectReason: string | null;
+  /** Effective score after validator clipping (LLM-rated × source-count cap). */
+  qualityScore: QualityScore;
+  /** Surfaced in admin UI for human triage. */
+  reviewFlags: string[];
+  /** Full validator report for admin debugging. */
+  validation: ValidationResult;
+}
+
+const SCORE_KEY_MAP: Record<string, keyof QualityScore> = {
+  news_relevance: 'newsRelevance',
+  calgary_specificity: 'calgarySpecificity',
+  source_strength: 'sourceStrength',
+  roofing_expert_value: 'roofingExpertValue',
+  seo_potential: 'seoPotential',
+  geo_extractability: 'geoExtractability',
+  conversion_relevance: 'conversionRelevance',
+  overall: 'overall',
+};
+
+function normalizeQualityScore(raw: unknown): QualityScore {
+  if (!raw || typeof raw !== 'object') return {};
+  const out: QualityScore = {};
+  for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
+    if (typeof v !== 'number') continue;
+    const camel = SCORE_KEY_MAP[k];
+    if (camel) out[camel] = v;
+    // Also accept already-camelCase (in case a future Stage 1 prompt change emits camelCase)
+    else if (k in SCORE_KEY_MAP || (k as keyof QualityScore)) {
+      (out as Record<string, number>)[k] = v;
+    }
+  }
+  return out;
+}
+
+function extractSlugFromMdx(mdx: string): string {
+  const match = mdx.match(/^slug:\s*"?([a-z0-9-]+)"?/m);
+  return match?.[1] ?? `auto-${Date.now()}`;
+}
+
+function safeSlug(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+/**
+ * Finalize an article emitted by Stage 3.
+ *
+ * Side effect-free except for the gray-matter parse / re-stringify cycle.
+ * The caller is responsible for actually committing the MDX (or not, when
+ * the computed status is 'rejected').
+ */
+export function finalizeArticle(input: FinalizeInput): FinalizeOutput {
+  const { mdx, research, featuredImagePath } = input;
+
+  // Step 1 — fill in deterministic placeholders before validation, so the
+  // validator sees real dates and real image paths.
+  const todayIso = new Date().toISOString();
+  let working = mdx;
+  working = working.split('DATE_PLACEHOLDER').join(todayIso);
+  if (featuredImagePath) {
+    working = working.replace('STAGE4_PLACEHOLDER', featuredImagePath);
+  }
+
+  // Step 2 — extract upstream signals from research stage.
+  const upstreamScore = normalizeQualityScore(
+    (research as { quality_score?: unknown }).quality_score,
+  );
+  const upstreamFlags = Array.isArray((research as { reviewFlags?: unknown }).reviewFlags)
+    ? ((research as { reviewFlags?: unknown }).reviewFlags as string[])
+    : [];
+
+  // Step 3 — parse, validate.
+  let parsed: { data: Record<string, unknown>; content: string };
+  try {
+    parsed = matter(working);
+  } catch (err) {
+    // Malformed frontmatter is itself a hard reject — return a synthetic result.
+    const message = err instanceof Error ? err.message : String(err);
+    return {
+      mdx: working,
+      slug: extractSlugFromMdx(mdx),
+      status: 'rejected',
+      rejectReason: `Malformed frontmatter: ${message}`,
+      qualityScore: upstreamScore,
+      reviewFlags: [...upstreamFlags, 'Malformed frontmatter — pipeline could not parse output'],
+      validation: {
+        computedStatus: 'rejected',
+        rejectReason: 'Malformed frontmatter',
+        errors: [`Frontmatter parse error: ${message}`],
+        warnings: [],
+        reviewFlags: upstreamFlags,
+        externalLinks: 0,
+        internalLinks: 0,
+        externalSources: 0,
+        wordCount: 0,
+        hasQuickAnswer: false,
+        hasKeyTakeaways: false,
+        hasFAQ: false,
+        hasSourcesBlock: false,
+        hasChecklistOrTable: false,
+        frontmatterSourcesMatchBody: false,
+        effectiveQualityScore: upstreamScore,
+      },
+    };
+  }
+
+  const frontmatterRaw = parsed.data as PostFrontmatter & Record<string, unknown>;
+  const body = parsed.content;
+
+  const validation = validateArticle(frontmatterRaw, body, {
+    qualityScore: upstreamScore,
+    upstreamReviewFlags: upstreamFlags,
+  });
+
+  const finalStatus = validation.computedStatus;
+
+  // Step 4 — write computed metadata into the frontmatter. Status mapped to a
+  // schema-valid value ('rejected' has no schema slot — use 'draft' on the
+  // serialized object; the FinalizeOutput.status is the source of truth).
+  const serializableStatus: 'published' | 'draft' | 'scheduled' =
+    finalStatus === 'rejected' ? 'draft' : finalStatus;
+
+  const enrichedFrontmatter: Record<string, unknown> = {
+    ...frontmatterRaw,
+    status: serializableStatus,
+    qualityScore: validation.effectiveQualityScore,
+    reviewFlags: validation.reviewFlags,
+  };
+
+  // Defensively coerce date fields to ISO if they're still placeholders or
+  // somehow invalid — the writer template uses DATE_PLACEHOLDER × 3, but
+  // if upstream chat edits stripped one we still want a valid date.
+  for (const key of ['date', 'datePublished', 'dateModified'] as const) {
+    const v = enrichedFrontmatter[key];
+    if (typeof v !== 'string' || !Number.isFinite(new Date(v).getTime())) {
+      enrichedFrontmatter[key] = todayIso;
+    }
+  }
+
+  // Make sure sources[] in frontmatter is an array of well-shaped entries.
+  if (!Array.isArray(enrichedFrontmatter.sources)) {
+    enrichedFrontmatter.sources = [];
+  } else {
+    enrichedFrontmatter.sources = (enrichedFrontmatter.sources as ArticleSource[]).filter(
+      (s): s is ArticleSource => !!s && typeof s === 'object' && typeof s.url === 'string',
+    );
+  }
+
+  // Step 5 — re-stringify. gray-matter writes YAML; default delimiter is ---.
+  const finalMdx = matter.stringify(body, enrichedFrontmatter);
+
+  const rawSlug = (frontmatterRaw.slug as string | undefined) ?? extractSlugFromMdx(working);
+
+  return {
+    mdx: finalMdx,
+    slug: safeSlug(rawSlug),
+    status: finalStatus,
+    rejectReason: validation.rejectReason,
+    qualityScore: validation.effectiveQualityScore,
+    reviewFlags: validation.reviewFlags,
+    validation,
+  };
 }
